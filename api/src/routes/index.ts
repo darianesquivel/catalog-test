@@ -13,5 +13,6 @@ router.get("/catalogs/:productId", (req: Request, res: Response) => {
 router.delete("/catalogs/product/", (req: Request, res: Response) => {});
 router.post("/catalogs/product/", (req: Request, res: Response) => {});
 // update
+
 router.put("/catalogs/product/", (req: Request, res: Response) => {});
-module.exports = router;
+export default router;
