@@ -1,11 +1,17 @@
-import { Request, Response } from "express";
-const router = require("express");
+import { Request, Response, Router } from "express";
 
-router.get("/", (req: Request, res: Response) => {
+const router = Router();
+
+router.get("/catalogs", (req: Request, res: Response) => {
   res.send("testinnnnnng");
 });
-router.get("/second", (req: Request, res: Response) => {
+
+router.get("/catalogs/:productId", (req: Request, res: Response) => {
   res.send("second testtt");
 });
 
+router.delete("/catalogs/product/", (req: Request, res: Response) => {});
+router.post("/catalogs/product/", (req: Request, res: Response) => {});
+// update
+router.put("/catalogs/product/", (req: Request, res: Response) => {});
 module.exports = router;
