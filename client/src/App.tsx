@@ -1,4 +1,3 @@
-import "./App.css";
 import DrawerAppbar from "./components/DrawerAppbar";
 
 function App() {
