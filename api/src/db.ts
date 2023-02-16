@@ -30,13 +30,8 @@ fs.readdirSync(path.join(__dirname, "/models"))
 // Injectamos la conexion (sequelize) a todos los modelos
 modelDefiners.forEach((model) => model(database));
 
-//Capitalizamos los nombres de los modelos ie: product => Product
-// let entries = Object.entries(database.models);
-// let capsEntries = entries.map((entry) => [
-//   entry[0][0].toUpperCase() + entry[0].slice(1),
-//   entry[1],
-// ]);
-
-// database.models = Object.fromEntries(capsEntries);
+// Relationships
+const { product, catalogs } = database.models;
+catalogs.belongsToMany(product, { through: "catalogProducts" });
 
 export default database;

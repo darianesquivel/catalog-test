@@ -22,7 +22,7 @@ module.exports = (sequelize: any) => {
       },
       createt_at: {
         type: DataTypes.DATE,
-        defaulValue: literal("CURRENT_TIMESTAMP"),
+        defaulValue: new Date(),
         allowNull: true,
       },
     },

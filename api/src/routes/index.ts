@@ -4,31 +4,53 @@ import database from "../db";
 import axios from "axios";
 const router = Router();
 
-const { catalogs, product } = database.models;
+const { catalogs, product, catalogProducts } = database.models;
+//CREATE CATALOG
+router.post("/catalogs", async (req: Request, res: Response) => {
+  const { name, description } = req.body;
 
-// router.get("/catalogs", (req: Request, res: Response) => {
-//   catalogs
-//     .findAll()
-//     .then((data) => console.log({ data }))
-//     .catch((err) => console.log(err));
+  try {
+    await catalogs.findOrCreate({
+      where: {
+        name,
+        description,
+      },
+    });
+    res.status(200).send("Catalog created");
+  } catch (err) {
+    res.send(err);
+  }
+});
 
-//   res.send("testinnnnnng");
-// });
+//GET CATALOGS
+router.get("/catalogs/new", async (req: Request, res: Response) => {
+  const relation = await catalogProducts
+    .findAll()
+    .then((r) => r)
+    .catch((er) => er);
+  res.send(relation);
+  // catalogs
+  //   .findAll()
+  //   .then((data) => console.log({ data }))
+  //   .catch((err) => console.log(err));
 
-// router.get("/catalogs/:catalogId", (req: Request, res: Response) => {
-//   const { catalogId } = req.params;
+  // res.send("testinnnnnng");
+});
 
-//   product
-//     .findAll({
-//       where: {
-//         id: catalogId,
-//       },
-//     })
-//     .then((data) => console.log({ data }))
-//     .catch((err) => console.log(err));
+router.get("/catalogs/:catalogId", (req: Request, res: Response) => {
+  const { catalogId } = req.params;
 
-//   res.send("products test");
-// });
+  product
+    .findAll({
+      where: {
+        id: catalogId,
+      },
+    })
+    .then((data) => console.log({ data }))
+    .catch((err) => console.log(err));
+
+  res.send("products test");
+});
 // get all products
 router.get("/products", async (req: Request, res: Response) => {
   const allProducts = await product.findAll().catch((e) => []);
