@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, literal } from "sequelize";
 
 module.exports = (sequelize: any) => {
   // defino el modelo
@@ -6,10 +6,11 @@ module.exports = (sequelize: any) => {
     "catalogs",
     {
       id: {
-        type: DataTypes.UUID,
-
+        type: DataTypes.STRING,
         primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: literal("gen_random_uuid()"),
+        allowNull: true,
+        unique: true,
       },
       name: {
         type: DataTypes.STRING,
@@ -21,7 +22,7 @@ module.exports = (sequelize: any) => {
       },
       createt_at: {
         type: DataTypes.DATE,
-        defaulValue: DataTypes.NOW,
+        defaulValue: new Date(),
         allowNull: true,
       },
     },

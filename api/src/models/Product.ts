@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, literal } from "sequelize";
 
 module.exports = (sequelize: any) => {
   // defino el modelo
@@ -6,12 +6,13 @@ module.exports = (sequelize: any) => {
     "product",
     {
       id: {
-        type: DataTypes.UUID,
-
+        type: DataTypes.STRING,
         primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
+        defaultValue: literal("gen_random_uuid()"),
+        allowNull: true,
+        unique: true,
       },
-      productName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -19,8 +20,9 @@ module.exports = (sequelize: any) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      createt_at: {
+      created_at: {
         type: DataTypes.DATE,
+        timestamps: true,
         defaulValue: DataTypes.NOW,
         allowNull: true,
       },
@@ -30,6 +32,10 @@ module.exports = (sequelize: any) => {
         allowNull: true,
       },
       image: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      catalog_id: {
         type: DataTypes.STRING,
         allowNull: true,
       },
