@@ -1,4 +1,4 @@
-import localhost from "./db";
+import database from "./db";
 import express from "express";
 import routes from "./routes";
 
@@ -9,7 +9,7 @@ require("dotenv").config();
 
 //const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
-localhost.sync({ force: true }).then(() => {
+database.sync({ force: true }).then(() => {
   server.listen(3001, () => {
     console.log("%s listening at " + 3001);
   });
