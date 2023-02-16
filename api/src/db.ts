@@ -27,11 +27,12 @@ fs.readdirSync(path.join(__dirname, "/models"))
     modelDefiners.push(require(path.join(__dirname, "/models", file)));
   });
 
-// Injectamos la conexion (sequelize) a todos los modelos
 modelDefiners.forEach((model) => model(database));
 
 // Relationships
-const { product, catalogs } = database.models;
-catalogs.belongsToMany(product, { through: "catalogProducts" });
+// const { product, catalogs } = database.models;
+
+// catalogs.hasMany(product, { foreignKey: "id", as: "catalog" });
+// product.belongsTo(catalogs, { foreignKey: "id", as: "product" });
 
 export default database;

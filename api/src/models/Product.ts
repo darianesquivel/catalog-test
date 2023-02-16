@@ -35,6 +35,10 @@ module.exports = (sequelize: any) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      catalog_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     { timestamps: false }
   );

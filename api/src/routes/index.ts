@@ -1,14 +1,13 @@
-import fs from "fs";
+import { Model } from "sequelize";
 import { Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
 const router = Router();
 
-const { catalogs, product, catalogProducts } = database.models;
+const { catalogs, product } = database.models;
 //CREATE CATALOG
-router.post("/catalogs", async (req: Request, res: Response) => {
+router.post("/catalogs/new", async (req: Request, res: Response) => {
   const { name, description } = req.body;
-
   try {
     await catalogs.findOrCreate({
       where: {
@@ -23,97 +22,63 @@ router.post("/catalogs", async (req: Request, res: Response) => {
 });
 
 //GET CATALOGS
-router.get("/catalogs/new", async (req: Request, res: Response) => {
-  const relation = await catalogProducts
-    .findAll()
-    .then((r) => r)
-    .catch((er) => er);
-  res.send(relation);
-  // catalogs
-  //   .findAll()
-  //   .then((data) => console.log({ data }))
-  //   .catch((err) => console.log(err));
-
-  // res.send("testinnnnnng");
+router.get("/catalogs", async (req: Request, res: Response) => {
+  //await insertData(product, catalogs);
+  try {
+    const allCatalogs = await catalogs.findAll();
+    res.status(200).json(allCatalogs);
+  } catch (err) {
+    res.status(200).send(err);
+  }
 });
 
-router.get("/catalogs/:catalogId", (req: Request, res: Response) => {
+router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
   const { catalogId } = req.params;
-
-  product
-    .findAll({
+  try {
+    const catalogProducts = await product.findAll({
       where: {
         id: catalogId,
       },
-    })
-    .then((data) => console.log({ data }))
-    .catch((err) => console.log(err));
-
-  res.send("products test");
-});
-// get all products
-router.get("/products", async (req: Request, res: Response) => {
-  const allProducts = await product.findAll().catch((e) => []);
-
-  res.json(allProducts);
+    });
+    res.status(200).json(catalogProducts);
+  } catch (error) {
+    res.status(503).send(error);
+  }
 });
 
-//POST
+//POST CREATE PRDODUCT
 router.post("/catalogs/product/", async (req: Request, res: Response) => {
-  const { name, description, image } = req.body;
+  const { catalog_id, name, description, image } = req.body;
 
   try {
-    await product.findOrCreate({
+    const newProduct = await product.findOrCreate({
       where: {
         name,
         description,
         image,
-        created_at: new Date(),
+        catalog_id: catalog_id,
+        // created_at: new Date(),
       },
     });
+    res.status(200).json(newProduct);
   } catch (err) {
     res.status(503).send(err);
   }
-
-  const created = await product.findAll();
-  res.status(200).json(created);
 });
+
 // DELETE
-router.get("/catalogs/product/:id", async (req: Request, res: Response) => {
+router.delete("/catalogs/product/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const currentProduct: any = await product.findByPk(id);
     const productName = currentProduct?.name;
-
     await currentProduct?.destroy();
     res.json(`${productName} deleted successfully `);
   } catch (err) {
-    res.send(err);
+    res.status(503).send(err);
   }
 });
 
-// CARGHAR DATOS EN DB
-async function insertData(product: any) {
-  const json = await axios
-    .get("https://dummyjson.com/products")
-    .then((r) => r.data.products)
-    .catch((e) => []);
-
-  if (json.length) {
-    for (const prod of json) {
-      const { title: name, description, images } = prod;
-
-      await product.findOrCreate({
-        where: {
-          name,
-          description,
-          image: images[0],
-          created_at: new Date(),
-        },
-      });
-    }
-  }
-}
 // Update todo
 router.put("/catalogs/product/:id", async (req: Request, res: Response) => {
   const { id, name, description, image } = req.body;
@@ -131,4 +96,43 @@ router.put("/catalogs/product/:id", async (req: Request, res: Response) => {
     res.status(503).send(err);
   }
 });
+// CARGHAR DATOS EN DB
+async function insertData(product: any, catalogs: any) {
+  //inserting one catalog
+  try {
+    await catalogs.findOrCreate({
+      where: {
+        name: "Test catalog",
+        description: "This is the first catalog",
+      },
+    });
+  } catch (e: any) {
+    console.log(e);
+  }
+  const uniqueCatalog = await catalogs.findOne({
+    where: { name: "Test catalog" },
+  });
+
+  // inserting products
+  const json = await axios
+    .get("https://dummyjson.com/products")
+    .then((r) => r.data.products)
+    .catch((e) => []);
+
+  if (json.length) {
+    for (const prod of json) {
+      const { title: name, description, images } = prod;
+
+      await product.findOrCreate({
+        where: {
+          name,
+          description,
+          image: images[0],
+          created_at: new Date(),
+          catalog_id: uniqueCatalog?.dataValues?.id,
+        },
+      });
+    }
+  }
+}
 export default router;
