@@ -9,7 +9,7 @@ require("dotenv").config();
 
 //const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
-database.sync({ force: true }).then(() => {
+database.sync({ force: false }).then(() => {
   server.listen(3001, () => {
     console.log("%s listening at " + 3001);
   });
