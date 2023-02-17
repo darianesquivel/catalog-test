@@ -1,33 +1,51 @@
 import React from "react";
 import clsx from "clsx";
-import {
-  createStyles,
-  makeStyles,
-  useTheme,
-  Theme,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
-import CatalogExplorer from "../pages/CatalogExplorer/CatalogExplorer";
+import {
+  faDatabase,
+  faTags,
+  faCogs,
+  faPenNib,
+  faChevronRight,
+  faChevronLeft,
+  faBell,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import ProductsList from "../pages/ProductsList/ProductsList";
-import ProductDetails from "../pages/ProductDetails/ProductDetails";
+import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
+import ProductsList from "../../pages/ProductsList/ProductsList";
+import ProductDetails from "../../pages/ProductDetails/ProductDetails";
+
+const drawerButtons = [
+  {
+    text: "Data Explorer",
+    icon: faDatabase,
+  },
+  {
+    text: "Enrichment",
+    icon: faTags,
+  },
+  {
+    text: "Matching AI",
+    icon: faCogs,
+  },
+  {
+    text: "Scribe Voices",
+    icon: faPenNib,
+  },
+];
 
 const drawerWidth = 240;
+const drawerWidthMin = 70;
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,11 +53,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
     },
     appBar: {
-      zIndex: theme.zIndex.drawer + 1,
+      zIndex: theme.zIndex.drawer - 1,
+      width: `calc(100% - ${drawerWidthMin}px)`,
       transition: theme.transitions.create(["width", "margin"], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
+      backgroundColor: theme.palette.background.paper,
     },
     appBarShift: {
       marginLeft: drawerWidth,
@@ -90,48 +110,54 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    buttonList: {
+      height: "100vh",
+      padding: "8px 8px",
+      display: "flex",
+      flexDirection: "column",
+    },
+    icons: {
+      fontSize: "1.30em",
+    },
+    buttonStyle: {
+      borderRadius: "8px",
+      marginBottom: "6px",
+      color: "#0000008a",
+    },
+    drawerHeader: {
+      borderRadius: "8px",
+      marginBottom: "6px",
+    },
+    drawerTitle: {
+      fontSize: "18px",
+    },
   })
 );
 
-export default function DrawerAppbar() {
+export default function MiniDrawer() {
   const classes = useStyles();
-  const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
+  const handleDrawerChange = () => {
     setOpen(!open);
   };
 
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
       {/* <CssBaseline /> */}
-      {/* <AppBar
+      <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography variant="h6" noWrap>
-            Mini variant drawer
+            Catalogs Explorer
           </Typography>
         </Toolbar>
-      </AppBar> */}
+      </AppBar>
+
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -145,40 +171,64 @@ export default function DrawerAppbar() {
           }),
         }}
       >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
-            ) : (
-              <ChevronLeftIcon />
-            )}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
+        <List className={classes.buttonList}>
+          <Box>
+            <ListItem className={classes.drawerHeader}>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <img
+                  width="24px"
+                  src="https://static.remotasks.com/uploads/catalog_logo.png"
+                  alt=""
+                />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <Typography className={classes.drawerTitle}>Catalog</Typography>
             </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem button key={text}>
+          </Box>
+          <Box flexGrow={1}>
+            {drawerButtons.map((button, index) => (
+              <ListItem button key={index} className={classes.buttonStyle}>
+                <ListItemIcon>
+                  <FontAwesomeIcon
+                    className={classes.icons}
+                    icon={button.icon}
+                  />
+                </ListItemIcon>
+                <ListItemText primary={button.text} />
+              </ListItem>
+            ))}
+          </Box>
+          <Box>
+            <ListItem button disabled className={classes.buttonStyle}>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <FontAwesomeIcon className={classes.icons} icon={faBell} />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={"Notifications"} />
             </ListItem>
-          ))}
+            <ListItem
+              button
+              className={classes.buttonStyle}
+              onClick={handleDrawerChange}
+            >
+              <ListItemIcon>
+                {open ? (
+                  <FontAwesomeIcon
+                    className={classes.icons}
+                    icon={faChevronLeft}
+                  />
+                ) : (
+                  <FontAwesomeIcon
+                    className={classes.icons}
+                    icon={faChevronRight}
+                  />
+                )}
+              </ListItemIcon>
+              <ListItemText primary={"Close"} />
+            </ListItem>
+          </Box>
         </List>
       </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
+      <Box className={classes.content}>
+        <Box className={classes.toolbar} />
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
@@ -186,7 +236,7 @@ export default function DrawerAppbar() {
             <Route exact path="/details" component={ProductDetails} />
           </Switch>
         </BrowserRouter>
-      </main>
-    </div>
+      </Box>
+    </Box>
   );
 }
