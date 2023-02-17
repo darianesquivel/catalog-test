@@ -28,7 +28,7 @@ router.get("/catalogs", async (req: Request, res: Response) => {
     const allCatalogs = await catalogs.findAll();
     res.status(200).json(allCatalogs);
   } catch (err) {
-    res.status(200).send(err);
+    res.status(404).send(err);
   }
 });
 
