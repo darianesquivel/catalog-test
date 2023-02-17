@@ -14,6 +14,7 @@ type TcatalogCard = {
   products?: number;
   createdAt?: string;
   image?: string;
+  className?: any;
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,11 +41,12 @@ export default function CatalogCard({
   products,
   createdAt,
   image,
+  className,
 }: TcatalogCard) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={`${classes.root} ${className}`}>
       <CardActionArea>
         <CardHeader
           action={

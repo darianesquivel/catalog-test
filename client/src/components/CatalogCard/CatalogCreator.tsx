@@ -33,14 +33,14 @@ const useStyles = makeStyles((theme: Theme) => ({
   icon: {},
 }));
 
-export default function CatalogCreator() {
+export default function CatalogCreator({ className }: any) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
 
   return (
     <>
-      <Card className={classes.root}>
+      <Card className={`${classes.root} ${className}`}>
         <CardActionArea onClick={handleModal}>
           <CardContent className={classes.cardContent}>
             <AddIcon

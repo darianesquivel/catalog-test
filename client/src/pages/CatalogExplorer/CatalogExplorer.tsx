@@ -13,6 +13,7 @@ type TcatalogCard = {
   products?: number;
   createdAt?: string;
   image?: string;
+  className?: any;
 };
 const useStyles = makeStyles(() => ({
   container: {
@@ -24,6 +25,9 @@ const useStyles = makeStyles(() => ({
     width: "100%",
     gap: "16px",
     background: "#555",
+  },
+  children: {
+    flexGrow: 1,
   },
 }));
 
@@ -39,10 +43,16 @@ const CatalogExplorer = () => {
   console.log({ status, isLoading, error });
   return (
     <div className={classes.container}>
-      <CatalogCreator />
+      <CatalogCreator className={classes.children} />
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
-          return <CatalogCard key={catalog.id} {...catalog} />;
+          return (
+            <CatalogCard
+              className={classes.children}
+              key={catalog.id}
+              {...catalog}
+            />
+          );
         })}
     </div>
   );
