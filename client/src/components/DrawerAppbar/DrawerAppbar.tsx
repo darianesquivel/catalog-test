@@ -19,7 +19,6 @@ import {
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Box } from "@material-ui/core";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
@@ -132,6 +131,9 @@ const useStyles = makeStyles((theme: Theme) =>
     drawerTitle: {
       fontSize: "18px",
     },
+    flexGrow: {
+      flexGrow: 1,
+    },
   })
 );
 
@@ -144,7 +146,7 @@ export default function MiniDrawer() {
   };
 
   return (
-    <Box className={classes.root}>
+    <div className={classes.root}>
       {/* <CssBaseline /> */}
       <AppBar
         position="fixed"
@@ -173,7 +175,7 @@ export default function MiniDrawer() {
         }}
       >
         <List className={classes.buttonList}>
-          <Box>
+          <div>
             <ListItem className={classes.drawerHeader}>
               <ListItemIcon>
                 <img
@@ -184,8 +186,8 @@ export default function MiniDrawer() {
               </ListItemIcon>
               <Typography className={classes.drawerTitle}>Catalog</Typography>
             </ListItem>
-          </Box>
-          <Box flexGrow={1}>
+          </div>
+          <div className={classes.flexGrow}>
             {drawerButtons.map((button, index) => (
               <ListItem button key={index} className={classes.buttonStyle}>
                 <ListItemIcon>
@@ -197,8 +199,8 @@ export default function MiniDrawer() {
                 <ListItemText primary={button.text} />
               </ListItem>
             ))}
-          </Box>
-          <Box>
+          </div>
+          <div>
             <ListItem button disabled className={classes.buttonStyle}>
               <ListItemIcon>
                 <FontAwesomeIcon className={classes.icons} icon={faBell} />
@@ -225,11 +227,11 @@ export default function MiniDrawer() {
               </ListItemIcon>
               <ListItemText primary={"Close"} />
             </ListItem>
-          </Box>
+          </div>
         </List>
       </Drawer>
-      <Box className={classes.content}>
-        <Box className={classes.toolbar} />
+      <div className={classes.content}>
+        <div className={classes.toolbar} />
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
@@ -237,7 +239,7 @@ export default function MiniDrawer() {
             <Route exact path="/details" component={ProductDetails} />
           </Switch>
         </BrowserRouter>
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
