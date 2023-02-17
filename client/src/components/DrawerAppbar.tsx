@@ -26,6 +26,7 @@ import CatalogExplorer from "../pages/CatalogExplorer/CatalogExplorer";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import ProductsList from "../pages/ProductsList/ProductsList";
 import ProductDetails from "../pages/ProductDetails/ProductDetails";
+import FormCreator from "./FormCreator/FormCreator";
 
 const drawerWidth = 240;
 
@@ -105,11 +106,10 @@ export default function DrawerAppbar() {
   const handleDrawerClose = () => {
     setOpen(!open);
   };
-
   return (
     <div className={classes.root}>
-      {/* <CssBaseline /> */}
-      {/* <AppBar
+      <CssBaseline />
+      <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
@@ -131,7 +131,7 @@ export default function DrawerAppbar() {
             Mini variant drawer
           </Typography>
         </Toolbar>
-      </AppBar> */}
+      </AppBar>
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -182,6 +182,7 @@ export default function DrawerAppbar() {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
+            <Route exact path="/form" component={FormCreator} />
             <Route exact path="/products" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
           </Switch>
