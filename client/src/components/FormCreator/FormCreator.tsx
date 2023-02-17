@@ -1,15 +1,18 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+// API
+import createCatalog from "../../api/createCatalog";
 import getAllCatalogs from "../../api/getAllCatalogs";
+// MUI
+import Button from "@material-ui/core/Button";
+import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
 } from "@material-ui/core";
-import Button from "@material-ui/core/Button";
-import { makeStyles, createStyles } from "@material-ui/core/styles";
-import createCatalog from "../../api/createCatalog";
+
 const useStyles = makeStyles(() => ({
   container: {
     width: "500px",
@@ -61,10 +64,8 @@ const FormCreator = ({ handleModal, isOpen }: Tprops) => {
     if (!onValidate(fields.name)) {
       createCatalog(fields);
       setFields({ name: "", description: "" });
-      queryClient.refetchQueries();
-      if (!error) {
-        handleModal();
-      }
+      queryClient.invalidateQueries();
+      if (!error && !isLoading) handleModal();
     }
   };
   const onValidate = (field: string) => {
@@ -116,12 +117,6 @@ const FormCreator = ({ handleModal, isOpen }: Tprops) => {
           </form>
         </DialogContent>
       </Dialog>
-      {/* show catalogs */}
-      {isLoading && "Loading..."}
-      {status === "success" &&
-        catalogs.map((catalog: Tcatalog) => (
-          <h1 key={catalog.id}>{catalog.name}</h1>
-        ))}
     </>
   );
 };

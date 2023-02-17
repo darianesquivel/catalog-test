@@ -7,10 +7,10 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { CardActionArea, Typography } from "@material-ui/core";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+// este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
   id: string;
-  title: string;
+  name: string;
   products?: number;
   createdAt?: string;
   image?: string;
@@ -19,7 +19,7 @@ type TcatalogCard = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      maxWidth: "300px",
+      width: "300px",
       borderRadius: "8px",
     },
     media: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function CatalogCard({
   id,
-  title,
+  name,
   products,
   createdAt,
   image,
@@ -52,7 +52,7 @@ export default function CatalogCard({
               <MoreVertIcon />
             </IconButton>
           }
-          title={title ? title : "Default"}
+          title={name ? name : "Default"}
           titleTypographyProps={{ variant: "body2" }}
         />
         {!products ? (
