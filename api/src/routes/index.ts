@@ -23,10 +23,30 @@ router.post("/catalogs/new", async (req: Request, res: Response) => {
 
 //GET CATALOGS
 router.get("/catalogs", async (req: Request, res: Response) => {
-  //await insertData(product, catalogs);
+  // await insertData(product, catalogs);
   try {
     const allCatalogs = await catalogs.findAll();
-    res.status(200).json(allCatalogs);
+    const fullData = [];
+
+    for (const catalog of allCatalogs) {
+      const id = catalog.dataValues.id;
+      const catalogProducts = await product.findAll({
+        where: {
+          catalog_id: id,
+        },
+      });
+
+      const productCount = catalogProducts.length;
+
+      fullData.push({
+        catalog: {
+          ...catalog.dataValues,
+          productCount,
+          products: catalogProducts,
+        },
+      });
+    }
+    res.status(200).json(fullData);
   } catch (err) {
     res.status(404).send(err);
   }
