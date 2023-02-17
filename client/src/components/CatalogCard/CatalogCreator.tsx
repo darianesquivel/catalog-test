@@ -8,15 +8,13 @@ import {
   Typography,
   Card,
 } from "@material-ui/core/";
-import IconButton from "@material-ui/core/IconButton";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { useState } from "react";
 import FormCreator from "../FormCreator/FormCreator";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    maxWidth: "300px",
-    height: "350px",
+    width: "268px",
+    height: "330px",
     borderRadius: "8px",
     display: "flex",
     // flexFlow: "column",
@@ -31,19 +29,18 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexFlow: "column",
     alignItems: "center",
-    height: "100%",
   },
   icon: {},
 }));
 
-export default function CatalogCreator() {
+export default function CatalogCreator({ className }: any) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
 
   return (
     <>
-      <Card className={classes.root}>
+      <Card className={`${classes.root} ${className}`}>
         <CardActionArea onClick={handleModal}>
           <CardContent className={classes.cardContent}>
             <AddIcon

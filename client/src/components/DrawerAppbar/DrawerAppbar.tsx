@@ -23,6 +23,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
+import CatalogCreator from "../CatalogCard/CatalogCreator";
 
 const drawerButtons = [
   {
@@ -237,6 +238,7 @@ export default function MiniDrawer() {
             <Route exact path="/" component={CatalogExplorer} />
             <Route exact path="/products" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
+            <Route exact path="/exp" component={CatalogExplorer} />
           </Switch>
         </BrowserRouter>
       </div>
