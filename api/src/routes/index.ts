@@ -39,13 +39,13 @@ router.get("/catalogs", async (req: Request, res: Response) => {
       const productCount = catalogProducts.length;
 
       fullData.push({
-        catalog: {
-          ...catalog.dataValues,
-          productCount,
-          products: catalogProducts,
-        },
+        ...catalog.dataValues,
+        productCount,
+        products: catalogProducts,
       });
     }
+
+    fullData.reverse();
     res.status(200).json(fullData);
   } catch (err) {
     res.status(404).send(err);
