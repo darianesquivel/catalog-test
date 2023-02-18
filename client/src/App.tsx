@@ -1,18 +1,11 @@
 import axios from "axios";
-//react-query
-import { QueryClientProvider } from "@tanstack/react-query";
-import queryClientConfig from "./ReactQuery/queryClientConfig";
 //component
 import DrawerAppbar from "./components/DrawerAppbar/DrawerAppbar";
 
 axios.defaults.baseURL = "http://localhost:3001/";
 
 function App() {
-  return (
-    <QueryClientProvider client={queryClientConfig}>
-      <DrawerAppbar />
-    </QueryClientProvider>
-  );
+  return <DrawerAppbar />;
 }
 
 export default App;

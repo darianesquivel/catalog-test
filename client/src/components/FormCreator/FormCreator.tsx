@@ -1,8 +1,8 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import queryClientConfig from "../../ReactQuery/queryClientConfig";
+
 // API
 import createCatalog from "../../api/createCatalog";
-import getAllCatalogs from "../../api/getAllCatalogs";
 // MUI
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -46,26 +46,25 @@ type Tprops = {
 
 const FormCreator = ({ handleModal, isOpen }: Tprops) => {
   const classes = useStyles();
-  const queryClient = useQueryClient();
   const [fields, setFields] = useState({ name: "", description: "" });
-  const {
-    data: catalogs,
-    status,
-    isLoading,
-    error,
-  } = useQuery(["catalogs"], getAllCatalogs);
+  const [error, setError] = useState("");
 
   const handleChange = (e: any) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
     if (!onValidate(fields.name)) {
-      createCatalog(fields);
-      setFields({ name: "", description: "" });
-      queryClient.invalidateQueries();
-      if (!error && !isLoading) handleModal();
+      try {
+        await createCatalog(fields);
+        await queryClientConfig.invalidateQueries(["catalogs"]);
+        // agregar un loading en esta instancia
+        setFields({ name: "", description: "" });
+        handleModal();
+      } catch (err: any) {
+        setError(err);
+      }
     }
   };
   const onValidate = (field: string) => {

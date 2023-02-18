@@ -33,13 +33,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export default function CatalogCreator() {
+export default function CatalogCreator({ className }: any) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
 
   return (
-    <>
+    <div className={className}>
       <Card className={classes.root}>
         <CardActionArea className={classes.cardContent} onClick={handleModal}>
           <FontAwesomeIcon className={classes.icon} size="2xl" icon={faPlus} />
@@ -47,6 +47,6 @@ export default function CatalogCreator() {
         </CardActionArea>
       </Card>
       <FormCreator handleModal={handleModal} isOpen={open} />
-    </>
+    </div>
   );
 }
