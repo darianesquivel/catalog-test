@@ -8,29 +8,31 @@ import {
   Typography,
   Card,
 } from "@material-ui/core/";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { useState } from "react";
 import FormCreator from "../FormCreator/FormCreator";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    width: "268px",
-    height: "330px",
+    width: 270,
+    height: 325,
     borderRadius: "8px",
     display: "flex",
-    // flexFlow: "column",
     justifyContent: "center",
     alignItems: "center",
     padding: "16px",
   },
-
   cardContent: {
     border: "1px dashed #6A5DF9",
     borderRadius: "4px",
     display: "flex",
-    flexFlow: "column",
+    flexDirection: "column",
     alignItems: "center",
+    justifyContent: "center",
+    color: "#6A5DF9",
   },
-  icon: {},
 }));
 
 export default function CatalogCreator({ className }: any) {
@@ -40,17 +42,11 @@ export default function CatalogCreator({ className }: any) {
 
   return (
     <>
-      <Card className={`${classes.root} ${className}`}>
+      <Card className={classes.root}>
         <CardActionArea onClick={handleModal}>
           <CardContent className={classes.cardContent}>
-            <AddIcon
-              className={classes.icon}
-              color="primary"
-              fontSize="large"
-            />
-            <Typography variant="body1" color="primary">
-              Create a new catalog
-            </Typography>
+            <FontAwesomeIcon size="2xl" icon={faPlus} />
+            <Typography variant="body2">Create a new catalog</Typography>
           </CardContent>
         </CardActionArea>
       </Card>

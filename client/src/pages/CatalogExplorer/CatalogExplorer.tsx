@@ -4,7 +4,6 @@ import CatalogCard from "../../components/CatalogCard/CatalogCard";
 //Component
 import CatalogCreator from "../../components/CatalogCard/CatalogCreator";
 // MUI
-import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 type TcatalogCard = {
@@ -13,21 +12,16 @@ type TcatalogCard = {
   products?: number;
   createdAt?: string;
   image?: string;
+  productCount: number;
   className?: any;
 };
 const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
     flexFlow: "row wrap",
-    padding: "16px",
     alignItems: "center",
-    justifyContent: "space-evenly",
-    width: "100%",
     gap: "16px",
-    background: "#555",
-  },
-  children: {
-    flexGrow: 1,
+    // background: "#555",
   },
 }));
 
@@ -41,16 +35,20 @@ const CatalogExplorer = () => {
     error,
   } = useQuery(["catalogs"], getAllCatalogs);
   console.log({ status, isLoading, error });
+  console.log("catalogs", catalogs);
+
   return (
     <div className={classes.container}>
-      <CatalogCreator className={classes.children} />
+      <CatalogCreator />
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
           return (
             <CatalogCard
-              className={classes.children}
               key={catalog.id}
-              {...catalog}
+              id={catalog.id}
+              name={catalog.name}
+              createdAt={catalog.createdAt}
+              productCount={catalog.productCount}
             />
           );
         })}
