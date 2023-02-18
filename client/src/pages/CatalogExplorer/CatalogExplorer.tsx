@@ -18,7 +18,7 @@ type TcatalogCard = {
 const useStyles = makeStyles(() => ({
   gridContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(5, 1fr)",
+    gridTemplateColumns: "repeat(auto-fit, minmax( 220p, 1fr))",
     gap: "16px",
   },
 }));
