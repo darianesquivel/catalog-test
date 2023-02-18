@@ -1,7 +1,5 @@
 import {
   QueryClient,
-  QueryClientProvider,
-  useQuery,
 } from "@tanstack/react-query";
 
 // instancia del cliente que vamos a necesitar para pasarle como prop al componente QueryClientProvider
@@ -12,4 +10,5 @@ const queryClientConfig = new QueryClient({
     },
   },
 });
+
 export default queryClientConfig;

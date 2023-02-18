@@ -21,23 +21,25 @@ const useStyles = makeStyles(() => ({
     gridTemplateColumns: "repeat(auto-fit, minmax( 220px, 1fr))",
     gap: "16px",
   },
+  containerNoData: {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)",
+    gap: "16px",
+  },
 }));
 
 const CatalogExplorer = () => {
   const classes = useStyles();
-  const queryClient = useQueryClient();
-  const {
-    data: catalogs,
-    status,
-    isLoading,
-    error,
-  } = useQuery(["catalogs"], getAllCatalogs);
-  console.log({ status, isLoading, error });
-  console.log("catalogs", catalogs);
-
+  const { data: catalogs, status } = useQuery(["catalogs"], getAllCatalogs);
   return (
-    <div className={classes.gridContainer}>
+    <div
+      className={
+        !catalogs?.length ? classes.containerNoData : classes.gridContainer
+      }
+    >
       <CatalogCreator />
+      {/* {isLoading && "Loading..."} */}
+      {/* {error && (error as Error).message} */}
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
           return (
