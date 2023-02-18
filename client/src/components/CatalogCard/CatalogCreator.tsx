@@ -1,22 +1,14 @@
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
-import AddIcon from "@material-ui/icons/Add";
-import {
-  CardContent,
-  CardActionArea,
-  CardHeader,
-  Typography,
-  Card,
-} from "@material-ui/core/";
+import { CardActionArea, Typography, Card } from "@material-ui/core/";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useState } from "react";
 import FormCreator from "../FormCreator/FormCreator";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
-    width: 270,
     height: 325,
     borderRadius: "8px",
     display: "flex",
@@ -25,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: "16px",
   },
   cardContent: {
+    height: "100%",
     border: "1px dashed #6A5DF9",
     borderRadius: "4px",
     display: "flex",
@@ -32,10 +25,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     justifyContent: "center",
     color: "#6A5DF9",
+    textAlign: "center",
+    padding: "16px",
+  },
+  icon: {
+    fontWeight: 800,
   },
 }));
 
-export default function CatalogCreator({ className }: any) {
+export default function CatalogCreator() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
@@ -43,11 +41,9 @@ export default function CatalogCreator({ className }: any) {
   return (
     <>
       <Card className={classes.root}>
-        <CardActionArea onClick={handleModal}>
-          <CardContent className={classes.cardContent}>
-            <FontAwesomeIcon size="2xl" icon={faPlus} />
-            <Typography variant="body2">Create a new catalog</Typography>
-          </CardContent>
+        <CardActionArea className={classes.cardContent} onClick={handleModal}>
+          <FontAwesomeIcon className={classes.icon} size="2xl" icon={faPlus} />
+          <Typography variant="body2">Create a new catalog</Typography>
         </CardActionArea>
       </Card>
       <FormCreator handleModal={handleModal} isOpen={open} />

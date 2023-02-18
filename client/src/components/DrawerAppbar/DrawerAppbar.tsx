@@ -23,8 +23,6 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
-import CatalogCreator from "../CatalogCard/CatalogCreator";
-import { CssBaseline, Divider } from "@material-ui/core";
 
 const drawerButtons = [
   {

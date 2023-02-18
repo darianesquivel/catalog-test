@@ -1,11 +1,11 @@
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { makeStyles, createStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { CardActionArea, CardContent, Typography } from "@material-ui/core";
-import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCartPlus, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
@@ -17,25 +17,23 @@ type TcatalogCard = {
   productCount: number;
 };
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
-      width: 270,
-      height: 325,
+      height: 355,
       borderRadius: "8px",
       display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: "16px",
     },
     cardContainer: {
       width: "100%",
+      height: "100%",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
     },
     media: {
-      height: 140,
+      width: "100%",
+      height: 500,
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
@@ -43,8 +41,36 @@ const useStyles = makeStyles((theme: Theme) =>
       color: "#6A5DF9",
       gap: "8px",
     },
-    countColor: {
+    headerContainer: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-between",
+      padding: "16px",
+      boxSizing: "border-box",
+    },
+    footerContainer: {
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+      padding: "16px",
+      boxSizing: "border-box",
+    },
+    typography: {
+      fontWeight: 200,
+    },
+    products: {
       color: "#6A5DF9",
+      fontSize: "14px",
+      marginBottom: "5px",
+    },
+    createdAt: {
+      display: "flex",
+      alignItems: "center",
+      color: "grey",
+      fontWeight: "lighter",
+      fontSize: "14px",
+      gap: "8px",
     },
   })
 );
@@ -61,8 +87,9 @@ export default function CatalogCard({
 
   return (
     <Card className={classes.root}>
-      <CardContent className={classes.cardContainer}>
+      <CardActionArea className={classes.cardContainer}>
         <CardHeader
+          className={classes.headerContainer}
           action={
             <IconButton aria-label="settings">
               <MoreVertIcon />
@@ -79,7 +106,9 @@ export default function CatalogCard({
             className={classes.media}
           >
             <FontAwesomeIcon size="2xl" icon={faCartPlus} />
-            <Typography variant="body2">Add Products</Typography>
+            <Typography variant="body2" className={classes.typography}>
+              Add Products
+            </Typography>
           </CardMedia>
         ) : (
           <CardMedia
@@ -87,14 +116,16 @@ export default function CatalogCard({
             image="https://i.dummyjson.com/data/products/1/1.jpg"
           />
         )}
-        <CardHeader
-          className={classes.countColor}
-          title={`${productCount > 1 ? productCount : 0} Products`}
-          subheader={`Created: ${createdAt ? createdAt : "No date"}`}
-          titleTypographyProps={{ variant: "body1" }}
-          subheaderTypographyProps={{ variant: "body2" }}
-        />
-      </CardContent>
+        <CardContent className={classes.footerContainer}>
+          <Typography className={classes.products}>{`${
+            productCount > 1 ? productCount : 0
+          } products`}</Typography>
+          <Typography className={classes.createdAt}>
+            <FontAwesomeIcon size="1x" icon={faCalendarDay} />
+            {`Created: ${createdAt ? createdAt : "no date"}`}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 }

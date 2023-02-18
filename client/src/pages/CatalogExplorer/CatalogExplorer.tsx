@@ -16,12 +16,10 @@ type TcatalogCard = {
   className?: any;
 };
 const useStyles = makeStyles(() => ({
-  container: {
-    display: "flex",
-    flexFlow: "row wrap",
-    alignItems: "center",
+  gridContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)",
     gap: "16px",
-    // background: "#555",
   },
 }));
 
@@ -38,7 +36,7 @@ const CatalogExplorer = () => {
   console.log("catalogs", catalogs);
 
   return (
-    <div className={classes.container}>
+    <div className={classes.gridContainer}>
       <CatalogCreator />
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
