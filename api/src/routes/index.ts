@@ -52,15 +52,29 @@ router.get("/catalogs", async (req: Request, res: Response) => {
   }
 });
 
+//GET CATALOG BY ID
 router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
   const { catalogId } = req.params;
+  let fullData = [];
   try {
-    const catalogProducts = await product.findAll({
+    const catalogProducts = await catalogs.findAll({
       where: {
         id: catalogId,
       },
     });
-    res.status(200).json(catalogProducts);
+    const products = await product.findAll({
+      where: {
+        catalog_id: catalogId,
+      },
+    });
+
+    fullData = [
+      {
+        ...catalogProducts[0].dataValues,
+        products,
+      },
+    ];
+    res.status(200).json(fullData);
   } catch (error) {
     res.status(503).send(error);
   }
