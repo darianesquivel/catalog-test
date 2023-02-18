@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import clsx from "clsx";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -24,6 +24,7 @@ import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
 import CatalogCreator from "../CatalogCard/CatalogCreator";
+import { CssBaseline, Divider } from "@material-ui/core";
 
 const drawerButtons = [
   {
@@ -53,6 +54,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: "flex",
     },
     appBar: {
+      boxShadow: "none",
+      borderBottom: `1px solid ${theme.palette.grey[300]}`,
       zIndex: theme.zIndex.drawer - 1,
       width: `calc(100% - ${drawerWidthMin}px)`,
       transition: theme.transitions.create(["width", "margin"], {
@@ -109,7 +112,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      padding: theme.spacing(1),
     },
     buttonList: {
       height: "100vh",
@@ -140,7 +143,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerChange = () => {
     setOpen(!open);
@@ -148,7 +151,6 @@ export default function MiniDrawer() {
 
   return (
     <div className={classes.root}>
-      {/* <CssBaseline /> */}
       <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
@@ -161,7 +163,6 @@ export default function MiniDrawer() {
           </Typography>
         </Toolbar>
       </AppBar>
-
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
