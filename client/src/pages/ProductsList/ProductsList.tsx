@@ -2,6 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import getCatalogById from "../../api/getCatalogById";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { makeStyles } from "@material-ui/core/styles";
+import { Button, Typography } from "@material-ui/core";
+import {
+  faTags,
+  faPenNib,
+  faRocket,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const columns: GridColDef[] = [
   { field: "image", headerName: "Image", width: 150 },
@@ -13,6 +21,20 @@ const useStyles = makeStyles(() => ({
   container: {
     height: 650,
     width: "100%",
+  },
+  buttonsContainer: {
+    display: "flex",
+    gap: "15px",
+    marginBottom: "16px",
+  },
+  button: {
+    display: "flex",
+    borderRadius: "8px",
+  },
+  typographyButtons: {
+    fontSize: "15px",
+    textTransform: "capitalize",
+    marginLeft: "10px",
   },
 }));
 const ProductsList = (props: any) => {
@@ -31,7 +53,27 @@ const ProductsList = (props: any) => {
 
   return (
     <div className={classes.container}>
-      <div></div>
+      <div className={classes.buttonsContainer}>
+        <Button className={classes.button} variant="contained" disabled>
+          <FontAwesomeIcon size="lg" icon={faTags} />
+          <Typography className={classes.typographyButtons}>
+            Enrichment
+          </Typography>
+        </Button>
+        <Button className={classes.button} variant="contained" disabled>
+          <FontAwesomeIcon size="lg" icon={faPenNib} />
+          <Typography className={classes.typographyButtons}>Scribe</Typography>
+        </Button>
+        <Button className={classes.button} variant="contained" disabled>
+          <FontAwesomeIcon size="lg" icon={faRocket} />
+          <Typography className={classes.typographyButtons}>
+            Assistant
+          </Typography>
+        </Button>
+        <Button className={classes.button} variant="contained" disabled>
+          <FontAwesomeIcon size="lg" icon={faTrash} />
+        </Button>
+      </div>
       <DataGrid
         rows={rows}
         columns={columns}
