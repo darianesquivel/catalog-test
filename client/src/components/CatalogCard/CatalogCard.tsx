@@ -31,9 +31,9 @@ const useStyles = makeStyles(() =>
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
+      padding: "0px",
     },
     media: {
-      width: "100%",
       height: 300,
       display: "flex",
       flexDirection: "column",
