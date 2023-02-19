@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import queryClientConfig from "../../ReactQuery/queryClientConfig";
+import CustomAlert from "../Alert/CustomAlert";
 
 // API
 import createCatalog from "../../api/createCatalog";
 // MUI
-import Button from "@material-ui/core/Button";
+import { Button, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
@@ -14,13 +15,15 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
+  dialog: {
+    position: "relative",
+  },
   container: {
     width: "500px",
     margin: "0 auto",
     padding: "30px",
     display: "flex",
     flexFlow: "column",
-
     gap: "20px",
   },
   button: {
@@ -32,6 +35,18 @@ const useStyles = makeStyles(() => ({
     color: "rgb(43, 153, 216)",
     background: "rgba(43, 153, 216, 0.2)",
   },
+  buttonWrapper: {
+    display: "flex",
+    alignItems: "center",
+    minWidth: "70px",
+    justifyContent: "center",
+    position: "relative",
+  },
+  buttonProgress: {
+    color: "green[500]",
+    // position: "absolute",
+  },
+  dialogActions: {},
 }));
 // types
 type Tcatalog = {
@@ -48,6 +63,8 @@ const FormCreator = ({ handleModal, isOpen }: Tprops) => {
   const classes = useStyles();
   const [fields, setFields] = useState({ name: "", description: "" });
   const [error, setError] = useState("");
+  const [submiting, setSubmiting] = useState(false);
+  const [created, setCreated] = useState(false);
 
   const handleChange = (e: any) => {
     setFields({ ...fields, [e.target.name]: e.target.value });
@@ -57,66 +74,97 @@ const FormCreator = ({ handleModal, isOpen }: Tprops) => {
     event.preventDefault();
     if (!onValidate(fields.name)) {
       try {
+        setSubmiting(true);
         await createCatalog(fields);
         await queryClientConfig.invalidateQueries(["catalogs"]);
-        // agregar un loading en esta instancia
         setFields({ name: "", description: "" });
-        handleModal();
+        setSubmiting(false);
+        setCreated(true);
       } catch (err: any) {
         setError(err);
+        setSubmiting(false);
       }
     }
   };
+
+  const handleClose = () => {
+    setFields({ name: "", description: "" });
+    setError("");
+    setCreated(false);
+    handleModal();
+  };
   const onValidate = (field: string) => {
     if (field?.length < 1) return "You need to specify a name for the catalog";
-    if (/\d/gi.test(field)) return "The field value should contain numbers";
     return null;
   };
+
   return (
-    <>
-      <Dialog
-        open={isOpen}
-        onClose={handleModal}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-      >
-        <DialogContent>
-          <form className={classes.container} onSubmit={handleSubmit}>
-            <TextField
-              name="name"
-              autoFocus
-              error={!!onValidate(fields.name)}
-              label="Catalog name"
-              value={fields.name}
-              helperText={onValidate(fields.name)}
-              variant="outlined"
-              onChange={handleChange}
-            />
-            {error && `There was an error ${error}`}
-            <DialogActions>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={handleModal}
-                className={classes.cancelButton}
-              >
-                Cancel
-              </Button>
-              <Button
-                className={classes.button}
-                variant="contained"
-                color="primary"
-                size="small"
-                onClick={handleSubmit}
-              >
-                Create
-              </Button>
-            </DialogActions>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      className={classes.dialog}
+    >
+      {created ? (
+        <CustomAlert
+          alertType="success"
+          message="The catalog was created successfully"
+        />
+      ) : (
+        isOpen && (
+          <DialogContent>
+            <form className={classes.container} onSubmit={handleSubmit}>
+              <TextField
+                name="name"
+                autoFocus
+                error={!!onValidate(fields.name)}
+                label="Catalog name"
+                value={fields.name}
+                helperText={onValidate(fields.name)}
+                variant="outlined"
+                onChange={handleChange}
+              />
+              {error && (
+                <CustomAlert
+                  alertType="error"
+                  message={`There was an error creating the catalog: ${error}`}
+                />
+              )}
+              <DialogActions className={classes.dialogActions}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={handleModal}
+                  className={classes.cancelButton}
+                >
+                  Cancel
+                </Button>
+                <div className={classes.buttonWrapper}>
+                  {submiting ? (
+                    <CircularProgress
+                      size={28}
+                      className={classes.buttonProgress}
+                    />
+                  ) : (
+                    <Button
+                      className={`${classes.button}`}
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={handleSubmit}
+                    >
+                      Create
+                    </Button>
+                  )}
+                </div>
+              </DialogActions>
+            </form>
+          </DialogContent>
+        )
+      )}
+    </Dialog>
   );
 };
 
