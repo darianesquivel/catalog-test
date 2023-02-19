@@ -8,6 +8,5 @@ export default async function createCatalog(params: content) {
     .post("/catalogs/new", {
       ...params,
     })
-    .then((res: any) => res.data)
-    .catch((err: any) => err.message);
+    .then((res: any) => res.data);
 }
