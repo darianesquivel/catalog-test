@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import getAllCatalogs from "../../api/getAllCatalogs";
 import CatalogCard from "../../components/CatalogCard/CatalogCard";
 //Component
@@ -18,7 +18,7 @@ type TcatalogCard = {
 const useStyles = makeStyles(() => ({
   gridContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax( 220px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax( 300px, 1fr))",
     gap: "16px",
   },
   containerNoData: {

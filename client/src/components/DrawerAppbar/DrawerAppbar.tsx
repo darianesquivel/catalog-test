@@ -28,18 +28,22 @@ const drawerButtons = [
   {
     text: "Data Explorer",
     icon: faDatabase,
+    link: "/catalogs",
   },
   {
     text: "Enrichment",
     icon: faTags,
+    link: "",
   },
   {
     text: "Matching AI",
     icon: faCogs,
+    link: "",
   },
   {
     text: "Scribe Voices",
     icon: faPenNib,
+    link: "",
   },
 ];
 
@@ -235,9 +239,9 @@ export default function MiniDrawer() {
         <BrowserRouter>
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
-            <Route exact path="/products" component={ProductsList} />
+            <Route exact path="/catalogs" component={CatalogExplorer} />
+            <Route exact path="/catalogs/:id" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
-            <Route exact path="/exp" component={CatalogExplorer} />
           </Switch>
         </BrowserRouter>
       </div>
