@@ -19,7 +19,7 @@ import {
   faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
@@ -152,99 +152,107 @@ export default function MiniDrawer() {
   };
 
   return (
-    <div className={classes.root}>
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <Typography variant="h6" noWrap>
-            Catalogs Explorer
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
+    <BrowserRouter>
+      <div className={classes.root}>
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}
+        >
+          <Toolbar>
+            <Typography variant="h6" noWrap>
+              Catalogs Explorer
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <List className={classes.buttonList}>
-          <div>
-            <ListItem className={classes.drawerHeader}>
-              <ListItemIcon>
-                <img
-                  width="24px"
-                  src="https://static.remotasks.com/uploads/catalog_logo.png"
-                  alt=""
-                />
-              </ListItemIcon>
-              <Typography className={classes.drawerTitle}>Catalog</Typography>
-            </ListItem>
-          </div>
-          <div className={classes.flexGrow}>
-            {drawerButtons.map((button, index) => (
-              <ListItem button key={index} className={classes.buttonStyle}>
+          })}
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            }),
+          }}
+        >
+          <List className={classes.buttonList}>
+            <div>
+              <ListItem className={classes.drawerHeader}>
                 <ListItemIcon>
-                  <FontAwesomeIcon
-                    className={classes.icons}
-                    icon={button.icon}
+                  <img
+                    width="24px"
+                    src="https://static.remotasks.com/uploads/catalog_logo.png"
+                    alt=""
                   />
                 </ListItemIcon>
-                <ListItemText primary={button.text} />
+                <Typography className={classes.drawerTitle}>Catalog</Typography>
               </ListItem>
-            ))}
-          </div>
-          <div>
-            <ListItem button disabled className={classes.buttonStyle}>
-              <ListItemIcon>
-                <FontAwesomeIcon className={classes.icons} icon={faBell} />
-              </ListItemIcon>
-              <ListItemText primary={"Notifications"} />
-            </ListItem>
-            <ListItem
-              button
-              className={classes.buttonStyle}
-              onClick={handleDrawerChange}
-            >
-              <ListItemIcon>
-                {open ? (
-                  <FontAwesomeIcon
-                    className={classes.icons}
-                    icon={faChevronLeft}
-                  />
-                ) : (
-                  <FontAwesomeIcon
-                    className={classes.icons}
-                    icon={faChevronRight}
-                  />
-                )}
-              </ListItemIcon>
-              <ListItemText primary={"Close"} />
-            </ListItem>
-          </div>
-        </List>
-      </Drawer>
-      <div className={classes.content}>
-        <div className={classes.toolbar} />
-        <BrowserRouter>
+            </div>
+            <div className={classes.flexGrow}>
+              {drawerButtons.map((button, index) => (
+                <ListItem
+                  button
+                  disabled={button.text === "Data Explorer" ? false : true}
+                  key={index}
+                  className={classes.buttonStyle}
+                >
+                  <Link to={button.link}>
+                    <ListItemIcon>
+                      <FontAwesomeIcon
+                        className={classes.icons}
+                        icon={button.icon}
+                      />
+                    </ListItemIcon>
+                  </Link>
+                  <ListItemText primary={button.text} />
+                </ListItem>
+              ))}
+            </div>
+            <div>
+              <ListItem button disabled className={classes.buttonStyle}>
+                <ListItemIcon>
+                  <FontAwesomeIcon className={classes.icons} icon={faBell} />
+                </ListItemIcon>
+                <ListItemText primary={"Notifications"} />
+              </ListItem>
+              <ListItem
+                button
+                className={classes.buttonStyle}
+                onClick={handleDrawerChange}
+              >
+                <ListItemIcon>
+                  {open ? (
+                    <FontAwesomeIcon
+                      className={classes.icons}
+                      icon={faChevronLeft}
+                    />
+                  ) : (
+                    <FontAwesomeIcon
+                      className={classes.icons}
+                      icon={faChevronRight}
+                    />
+                  )}
+                </ListItemIcon>
+                <ListItemText primary={"Close"} />
+              </ListItem>
+            </div>
+          </List>
+        </Drawer>
+        <div className={classes.content}>
+          <div className={classes.toolbar} />
+
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
             <Route exact path="/catalogs" component={CatalogExplorer} />
             <Route exact path="/catalogs/:id" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
           </Switch>
-        </BrowserRouter>
+        </div>
       </div>
-    </div>
+    </BrowserRouter>
   );
 }
