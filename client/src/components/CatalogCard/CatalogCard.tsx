@@ -1,13 +1,23 @@
 import { makeStyles, createStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import IconButton from "@material-ui/core/IconButton";
+import {
+  CardContent,
+  Typography,
+  Popover,
+  Card,
+  CardHeader,
+  CardMedia,
+  IconButton,
+  MenuItem,
+  Menu,
+  MenuList,
+  Paper,
+} from "@material-ui/core";
+
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import { CardContent, Typography } from "@material-ui/core";
 import { faCartPlus, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 // este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
   id: string;
@@ -86,6 +96,19 @@ export default function CatalogCard({
   productCount,
 }: TcatalogCard) {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    console.log(" se ejecuto handle close");
+    setAnchorEl(null);
+  };
+  const open = Boolean(anchorEl);
+  const targetId = open ? "simple-popover" : undefined;
+  console.log({ open, targetId, anchorEl });
   return (
     <Link
       className={classes.link}
@@ -96,14 +119,31 @@ export default function CatalogCard({
           <CardHeader
             className={classes.headerContainer}
             action={
-              <IconButton
-                onClick={() => {
-                  alert("more options under development");
-                }}
-                aria-label="settings"
-              >
-                <MoreVertIcon />
-              </IconButton>
+              <>
+                <IconButton onClick={openOptions} aria-label="settings">
+                  <MoreVertIcon />
+                </IconButton>
+                <Popover
+                  id={targetId}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                >
+                  <MenuList>
+                    <MenuItem>Profile</MenuItem>
+                    <MenuItem>My account</MenuItem>
+                    <MenuItem>Logout</MenuItem>
+                  </MenuList>
+                </Popover>
+              </>
             }
             title={name ? name : "Default"}
             titleTypographyProps={{ variant: "body2" }}
