@@ -9,6 +9,7 @@ import {
   IconButton,
   MenuItem,
   Menu,
+  Dialog,
   MenuList,
   Paper,
 } from "@material-ui/core";
@@ -18,6 +19,8 @@ import { faCartPlus, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import CustomAlert from "../Alert/CustomAlert";
+import CustomDialog from "../CustomDialog/CustomDialog";
 // este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
   id: string;
@@ -97,86 +100,105 @@ export default function CatalogCard({
 }: TcatalogCard) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [option, setOption] = useState<string[]>([]);
 
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    console.log(" se ejecuto handle close");
     setAnchorEl(null);
   };
+
+  const handleOption = (event: any) => {
+    const eventName = event.target.id;
+    setOption([eventName, id]);
+  };
+
   const open = Boolean(anchorEl);
   const targetId = open ? "simple-popover" : undefined;
-  console.log({ open, targetId, anchorEl });
+  const renderDialog = (
+    <CustomDialog isOpen={Boolean(option[0])} handleModal={handleClose}>
+      Hi
+    </CustomDialog>
+  );
   return (
-    <Link
-      className={classes.link}
-      to={productCount < 1 ? `catalogs` : `/catalogs/${id}`}
-    >
-      <Card className={classes.root}>
-        <CardContent className={classes.cardContainer}>
-          <CardHeader
-            className={classes.headerContainer}
-            action={
-              <>
-                <IconButton onClick={openOptions} aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-                <Popover
-                  id={targetId}
-                  open={open}
-                  anchorEl={anchorEl}
-                  onClose={handleClose}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
-                  }}
-                >
-                  <MenuList>
-                    <MenuItem>Profile</MenuItem>
-                    <MenuItem>My account</MenuItem>
-                    <MenuItem>Logout</MenuItem>
-                  </MenuList>
-                </Popover>
-              </>
-            }
-            title={name ? name : "Default"}
-            titleTypographyProps={{ variant: "body2" }}
-          />
-          {productCount < 1 ? (
-            <CardMedia
-              onClick={() => {
-                alert("add products under development");
-              }}
-              className={classes.media}
-            >
-              <FontAwesomeIcon size="2xl" icon={faCartPlus} />
-              <Typography variant="body2" className={classes.typography}>
-                Add Products
-              </Typography>
-            </CardMedia>
-          ) : (
-            <CardMedia
-              className={classes.media}
-              image="https://i.dummyjson.com/data/products/1/1.jpg"
+    <>
+      <Link
+        className={classes.link}
+        to={productCount < 1 ? `catalogs` : `/catalogs/${id}`}
+      >
+        <Card className={classes.root}>
+          <CardContent className={classes.cardContainer}>
+            <CardHeader
+              className={classes.headerContainer}
+              action={
+                <>
+                  <IconButton onClick={openOptions} aria-label="settings">
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Popover
+                    id={targetId}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                  >
+                    <MenuList>
+                      <MenuItem onClick={handleOption} id="edit">
+                        Edit catalog
+                      </MenuItem>
+                      <MenuItem id="duplicate" onClick={handleOption}>
+                        Duplicate catalog
+                      </MenuItem>
+                      <MenuItem onClick={handleOption} id="remove">
+                        Remove catalog
+                      </MenuItem>
+                    </MenuList>
+                  </Popover>
+                </>
+              }
+              title={name ? name : "Default"}
+              titleTypographyProps={{ variant: "body2" }}
             />
-          )}
-          <CardContent className={classes.footerContainer}>
-            <Typography className={classes.products}>{`${
-              productCount > 1 ? productCount : 0
-            } products`}</Typography>
-            <Typography className={classes.createdAt}>
-              <FontAwesomeIcon size="1x" icon={faCalendarDay} />
-              {`Created: ${createdAt ? createdAt : "no date"}`}
-            </Typography>
+            {productCount < 1 ? (
+              <CardMedia
+                onClick={() => {
+                  alert("add products under development");
+                }}
+                className={classes.media}
+              >
+                <FontAwesomeIcon size="2xl" icon={faCartPlus} />
+                <Typography variant="body2" className={classes.typography}>
+                  Add Products
+                </Typography>
+              </CardMedia>
+            ) : (
+              <CardMedia
+                className={classes.media}
+                image="https://i.dummyjson.com/data/products/1/1.jpg"
+              />
+            )}
+            <CardContent className={classes.footerContainer}>
+              <Typography className={classes.products}>{`${
+                productCount > 1 ? productCount : 0
+              } products`}</Typography>
+              <Typography className={classes.createdAt}>
+                <FontAwesomeIcon size="1x" icon={faCalendarDay} />
+                {`Created: ${createdAt ? createdAt : "no date"}`}
+              </Typography>
+            </CardContent>
           </CardContent>
-        </CardContent>
-      </Card>
-    </Link>
+        </Card>
+      </Link>
+      {renderDialog}
+    </>
   );
 }
