@@ -21,6 +21,29 @@ router.post("/catalogs/new", async (req: Request, res: Response) => {
   }
 });
 
+//ADD PRODUCTS
+router.post("/addproducts/:id", async (req: Request, res: Response) => {
+  const products = req.body;
+
+  try {
+    for (const prod of products) {
+      const { id, title, description, catalog_id } = prod;
+
+      await product.findOrCreate({
+        where: {
+          // id,
+          name: title,
+          description,
+          catalog_id,
+        },
+      });
+    }
+    res.status(200).send("Product created");
+  } catch (err) {
+    res.send(err);
+  }
+});
+
 //GET CATALOGS
 router.get("/catalogs", async (req: Request, res: Response) => {
   // await insertData(product, catalogs);

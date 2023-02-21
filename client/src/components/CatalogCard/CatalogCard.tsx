@@ -41,6 +41,12 @@ const useStyles = makeStyles(() =>
       alignItems: "center",
       color: "#6A5DF9",
       gap: "8px",
+      textDecoration: "none",
+    },
+    mediaContent: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
     },
     headerContainer: {
       width: "100%",
@@ -109,17 +115,14 @@ export default function CatalogCard({
             titleTypographyProps={{ variant: "body2" }}
           />
           {productCount < 1 ? (
-            <CardMedia
-              onClick={() => {
-                alert("add products under development");
-              }}
-              className={classes.media}
-            >
-              <FontAwesomeIcon size="2xl" icon={faCartPlus} />
-              <Typography variant="body2" className={classes.typography}>
-                Add Products
-              </Typography>
-            </CardMedia>
+            <Link className={classes.media} to={`/addproducts/${id}`}>
+              <CardMedia className={classes.mediaContent}>
+                <FontAwesomeIcon size="2xl" icon={faCartPlus} />
+                <Typography variant="body2" className={classes.typography}>
+                  Add Products
+                </Typography>
+              </CardMedia>
+            </Link>
           ) : (
             <CardMedia
               className={classes.media}
