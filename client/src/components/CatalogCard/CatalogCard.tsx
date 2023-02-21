@@ -57,6 +57,12 @@ const useStyles = makeStyles(() =>
       alignItems: "center",
       color: "#6A5DF9",
       gap: "8px",
+      textDecoration: "none",
+    },
+    mediaContent: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
     },
     headerContainer: {
       width: "100%",
