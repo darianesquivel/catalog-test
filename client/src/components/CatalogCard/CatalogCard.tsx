@@ -33,7 +33,6 @@ type TcatalogCard = {
   image?: string;
   productCount: number;
 };
-
 const useStyles = makeStyles(() =>
   createStyles({
     root: {

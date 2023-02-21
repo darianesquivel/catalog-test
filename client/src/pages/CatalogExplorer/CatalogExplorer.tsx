@@ -18,7 +18,7 @@ type TcatalogCard = {
 const useStyles = makeStyles(() => ({
   gridContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax( 230px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax( 290px, 1fr))",
     gap: "16px",
   },
   containerNoData: {
@@ -34,7 +34,7 @@ const CatalogExplorer = () => {
   return (
     <div
       className={
-        !catalogs?.length ? classes.containerNoData : classes.gridContainer
+        catalogs?.length < 5 ? classes.containerNoData : classes.gridContainer
       }
     >
       <CatalogCreator />

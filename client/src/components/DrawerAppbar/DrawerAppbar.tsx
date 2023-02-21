@@ -24,6 +24,8 @@ import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
 import AddProducts from "../AddProducts/AddProducts";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 const drawerButtons = [
   {
@@ -50,6 +52,20 @@ const drawerButtons = [
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
+
+// zustand global state
+const useStore = create(
+  persist(
+    (set: any) => ({
+      open: false,
+      setOpen: () => set((state: any) => ({ ...state, open: !state.open })),
+    }),
+    {
+      name: "drawer-storage",
+      getStorage: () => localStorage,
+    }
+  )
+);
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -146,10 +162,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const open = useStore((state: any) => state.open);
+  const setOpen = useStore((state: any) => state.setOpen);
 
   const handleDrawerChange = () => {
-    setOpen(!open);
+    setOpen();
   };
 
   return (
