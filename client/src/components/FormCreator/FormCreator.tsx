@@ -57,11 +57,23 @@ type Tcatalog = {
 type Tprops = {
   handleModal: () => void;
   isOpen: boolean;
+  apiFunction: (...params: any) => any;
+  initialValues?: {
+    name?: string;
+    id: string;
+  };
 };
 
-const FormCreator = ({ handleModal, isOpen }: Tprops) => {
+const FormCreator = ({
+  handleModal,
+  isOpen,
+  apiFunction,
+  initialValues,
+}: Tprops) => {
   const classes = useStyles();
-  const [fields, setFields] = useState({ name: "", description: "" });
+  const [fields, setFields] = useState<any>(
+    initialValues || { name: "", id: "" }
+  );
   const [error, setError] = useState("");
   const [submiting, setSubmiting] = useState(false);
   const [created, setCreated] = useState(false);
@@ -72,12 +84,11 @@ const FormCreator = ({ handleModal, isOpen }: Tprops) => {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    if (!onValidate(fields.name)) {
+    if (fields?.name && !onValidate(fields.name)) {
       try {
         setSubmiting(true);
-        await createCatalog(fields);
-        await queryClientConfig.invalidateQueries(["catalogs"]);
-        setFields({ name: "", description: "" });
+        await apiFunction(fields);
+        setFields({});
         setSubmiting(false);
         setCreated(true);
       } catch (err: any) {
@@ -87,14 +98,15 @@ const FormCreator = ({ handleModal, isOpen }: Tprops) => {
     }
   };
 
-  const handleClose = () => {
-    setFields({ name: "", description: "" });
+  const handleClose = async () => {
+    setFields({ name: "", id: "" });
     setError("");
     setCreated(false);
     handleModal();
+    await queryClientConfig.invalidateQueries(["catalogs"]);
   };
-  const onValidate = (field: string) => {
-    if (field?.length < 1) return "You need to specify a name for the catalog";
+  const onValidate = (field = "") => {
+    if (field.length < 1) return "You need to specify a name for the catalog";
     return null;
   };
 
