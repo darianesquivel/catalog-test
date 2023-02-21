@@ -92,6 +92,7 @@ export default function AddProducts() {
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
+        console.log({ csvData });
         setData(csvData);
         setViewData(true);
       },

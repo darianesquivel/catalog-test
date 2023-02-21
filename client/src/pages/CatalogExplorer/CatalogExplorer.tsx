@@ -53,6 +53,7 @@ const CatalogExplorer = () => {
               name={catalog.name}
               createdAt={date}
               productCount={catalog.productCount}
+              products={catalog.products}
             />
           );
         })}

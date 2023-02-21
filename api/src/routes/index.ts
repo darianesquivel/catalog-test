@@ -27,7 +27,7 @@ router.post("/addproducts/:id", async (req: Request, res: Response) => {
 
   try {
     for (const prod of products) {
-      const { id, title, description, catalog_id } = prod;
+      const { id, title, description, catalog_id, image } = prod;
 
       await product.findOrCreate({
         where: {
@@ -35,6 +35,7 @@ router.post("/addproducts/:id", async (req: Request, res: Response) => {
           name: title,
           description,
           catalog_id,
+          image,
         },
       });
     }

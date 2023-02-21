@@ -28,7 +28,7 @@ import removeCatalog from "../../api/removeCatalog";
 type TcatalogCard = {
   id: string;
   name: string;
-  products?: number;
+  products?: any;
   createdAt?: string;
   image?: string;
   productCount: number;
@@ -106,7 +106,6 @@ export default function CatalogCard({
   name,
   products,
   createdAt,
-  image,
   productCount,
 }: TcatalogCard) {
   const classes = useStyles();
@@ -126,7 +125,7 @@ export default function CatalogCard({
     const eventName = event.target.id;
     setOption(eventName);
   };
-
+  const defaultImage = products?.[0]?.image;
   const menuOpen = Boolean(anchorEl);
   const targetId = menuOpen ? "simple-popover" : undefined;
   const renderDialog =
@@ -216,7 +215,7 @@ export default function CatalogCard({
               onClick={() => {
                 history.push(`/catalogs/${id}`);
               }}
-              image="https://i.dummyjson.com/data/products/1/1.jpg"
+              image={defaultImage}
             />
           )}
           <CardContent className={classes.footerContainer}>
