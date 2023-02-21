@@ -24,7 +24,6 @@ router.post("/catalogs/new", async (req: Request, res: Response) => {
 //ADD PRODUCTS
 router.post("/addproducts/:id", async (req: Request, res: Response) => {
   const products = req.body;
-  console.log("cerooo--> ", products[0]);
   try {
     for (const prod of products) {
       const { id, title, description, catalog_id, image } = prod;

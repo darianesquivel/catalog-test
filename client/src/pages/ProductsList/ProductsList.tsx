@@ -62,7 +62,6 @@ const columns: GridColDef[] = [
 
 const ProductsList = (props: any) => {
   const classes = useStyles();
-  console.log({ props });
   const catalogId = props.match.params.id;
 
   const { data: catalog } = useQuery(
