@@ -1,4 +1,3 @@
-import { useState } from "react";
 import clsx from "clsx";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -25,7 +24,7 @@ import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
 import AddProducts from "../AddProducts/AddProducts";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 const drawerButtons = [
   {
@@ -157,6 +156,13 @@ const useStyles = makeStyles((theme: Theme) =>
     flexGrow: {
       flexGrow: 1,
     },
+    link: {
+      color: "inherit",
+      textDecoration: "none",
+      "&:hover": {
+        fontSize: "50px",
+      },
+    },
   })
 );
 
@@ -198,20 +204,19 @@ export default function MiniDrawer() {
           }}
         >
           <List className={classes.buttonList}>
-            <div>
+            <Link to="/catalogs" className={classes.link}>
               <ListItem className={classes.drawerHeader}>
                 <ListItemIcon>
-                  <Link to="/catalogs">
-                    <img
-                      width="24px"
-                      src="https://static.remotasks.com/uploads/catalog_logo.png"
-                      alt=""
-                    />
-                  </Link>
+                  <img
+                    width="24px"
+                    src="https://static.remotasks.com/uploads/catalog_logo.png"
+                    alt=""
+                  />
                 </ListItemIcon>
                 <Typography className={classes.drawerTitle}>Catalog</Typography>
               </ListItem>
-            </div>
+            </Link>
+
             <div className={classes.flexGrow}>
               {drawerButtons.map((button, index) => (
                 <ListItem

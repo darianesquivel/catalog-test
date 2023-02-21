@@ -85,14 +85,15 @@ export default function AddProducts() {
   const [viewData, setViewData] = useState(false);
   const history = useHistory();
   const classes = useStyles();
+  const catalog_id = history.location.pathname.split("/").reverse()[0];
 
   const handleFile = (e: any) => {
+    // const filterColumnsRegex = /image|title|description|^id$/i;
     Papa.parse(e.target.files[0], {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
-        console.log({ csvData });
         setData(csvData);
         setViewData(true);
       },
@@ -105,15 +106,17 @@ export default function AddProducts() {
   };
 
   const handleSubmit = async () => {
-    const catalog_id = history.location.pathname.split("/").reverse()[0];
     // the catalogId is added to the products uploaded via CSV
     const fulldata = data.map((product: any) => ({
-      ...product,
+      id: product.id,
+      title: product.title,
+      description: product.description,
+      image: product.image,
       catalog_id: catalog_id,
     }));
     await addProducts(fulldata);
-    alert("import product");
     setViewData(false);
+    history.push(`/catalogs/${catalog_id}`);
   };
 
   return (
@@ -167,6 +170,7 @@ export default function AddProducts() {
                   checkboxSelection
                   disableSelectionOnClick
                   className={classes.tableData}
+                  getRowId={(row: any) => row.title}
                 />
               </TableCell>
             </TableRow>

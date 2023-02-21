@@ -24,7 +24,7 @@ router.post("/catalogs/new", async (req: Request, res: Response) => {
 //ADD PRODUCTS
 router.post("/addproducts/:id", async (req: Request, res: Response) => {
   const products = req.body;
-
+  console.log("cerooo--> ", products[0]);
   try {
     for (const prod of products) {
       const { id, title, description, catalog_id, image } = prod;
@@ -39,9 +39,9 @@ router.post("/addproducts/:id", async (req: Request, res: Response) => {
         },
       });
     }
-    res.status(200).send("Product created");
-  } catch (err) {
-    res.send(err);
+    res.status(200).send("Products created");
+  } catch (err: any) {
+    res.status(503).send(err.message);
   }
 });
 
