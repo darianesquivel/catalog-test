@@ -92,12 +92,6 @@ export default function AddProducts() {
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
-        const cleanedData = csvData
-          .map((e: any) => Object.entries(e))
-          .filter(([key, value]: any) => /name|description|image/i.test(key));
-        console.log({ cleanedData });
-        Object.entries(csvData);
-        console.log({ cleanedData });
         setData(csvData);
         setViewData(true);
       },
