@@ -129,16 +129,24 @@ export default function CatalogCard({
         apiFunction={updateCatalog}
         initialValues={{ id, name }}
       />
-    ) : (
+    ) : option === "remove" ? (
       <CustomDialog
         isOpen={Boolean(option)}
         handleModal={handleClose}
         handleAccept={() => removeCatalog({ id })}
         queryKey="catalogs"
       >
-        <Typography>It will be deleted the catalog {name}</Typography>
+        <Typography variant="h6">
+          You are about to delete the catalog <b>{name}</b>. Are you sure?
+        </Typography>
+        <CustomAlert
+          message="This action can't be undone."
+          alertType="error"
+          variant="filled"
+          title={false}
+        />
       </CustomDialog>
-    );
+    ) : null;
   return (
     <>
       <Link

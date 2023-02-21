@@ -14,17 +14,16 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
-  dialog: {
-    position: "relative",
-  },
+  dialog: {},
   container: {
     width: "500px",
-    margin: "0 auto",
-    padding: "30px",
     display: "flex",
-    flexFlow: "column",
+    flexDirection: "column",
+    borderRadius: "8px !important",
+    justifyContent: "space-evenly",
     gap: "20px",
   },
+  childrenBox: {},
   button: {
     width: "40px",
     alignSelf: "flex-end",
@@ -35,11 +34,13 @@ const useStyles = makeStyles(() => ({
     background: "rgba(43, 153, 216, 0.2)",
   },
   buttonWrapper: {
+    width: "100%",
     display: "flex",
     alignItems: "center",
     minWidth: "70px",
-    justifyContent: "center",
-    position: "relative",
+    justifyContent: "flex-end",
+    gap: "10px",
+    margin: 0,
   },
   buttonProgress: {
     color: "green[500]",
@@ -106,8 +107,9 @@ const CustomDialog = ({
       ) : error ? (
         <CustomAlert alertType="error" message={error.message} />
       ) : (
-        <DialogContent>
-          {children && <div>{children}</div>}
+        <DialogContent className={classes.container}>
+          {children && children}
+
           <DialogActions>
             <div className={classes.buttonWrapper}>
               <Button
@@ -115,7 +117,7 @@ const CustomDialog = ({
                 color="primary"
                 size="small"
                 onClick={handleClose}
-                // className={classes.cancelButton}
+                className={classes.cancelButton}
               >
                 Cancel
               </Button>
