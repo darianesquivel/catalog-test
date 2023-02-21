@@ -34,7 +34,9 @@ const CatalogExplorer = () => {
   return (
     <div
       className={
-        catalogs?.length < 5 ? classes.containerNoData : classes.gridContainer
+        !catalogs || catalogs?.length < 5
+          ? classes.containerNoData
+          : classes.gridContainer
       }
     >
       <CatalogCreator />
