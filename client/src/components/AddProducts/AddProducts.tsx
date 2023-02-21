@@ -22,7 +22,12 @@ import Papa from "papaparse";
 import { useState } from "react";
 
 const columns: GridColDef[] = [
-  { field: "image", headerName: "Image", width: 150 },
+  {
+    field: "image",
+    headerName: "Image",
+    width: 150,
+    renderCell: (params) => <img src={params.row.image} alt="" width="80px" />,
+  },
   { field: "id", headerName: "Id", width: 150 },
   { field: "title", headerName: "Title", width: 150 },
   { field: "description", headerName: "Description", width: 150 },

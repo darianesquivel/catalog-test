@@ -8,10 +8,7 @@ import {
   CardMedia,
   IconButton,
   MenuItem,
-  Menu,
-  Dialog,
   MenuList,
-  Paper,
 } from "@material-ui/core";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
