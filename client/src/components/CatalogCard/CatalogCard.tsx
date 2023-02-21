@@ -21,6 +21,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import CustomAlert from "../Alert/CustomAlert";
 import CustomDialog from "../CustomDialog/CustomDialog";
+import FormCreator from "../FormCreator/FormCreator";
+import updateCatalog from "../../api/updateCatalog";
+import removeCatalog from "../../api/removeCatalog";
 // este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
   id: string;
@@ -100,7 +103,7 @@ export default function CatalogCard({
 }: TcatalogCard) {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [option, setOption] = useState<string[]>([]);
+  const [option, setOption] = useState<string>("");
 
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -108,20 +111,34 @@ export default function CatalogCard({
 
   const handleClose = () => {
     setAnchorEl(null);
+    setOption("");
   };
 
   const handleOption = (event: any) => {
     const eventName = event.target.id;
-    setOption([eventName, id]);
+    setOption(eventName);
   };
 
-  const open = Boolean(anchorEl);
-  const targetId = open ? "simple-popover" : undefined;
-  const renderDialog = (
-    <CustomDialog isOpen={Boolean(option[0])} handleModal={handleClose}>
-      Hi
-    </CustomDialog>
-  );
+  const menuOpen = Boolean(anchorEl);
+  const targetId = menuOpen ? "simple-popover" : undefined;
+  const renderDialog =
+    option === "edit" ? (
+      <FormCreator
+        handleModal={handleClose}
+        isOpen={true}
+        apiFunction={updateCatalog}
+        initialValues={{ id, name }}
+      />
+    ) : (
+      <CustomDialog
+        isOpen={Boolean(option)}
+        handleModal={handleClose}
+        handleAccept={() => removeCatalog({ id })}
+        queryKey="catalogs"
+      >
+        <Typography>It will be deleted the catalog {name}</Typography>
+      </CustomDialog>
+    );
   return (
     <>
       <Link
@@ -139,7 +156,7 @@ export default function CatalogCard({
                   </IconButton>
                   <Popover
                     id={targetId}
-                    open={open}
+                    open={menuOpen}
                     anchorEl={anchorEl}
                     onClose={handleClose}
                     anchorOrigin={{

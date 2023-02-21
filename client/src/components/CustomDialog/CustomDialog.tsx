@@ -54,10 +54,11 @@ type Tcatalog = {
   description: string;
 };
 type Tprops = {
-  handleModal: (value: boolean) => void;
+  handleModal: () => void;
   isOpen: boolean;
-  handleAccept?: () => void;
+  handleAccept: (values?: any) => void;
   children?: any;
+  queryKey?: string;
 };
 
 const CustomDialog = ({
@@ -65,23 +66,31 @@ const CustomDialog = ({
   isOpen,
   handleAccept,
   children,
+  queryKey,
 }: Tprops) => {
   const classes = useStyles();
-  const [fields, setFields] = useState({ name: "", description: "" });
-  const [error, setError] = useState("");
+  const [error, setError] = useState<any>("");
   const [submiting, setSubmiting] = useState(false);
-  const [created, setCreated] = useState(false);
+  const [successed, setSuccessed] = useState<any>(false);
   // Este dialogo debe renderizar los childrens opcionalmente, sea un form, un texto o un error
   // para el sucsess o el error podrá reutilizar el componente de alert
+  const handleSubmit = async (event: any) => {
+    event.preventDefault();
 
-  const handleChange = (e: any) => {
-    setFields({ ...fields, [e.target.name]: e.target.value });
+    try {
+      setSubmiting(true);
+      const res = await handleAccept();
+      setSubmiting(false);
+      setSuccessed(res);
+    } catch (err: any) {
+      setError(err);
+      setSubmiting(false);
+    }
   };
 
-  const handleSubmit = async (event: any) => {};
-
-  const handleClose = () => {
-    handleModal(false);
+  const handleClose = async () => {
+    await queryClientConfig.invalidateQueries([`${queryKey}`]);
+    handleModal();
   };
 
   return (
@@ -92,41 +101,44 @@ const CustomDialog = ({
       aria-describedby="simple-modal-description"
       className={classes.dialog}
     >
-      {error && (
-        <CustomAlert
-          alertType="error"
-          message={`There was an error creating the catalog: ${error}`}
-        />
-      )}
-      <DialogContent>
-        <div>{children}</div>
-        <DialogActions>
-          <div className={classes.buttonWrapper}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={handleClose}
-              // className={classes.cancelButton}
-            >
-              Cancel
-            </Button>
-            {submiting ? (
-              <CircularProgress size={28} className={classes.buttonProgress} />
-            ) : (
+      {successed ? (
+        <CustomAlert alertType="success" message={successed} />
+      ) : error ? (
+        <CustomAlert alertType="error" message={error.message} />
+      ) : (
+        <DialogContent>
+          {children && <div>{children}</div>}
+          <DialogActions>
+            <div className={classes.buttonWrapper}>
               <Button
-                className={`${classes.button}`}
                 variant="contained"
                 color="primary"
                 size="small"
-                onClick={handleSubmit}
+                onClick={handleClose}
+                // className={classes.cancelButton}
               >
-                Accept
+                Cancel
               </Button>
-            )}
-          </div>
-        </DialogActions>
-      </DialogContent>
+              {submiting ? (
+                <CircularProgress
+                  size={28}
+                  className={classes.buttonProgress}
+                />
+              ) : (
+                <Button
+                  className={`${classes.button}`}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={handleSubmit}
+                >
+                  Accept
+                </Button>
+              )}
+            </div>
+          </DialogActions>
+        </DialogContent>
+      )}
     </Dialog>
   );
 };

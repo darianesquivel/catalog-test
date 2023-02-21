@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useState } from "react";
 import FormCreator from "../FormCreator/FormCreator";
+import createCatalog from "../../api/createCatalog";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -46,7 +47,11 @@ export default function CatalogCreator({ className }: any) {
           <Typography variant="body2">Create a new catalog</Typography>
         </CardActionArea>
       </Card>
-      <FormCreator handleModal={handleModal} isOpen={open} />
+      <FormCreator
+        handleModal={handleModal}
+        isOpen={open}
+        apiFunction={createCatalog}
+      />
     </div>
   );
 }

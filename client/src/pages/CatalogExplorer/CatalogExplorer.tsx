@@ -10,7 +10,7 @@ type TcatalogCard = {
   id: string;
   name: string;
   products?: number;
-  createdAt?: string;
+  created_at?: string;
   image?: string;
   productCount: number;
   className?: any;
@@ -18,7 +18,7 @@ type TcatalogCard = {
 const useStyles = makeStyles(() => ({
   gridContainer: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax( 220px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax( 230px, 1fr))",
     gap: "16px",
   },
   containerNoData: {
@@ -38,16 +38,18 @@ const CatalogExplorer = () => {
       }
     >
       <CatalogCreator />
-      {/* {isLoading && "Loading..."} */}
-      {/* {error && (error as Error).message} */}
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
+          const date = catalog["created_at"]
+            ? new Date(catalog["created_at"]).toLocaleString()
+            : "";
+
           return (
             <CatalogCard
               key={catalog.id}
               id={catalog.id}
               name={catalog.name}
-              createdAt={catalog.createdAt}
+              createdAt={date}
               productCount={catalog.productCount}
             />
           );
