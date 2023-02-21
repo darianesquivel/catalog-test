@@ -17,7 +17,7 @@ import {
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { faCartPlus, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useState } from "react";
 import CustomAlert from "../Alert/CustomAlert";
 import CustomDialog from "../CustomDialog/CustomDialog";
@@ -58,6 +58,7 @@ const useStyles = makeStyles(() =>
       color: "#6A5DF9",
       gap: "8px",
       textDecoration: "none",
+      cursor: "pointer",
     },
     mediaContent: {
       display: "flex",
@@ -95,6 +96,7 @@ const useStyles = makeStyles(() =>
     link: {
       width: "100%",
       textDecoration: "none",
+      color: "inherit",
     },
   })
 );
@@ -110,7 +112,7 @@ export default function CatalogCard({
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [option, setOption] = useState<string>("");
-
+  const history = useHistory();
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -155,12 +157,9 @@ export default function CatalogCard({
     ) : null;
   return (
     <>
-      <Link
-        className={classes.link}
-        to={productCount < 1 ? `catalogs` : `/catalogs/${id}`}
-      >
-        <Card className={classes.root}>
-          <CardContent className={classes.cardContainer}>
+      <Card className={classes.root}>
+        <CardContent className={classes.cardContainer}>
+          <Link className={classes.link} to={`/catalogs/${id}`}>
             <CardHeader
               className={classes.headerContainer}
               action={
@@ -199,36 +198,39 @@ export default function CatalogCard({
               title={name ? name : "Default"}
               titleTypographyProps={{ variant: "body2" }}
             />
-            {productCount < 1 ? (
-              <CardMedia
-                onClick={() => {
-                  alert("add products under development");
-                }}
-                className={classes.media}
-              >
-                <FontAwesomeIcon size="2xl" icon={faCartPlus} />
-                <Typography variant="body2" className={classes.typography}>
-                  Add Products
-                </Typography>
-              </CardMedia>
-            ) : (
-              <CardMedia
-                className={classes.media}
-                image="https://i.dummyjson.com/data/products/1/1.jpg"
-              />
-            )}
-            <CardContent className={classes.footerContainer}>
-              <Typography className={classes.products}>{`${
-                productCount > 1 ? productCount : 0
-              } products`}</Typography>
-              <Typography className={classes.createdAt}>
-                <FontAwesomeIcon size="1x" icon={faCalendarDay} />
-                {`Created: ${createdAt ? createdAt : "no date"}`}
+          </Link>
+          {productCount < 1 ? (
+            <CardMedia
+              onClick={() => {
+                history.push(`/addproducts/${id}`);
+              }}
+              className={classes.media}
+            >
+              <FontAwesomeIcon size="2xl" icon={faCartPlus} />
+              <Typography variant="body2" className={classes.typography}>
+                Add Products
               </Typography>
-            </CardContent>
+            </CardMedia>
+          ) : (
+            <CardMedia
+              className={classes.media}
+              onClick={() => {
+                history.push(`/catalogs/${id}`);
+              }}
+              image="https://i.dummyjson.com/data/products/1/1.jpg"
+            />
+          )}
+          <CardContent className={classes.footerContainer}>
+            <Typography className={classes.products}>{`${
+              productCount > 1 ? productCount : 0
+            } products`}</Typography>
+            <Typography className={classes.createdAt}>
+              <FontAwesomeIcon size="1x" icon={faCalendarDay} />
+              {`Created: ${createdAt ? createdAt : "no date"}`}
+            </Typography>
           </CardContent>
-        </Card>
-      </Link>
+        </CardContent>
+      </Card>
       {renderDialog}
     </>
   );
