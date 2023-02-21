@@ -84,6 +84,7 @@ const useStyles = makeStyles(() =>
       color: "#6A5DF9",
       fontSize: "14px",
       marginBottom: "5px",
+      cursor: "pointer",
     },
     createdAt: {
       display: "flex",
@@ -159,46 +160,45 @@ export default function CatalogCard({
     <>
       <Card className={classes.root}>
         <CardContent className={classes.cardContainer}>
-          <Link className={classes.link} to={`/catalogs/${id}`}>
-            <CardHeader
-              className={classes.headerContainer}
-              action={
-                <>
-                  <IconButton onClick={openOptions} aria-label="settings">
-                    <MoreVertIcon />
-                  </IconButton>
-                  <Popover
-                    id={targetId}
-                    open={menuOpen}
-                    anchorEl={anchorEl}
-                    onClose={handleClose}
-                    anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "right",
-                    }}
-                    transformOrigin={{
-                      vertical: "top",
-                      horizontal: "center",
-                    }}
-                  >
-                    <MenuList>
-                      <MenuItem onClick={handleOption} id="edit">
-                        Edit catalog
-                      </MenuItem>
-                      <MenuItem id="duplicate" onClick={handleOption}>
-                        Duplicate catalog
-                      </MenuItem>
-                      <MenuItem onClick={handleOption} id="remove">
-                        Remove catalog
-                      </MenuItem>
-                    </MenuList>
-                  </Popover>
-                </>
-              }
-              title={name ? name : "Default"}
-              titleTypographyProps={{ variant: "body2" }}
-            />
-          </Link>
+          <CardHeader
+            className={classes.headerContainer}
+            action={
+              <>
+                <IconButton onClick={openOptions} aria-label="settings">
+                  <MoreVertIcon />
+                </IconButton>
+                <Popover
+                  id={targetId}
+                  open={menuOpen}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "center",
+                  }}
+                >
+                  <MenuList>
+                    <MenuItem onClick={handleOption} id="edit">
+                      Edit catalog
+                    </MenuItem>
+                    <MenuItem id="duplicate" onClick={handleOption}>
+                      Duplicate catalog
+                    </MenuItem>
+                    <MenuItem onClick={handleOption} id="remove">
+                      Remove catalog
+                    </MenuItem>
+                  </MenuList>
+                </Popover>
+              </>
+            }
+            title={name ? name : "Default"}
+            titleTypographyProps={{ variant: "body2" }}
+          />
+
           {productCount < 1 ? (
             <CardMedia
               onClick={() => {
@@ -221,9 +221,12 @@ export default function CatalogCard({
             />
           )}
           <CardContent className={classes.footerContainer}>
-            <Typography className={classes.products}>{`${
-              productCount > 1 ? productCount : 0
-            } products`}</Typography>
+            <Typography
+              className={classes.products}
+              onClick={() => {
+                history.push(`/catalogs/${id}`);
+              }}
+            >{`${productCount > 1 ? productCount : 0} products`}</Typography>
             <Typography className={classes.createdAt}>
               <FontAwesomeIcon size="1x" icon={faCalendarDay} />
               {`Created: ${createdAt ? createdAt : "no date"}`}
