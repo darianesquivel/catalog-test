@@ -7,15 +7,15 @@ const router = Router();
 const { catalogs, product } = database.models;
 //CREATE CATALOG
 router.post("/catalogs/new", async (req: Request, res: Response) => {
-  const { name, description } = req.body;
+  const { name } = req.body;
   try {
-    await catalogs.findOrCreate({
+    const catalog = await catalogs.findOrCreate({
       where: {
         name,
-        description,
+        created_at: new Date(),
       },
     });
-    res.status(200).send("Catalog created");
+    res.status(200).send("Catalog created!");
   } catch (err) {
     res.send(err);
   }
@@ -100,7 +100,7 @@ router.post("/catalogs/product/", async (req: Request, res: Response) => {
   }
 });
 
-// DELETE
+// DELETE PRODUCT
 router.delete("/catalogs/product/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -130,6 +130,36 @@ router.put("/catalogs/product/:id", async (req: Request, res: Response) => {
     res.status(503).send(err);
   }
 });
+
+// Update Catalog
+router.put("/catalogs/update", async (req: Request, res: Response) => {
+  const { id, name } = req.body;
+
+  try {
+    const currentCatalog: any = await catalogs.findByPk(id);
+
+    currentCatalog.update({
+      ...currentCatalog,
+      name,
+    });
+    res.status(200).send(`Updated succeeded ${currentCatalog}`);
+  } catch (err) {
+    res.status(503).send(err);
+  }
+});
+// DELETE CATALOIG
+router.delete("/catalogs/delete/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const currentCatalog: any = await catalogs.findByPk(id);
+    const catalogName = currentCatalog.name;
+    await currentCatalog.destroy();
+    res.status(200).send(`${catalogName} deleted successfully `);
+  } catch (err) {
+    res.status(503).send(err);
+  }
+});
+
 // CARGHAR DATOS EN DB
 async function insertData(product: any, catalogs: any) {
   //inserting one catalog

@@ -20,7 +20,7 @@ module.exports = (sequelize: any) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      createt_at: {
+      created_at: {
         type: DataTypes.DATE,
         defaulValue: new Date(),
         allowNull: true,
