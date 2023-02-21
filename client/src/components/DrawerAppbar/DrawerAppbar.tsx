@@ -23,6 +23,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
+import AddProducts from "../AddProducts/AddProducts";
 
 const drawerButtons = [
   {
@@ -183,11 +184,13 @@ export default function MiniDrawer() {
             <div>
               <ListItem className={classes.drawerHeader}>
                 <ListItemIcon>
-                  <img
-                    width="24px"
-                    src="https://static.remotasks.com/uploads/catalog_logo.png"
-                    alt=""
-                  />
+                  <Link to="/catalogs">
+                    <img
+                      width="24px"
+                      src="https://static.remotasks.com/uploads/catalog_logo.png"
+                      alt=""
+                    />
+                  </Link>
                 </ListItemIcon>
                 <Typography className={classes.drawerTitle}>Catalog</Typography>
               </ListItem>
@@ -250,6 +253,7 @@ export default function MiniDrawer() {
             <Route exact path="/catalogs" component={CatalogExplorer} />
             <Route exact path="/catalogs/:id" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
+            <Route exact path="/addproducts/:id" component={AddProducts} />
           </Switch>
         </div>
       </div>
