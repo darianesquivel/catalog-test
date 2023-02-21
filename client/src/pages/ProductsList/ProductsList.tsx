@@ -8,15 +8,9 @@ import {
   faPenNib,
   faRocket,
   faTrash,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const columns: GridColDef[] = [
-  { field: "image", headerName: "Image", width: 150 },
-  { field: "id", headerName: "id", width: 150 },
-  { field: "name", headerName: "Title", width: 150 },
-  { field: "description", headerName: "Description", width: 150 },
-];
 const useStyles = makeStyles(() => ({
   container: {
     height: 650,
@@ -36,7 +30,36 @@ const useStyles = makeStyles(() => ({
     textTransform: "capitalize",
     marginLeft: "10px",
   },
+  thumbnails: {
+    width: "60px",
+    margin: "0 auto",
+  },
 }));
+const columns: GridColDef[] = [
+  {
+    field: "info",
+    headerName: "Info",
+    width: 30,
+    renderCell: (params) => (
+      <FontAwesomeIcon
+        size="lg"
+        icon={faInfoCircle}
+        style={{ margin: "0 auto", cursor: "pointer" }}
+        color="gray"
+      />
+    ),
+  },
+  {
+    field: "image",
+    headerName: "Image",
+    width: 150,
+    renderCell: (params) => <img src={params.row.image} alt="" width="80px" />,
+  },
+  { field: "id", headerName: "id", width: 150 },
+  { field: "name", headerName: "Title", width: 150 },
+  { field: "description", headerName: "Description", width: 150 },
+];
+
 const ProductsList = (props: any) => {
   const classes = useStyles();
   console.log({ props });
