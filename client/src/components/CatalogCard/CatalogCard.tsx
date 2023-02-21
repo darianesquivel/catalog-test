@@ -125,7 +125,8 @@ export default function CatalogCard({
     const eventName = event.target.id;
     setOption(eventName);
   };
-  const defaultImage = products?.[0]?.image;
+  const defaultImage =
+    products?.[Math.ceil(Math.random() * productCount)]?.image;
   const menuOpen = Boolean(anchorEl);
   const targetId = menuOpen ? "simple-popover" : undefined;
   const renderDialog =
