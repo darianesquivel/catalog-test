@@ -13,14 +13,21 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SummaryDetails from "../ProductDetails/SummaryDetails";
 import { useState } from "react";
+
 const useStyles = makeStyles(() => ({
   container: {
-    height: 650,
+    height: "85vh",
     width: "100%",
-    display: "flex",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+  },
+
+  details: {
+    display: "grid",
+    gridTemplateColumns: "3fr 1fr",
   },
   mainBox: {
-    width: "50%",
+    // width: "100%",
   },
   buttonsContainer: {
     display: "flex",
@@ -39,6 +46,9 @@ const useStyles = makeStyles(() => ({
   thumbnails: {
     width: "60px",
     margin: "0 auto",
+  },
+  datagrid: {
+    width: "100",
   },
 }));
 const columns: GridColDef[] = [
@@ -72,6 +82,7 @@ const ProductsList = (props: any) => {
   const classes = useStyles();
   const catalogId = props.match.params.id;
   const [info, setInfo] = useState<object>();
+
   const { data: catalog } = useQuery(
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
@@ -82,7 +93,7 @@ const ProductsList = (props: any) => {
   const rows: GridRowsProp = products;
 
   return (
-    <div className={classes.container}>
+    <div className={`${classes.container} ${info ? classes.details : ""}`}>
       <div className={classes.mainBox}>
         <div className={classes.buttonsContainer}>
           <Button className={classes.button} variant="contained" disabled>
@@ -108,10 +119,11 @@ const ProductsList = (props: any) => {
           </Button>
         </div>
         <DataGrid
+          className={classes.datagrid}
           rows={rows}
           columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
+          pageSize={100}
+          rowsPerPageOptions={[100]}
           checkboxSelection
           disableSelectionOnClick
           onCellClick={(cell: any) =>
@@ -119,7 +131,7 @@ const ProductsList = (props: any) => {
           }
         />
       </div>
-      {info && <SummaryDetails {...info} />}
+      {info && <SummaryDetails {...info} closeModal={setInfo} />}
     </div>
   );
 };

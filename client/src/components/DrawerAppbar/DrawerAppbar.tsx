@@ -23,6 +23,7 @@ import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
 import ProductsList from "../../pages/ProductsList/ProductsList";
 import ProductDetails from "../../pages/ProductDetails/ProductDetails";
 import AddProducts from "../AddProducts/AddProducts";
+import "../../app.css";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -177,7 +178,7 @@ export default function MiniDrawer() {
 
   return (
     <BrowserRouter>
-      <div className={classes.root}>
+      <div className={`${classes.root} App`}>
         <AppBar
           position="fixed"
           className={clsx(classes.appBar, {
