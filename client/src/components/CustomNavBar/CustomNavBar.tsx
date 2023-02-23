@@ -84,7 +84,11 @@ export default function CustomNavBar({ className }: any) {
 
           <div className={classes.endSection}>
             {isProductListView && (
-              <Button variant="outlined" color="primary">
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => history.push(`/addproducts/${catalogId}`)}
+              >
                 Add products
               </Button>
             )}
