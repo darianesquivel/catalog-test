@@ -14,13 +14,14 @@ import {
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { faCartPlus, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useState } from "react";
 import CustomAlert from "../Alert/CustomAlert";
 import CustomDialog from "../CustomDialog/CustomDialog";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import removeCatalog from "../../api/removeCatalog";
+import { useStore } from "../DrawerAppbar/DrawerAppbar";
 // este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
   id: string;
@@ -109,6 +110,8 @@ export default function CatalogCard({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [option, setOption] = useState<string>("");
   const history = useHistory();
+  const { setSectionInfo } = useStore((state: any) => state);
+
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -133,6 +136,7 @@ export default function CatalogCard({
         isOpen={true}
         apiFunction={updateCatalog}
         initialValues={{ id, name }}
+        keysToInvalidate={["catalogs"]}
       />
     ) : option === "remove" ? (
       <CustomDialog
@@ -198,23 +202,30 @@ export default function CatalogCard({
           {productCount < 1 ? (
             <CardMedia
               onClick={() => {
+                setSectionInfo("Catalog Upload", id);
                 history.push(`/addproducts/${id}`);
               }}
               className={classes.media}
-            >
-              <FontAwesomeIcon size="2xl" icon={faCartPlus} />
-              <Typography variant="body2" className={classes.typography}>
-                Add Products
-              </Typography>
-            </CardMedia>
+              children={
+                <>
+                  <FontAwesomeIcon size="2xl" icon={faCartPlus} />
+                  <Typography variant="body2" className={classes.typography}>
+                    Add Products
+                  </Typography>
+                </>
+              }
+            ></CardMedia>
           ) : (
-            <CardMedia
-              className={classes.media}
-              onClick={() => {
-                history.push(`/catalogs/${id}`);
-              }}
-              image={defaultImage}
-            />
+            defaultImage && (
+              <CardMedia
+                className={classes.media}
+                onClick={() => {
+                  setSectionInfo(name, id);
+                  history.push(`/catalogs/${id}`);
+                }}
+                image={defaultImage}
+              />
+            )
           )}
           <CardContent className={classes.footerContainer}>
             <Typography

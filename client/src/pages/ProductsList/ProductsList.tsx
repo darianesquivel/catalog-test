@@ -11,10 +11,24 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SummaryDetails from "../ProductDetails/SummaryDetails";
+import { useEffect, useMemo, useState } from "react";
+import { useStore } from "../../components/DrawerAppbar/DrawerAppbar";
+
 const useStyles = makeStyles(() => ({
   container: {
-    height: 650,
+    height: "85vh",
     width: "100%",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+  },
+
+  details: {
+    display: "grid",
+    gridTemplateColumns: "3fr 1fr",
+  },
+  mainBox: {
+    // width: "100%",
   },
   buttonsContainer: {
     display: "flex",
@@ -34,20 +48,25 @@ const useStyles = makeStyles(() => ({
     width: "60px",
     margin: "0 auto",
   },
+  datagrid: {
+    width: "100",
+  },
 }));
 const columns: GridColDef[] = [
   {
     field: "info",
     headerName: "Info",
     width: 30,
-    renderCell: (params) => (
-      <FontAwesomeIcon
-        size="lg"
-        icon={faInfoCircle}
-        style={{ margin: "0 auto", cursor: "pointer" }}
-        color="gray"
-      />
-    ),
+    renderCell: (params) => {
+      return (
+        <FontAwesomeIcon
+          size="lg"
+          icon={faInfoCircle}
+          style={{ margin: "0 auto", cursor: "pointer" }}
+          color="gray"
+        />
+      );
+    },
   },
   {
     field: "image",
@@ -62,49 +81,61 @@ const columns: GridColDef[] = [
 
 const ProductsList = (props: any) => {
   const classes = useStyles();
-  console.log({ props });
   const catalogId = props.match.params.id;
-
+  const [info, setInfo] = useState<object>();
+  const { setSectionInfo } = useStore();
   const { data: catalog } = useQuery(
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
   );
 
   const products = catalog ? catalog[0].products : [];
-
   const rows: GridRowsProp = products;
+  useEffect(() => {
+    setSectionInfo(catalog?.[0]?.name, catalog?.[0]?.id);
+    return () => setSectionInfo("");
+  }, [catalog, setSectionInfo]);
 
   return (
-    <div className={classes.container}>
-      <div className={classes.buttonsContainer}>
-        <Button className={classes.button} variant="contained" disabled>
-          <FontAwesomeIcon size="lg" icon={faTags} />
-          <Typography className={classes.typographyButtons}>
-            Enrichment
-          </Typography>
-        </Button>
-        <Button className={classes.button} variant="contained" disabled>
-          <FontAwesomeIcon size="lg" icon={faPenNib} />
-          <Typography className={classes.typographyButtons}>Scribe</Typography>
-        </Button>
-        <Button className={classes.button} variant="contained" disabled>
-          <FontAwesomeIcon size="lg" icon={faRocket} />
-          <Typography className={classes.typographyButtons}>
-            Assistant
-          </Typography>
-        </Button>
-        <Button className={classes.button} variant="contained" disabled>
-          <FontAwesomeIcon size="lg" icon={faTrash} />
-        </Button>
+    <div className={`${classes.container} ${info ? classes.details : ""}`}>
+      <div className={classes.mainBox}>
+        <div className={classes.buttonsContainer}>
+          <Button className={classes.button} variant="contained" disabled>
+            <FontAwesomeIcon size="lg" icon={faTags} />
+            <Typography className={classes.typographyButtons}>
+              Enrichment
+            </Typography>
+          </Button>
+          <Button className={classes.button} variant="contained" disabled>
+            <FontAwesomeIcon size="lg" icon={faPenNib} />
+            <Typography className={classes.typographyButtons}>
+              Scribe
+            </Typography>
+          </Button>
+          <Button className={classes.button} variant="contained" disabled>
+            <FontAwesomeIcon size="lg" icon={faRocket} />
+            <Typography className={classes.typographyButtons}>
+              Assistant
+            </Typography>
+          </Button>
+          <Button className={classes.button} variant="contained" disabled>
+            <FontAwesomeIcon size="lg" icon={faTrash} />
+          </Button>
+        </div>
+        <DataGrid
+          className={classes.datagrid}
+          rows={rows}
+          columns={columns}
+          pageSize={100}
+          rowsPerPageOptions={[100]}
+          checkboxSelection
+          disableSelectionOnClick
+          onCellClick={(cell: any) =>
+            cell.field === "info" ? setInfo(cell.row) : ""
+          }
+        />
       </div>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
-        checkboxSelection
-        disableSelectionOnClick
-      />
+      {info && <SummaryDetails {...info} closeModal={setInfo} />}
     </div>
   );
 };

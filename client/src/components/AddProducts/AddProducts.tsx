@@ -19,7 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Papa from "papaparse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useStore } from "../DrawerAppbar/DrawerAppbar";
 
 const columns: GridColDef[] = [
   {
@@ -91,15 +92,25 @@ export default function AddProducts() {
   const history = useHistory();
   const classes = useStyles();
   const catalog_id = history.location.pathname.split("/").reverse()[0];
+  const { setSectionInfo } = useStore();
+  useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
   const handleFile = (e: any) => {
-    // const filterColumnsRegex = /image|title|description|^id$/i;
     Papa.parse(e.target.files[0], {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
-        setData(csvData);
+        // this is only temporal to avoid crashing the app
+        // Darian to handle the errors
+        const sanitizedData = csvData
+          .map((obj: any) => {
+            const { id, description, title, image } = obj || {};
+            return { id, description, title, image };
+          })
+          .filter((obj: any) => obj.description && obj.title && obj.image);
+
+        setData(sanitizedData);
         setViewData(true);
       },
     });
@@ -191,6 +202,7 @@ export default function AddProducts() {
                 variant="contained"
                 color="primary"
                 className={classes.button}
+                disabled={data.length < 1}
                 onClick={handleSubmit}
               >
                 Import Products
