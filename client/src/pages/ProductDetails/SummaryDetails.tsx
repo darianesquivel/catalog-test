@@ -1,5 +1,11 @@
 import React from "react";
-import { Container, Typography, Toolbar, Button } from "@material-ui/core";
+import {
+  Container,
+  Typography,
+  Toolbar,
+  Button,
+  IconButton,
+} from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import CustomTabs from "../../components/CustomTabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,16 +14,15 @@ import DetailTable from "../../components/DetailTable";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    // borderBottom: "solid 1px black",
     display: "flex",
     flexFlow: "column",
     padding: 5,
+    paddingLeft: 8,
     gap: 22,
     lineHeight: "20px",
     height: "100%",
   },
   header: {
-    borderBottom: "solid 1px black",
     display: "grid",
     gridTemplateColumns: "1fr 3fr",
     gap: 12,
@@ -26,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%",
   },
   description: {
-    // border: "solid 1px black",
     padding: 2,
     lineHeight: "18px",
   },
@@ -45,7 +49,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    border: "solid gray 1px",
   },
 }));
 
@@ -80,14 +83,15 @@ export default function SummaryDetails({
 
   return (
     <Container className={classes.container}>
-      <Toolbar className={classes.toolbar}>
-        <Button onClick={() => closeModal("")}>
+      <Toolbar className={classes.toolbar} disableGutters>
+        <IconButton onClick={() => closeModal()}>
           <FontAwesomeIcon
             icon={faAngleRight}
-            fontSize="18px"
+            size="sm"
+            width="20px"
             fontWeight="bold"
           />
-        </Button>
+        </IconButton>
         <Typography variant="h6" noWrap>
           Catalogs Explorer
         </Typography>
