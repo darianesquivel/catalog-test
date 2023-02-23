@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SummaryDetails from "../ProductDetails/SummaryDetails";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStore } from "../../components/DrawerAppbar/DrawerAppbar";
 
 const useStyles = makeStyles(() => ({
@@ -83,19 +83,19 @@ const ProductsList = (props: any) => {
   const classes = useStyles();
   const catalogId = props.match.params.id;
   const [info, setInfo] = useState<object>();
-  const { setSectionName } = useStore();
+  const { setSectionInfo } = useStore();
   const { data: catalog } = useQuery(
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
   );
 
   const products = catalog ? catalog[0].products : [];
-
   const rows: GridRowsProp = products;
   useEffect(() => {
-    setSectionName(catalog?.[0]?.name);
-    return () => setSectionName("");
-  }, [catalog, setSectionName]);
+    setSectionInfo(catalog?.[0]?.name, catalog?.[0]?.id);
+    return () => setSectionInfo("");
+  }, [catalog, setSectionInfo]);
+
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>
       <div className={classes.mainBox}>

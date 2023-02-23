@@ -71,9 +71,8 @@ const FormCreator = ({
   initialValues,
 }: Tprops) => {
   const classes = useStyles();
-  const [fields, setFields] = useState<any>(
-    initialValues || { name: "", id: "" }
-  );
+  const stateValue = initialValues || { name: "", id: "" };
+  const [fields, setFields] = useState<any>(stateValue);
   const [error, setError] = useState("");
   const [submiting, setSubmiting] = useState(false);
   const [created, setCreated] = useState(false);
@@ -100,10 +99,10 @@ const FormCreator = ({
 
   const handleClose = async () => {
     setFields({ name: "", id: "" });
+    await queryClientConfig.invalidateQueries(["catalogs"]);
     setError("");
     setCreated(false);
     handleModal();
-    await queryClientConfig.invalidateQueries(["catalogs"]);
   };
   const onValidate = (field = "") => {
     if (field.length < 1) return "You need to specify a name for the catalog";

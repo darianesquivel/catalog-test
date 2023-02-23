@@ -47,11 +47,13 @@ export default function CatalogCreator({ className }: any) {
           <Typography variant="body2">Create a new catalog</Typography>
         </CardActionArea>
       </Card>
-      <FormCreator
-        handleModal={handleModal}
-        isOpen={open}
-        apiFunction={createCatalog}
-      />
+      {open && (
+        <FormCreator
+          handleModal={handleModal}
+          isOpen={open}
+          apiFunction={createCatalog}
+        />
+      )}
     </div>
   );
 }

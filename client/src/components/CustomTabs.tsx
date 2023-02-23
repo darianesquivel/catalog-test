@@ -27,8 +27,12 @@ export default function CustomTabs({ tabValues }: TpropsArray) {
         textColor="primary"
         onChange={handleChange}
       >
-        {tabValues.map((column) => (
-          <Tab label={column.columnName} disabled={column.disabled}></Tab>
+        {tabValues.map((column, idx) => (
+          <Tab
+            label={column.columnName}
+            disabled={column.disabled}
+            key={`${idx + column.columnName}`}
+          ></Tab>
         ))}
       </Tabs>
       <div className={classes.content}>{tabValues[value]?.content}</div>

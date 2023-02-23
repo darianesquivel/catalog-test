@@ -58,18 +58,17 @@ export const useStore = create(
         set((state: any) => ({ ...state, currentUrl: newValue })),
       open: false,
       setOpen: () => set((state: any) => ({ ...state, open: !state.open })),
-      sectionName: "",
-      setSectionName: (newName: string) =>
-        set((state: any) => ({ ...state, sectionName: newName })),
+      sectionInfo: "",
+      setSectionInfo: (name: string, id?: string) =>
+        set((state: any) => ({ ...state, sectionInfo: { name, id } })),
     }),
     {
       name: "drawer-storage",
       getStorage: () => localStorage,
       partialize: (state) => {
-        console.log("state => ", state);
         return Object.fromEntries(
           Object.entries(state).filter(
-            ([key]) => !["currentUrl", "sectionName"].includes(key)
+            ([key]) => !["currentUrl", "sectionInfo"].includes(key)
           )
         );
       },
@@ -176,19 +175,10 @@ export default function MiniDrawer() {
 
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
-            <Route
-              exact
-              path="/catalogs"
-              component={CatalogExplorer}
-              render={(props: any) => {
-                console.log("in catalogs");
-                return props;
-              }}
-            />
+            <Route exact path="/catalogs" component={CatalogExplorer} />
             <Route exact path="/catalogs/:id" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
             <Route exact path="/addproducts/:id" component={AddProducts} />
-            <Route exact path="/navBar" component={CustomNavBar} />
           </Switch>
         </div>
       </div>

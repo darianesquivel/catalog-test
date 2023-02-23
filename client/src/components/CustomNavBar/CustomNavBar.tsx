@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Toolbar,
   AppBar,
@@ -11,16 +11,28 @@ import useStyles from "./Styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import FormCreator from "../FormCreator/FormCreator";
+import updateCatalog from "../../api/updateCatalog";
+import queryClientConfig from "../../ReactQuery/queryClientConfig";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
-  const { currentUrl, sectionName, setCurrentUrl } = useStore<any>(
+  const [open, setOpen] = useState(false);
+  const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
     (state: any) => state
   );
   const history = useHistory();
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isAddProducts = /addproducts\/.+/gi.test(currentUrl);
   const sectionTitle = "Catalog Explorer";
+  const handleClose = async () => {
+    const catalogId = currentUrl.split("/").reverse()[0];
+    await queryClientConfig.invalidateQueries([
+      `catalogs/:${catalogId}`,
+      catalogId,
+    ]);
+    setOpen(false);
+  };
 
   useEffect(() => {
     const unlisten = history.listen((...props) => {
@@ -31,9 +43,17 @@ export default function CustomNavBar({ className }: any) {
       unlisten();
     };
   }, [history, setCurrentUrl]);
-
+  const { id, name } = sectionInfo;
   return (
     <div>
+      {open && (
+        <FormCreator
+          isOpen={open}
+          handleModal={handleClose}
+          apiFunction={updateCatalog}
+          initialValues={{ name, id }}
+        />
+      )}
       <AppBar
         position="fixed"
         className={`${classes.mainContainer} ${className}`}
@@ -43,10 +63,7 @@ export default function CustomNavBar({ className }: any) {
             {isProductListView || isAddProducts ? (
               <IconButton
                 className={classes.icons}
-                onClick={() => {
-                  history.goBack();
-                  setCurrentUrl(history.location);
-                }}
+                onClick={() => history.goBack()}
               >
                 <FontAwesomeIcon icon={faAngleLeft} size="sm" />
               </IconButton>
@@ -56,12 +73,15 @@ export default function CustomNavBar({ className }: any) {
 
             <div className={classes.sectionName}>
               <Typography variant="h6">
-                {sectionName || sectionTitle}
+                {sectionInfo?.name || sectionTitle}
               </Typography>
             </div>
 
             {isProductListView && (
-              <IconButton className={classes.icons}>
+              <IconButton
+                className={classes.icons}
+                onClick={() => setOpen(true)}
+              >
                 <FontAwesomeIcon icon={faPen} size="sm" />
               </IconButton>
             )}

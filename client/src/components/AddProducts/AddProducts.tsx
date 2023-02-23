@@ -92,8 +92,8 @@ export default function AddProducts() {
   const history = useHistory();
   const classes = useStyles();
   const catalog_id = history.location.pathname.split("/").reverse()[0];
-  const { setSectionName } = useStore();
-  useEffect(() => () => setSectionName(""), [setSectionName]);
+  const { setSectionInfo } = useStore();
+  useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
   const handleFile = (e: any) => {
     // const filterColumnsRegex = /image|title|description|^id$/i;

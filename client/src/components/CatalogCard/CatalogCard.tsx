@@ -110,7 +110,7 @@ export default function CatalogCard({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [option, setOption] = useState<string>("");
   const history = useHistory();
-  const { setSectionName } = useStore((state: any) => state);
+  const { setSectionInfo } = useStore((state: any) => state);
 
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -201,25 +201,30 @@ export default function CatalogCard({
           {productCount < 1 ? (
             <CardMedia
               onClick={() => {
-                setSectionName("Catalog Upload");
+                setSectionInfo("Catalog Upload", id);
                 history.push(`/addproducts/${id}`);
               }}
               className={classes.media}
-            >
-              <FontAwesomeIcon size="2xl" icon={faCartPlus} />
-              <Typography variant="body2" className={classes.typography}>
-                Add Products
-              </Typography>
-            </CardMedia>
+              children={
+                <>
+                  <FontAwesomeIcon size="2xl" icon={faCartPlus} />
+                  <Typography variant="body2" className={classes.typography}>
+                    Add Products
+                  </Typography>
+                </>
+              }
+            ></CardMedia>
           ) : (
-            <CardMedia
-              className={classes.media}
-              onClick={() => {
-                setSectionName(name);
-                history.push(`/catalogs/${id}`);
-              }}
-              image={defaultImage}
-            />
+            defaultImage && (
+              <CardMedia
+                className={classes.media}
+                onClick={() => {
+                  setSectionInfo(name, id);
+                  history.push(`/catalogs/${id}`);
+                }}
+                image={defaultImage}
+              />
+            )
           )}
           <CardContent className={classes.footerContainer}>
             <Typography
