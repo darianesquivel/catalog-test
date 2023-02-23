@@ -52,6 +52,7 @@ export default function CatalogCreator({ className }: any) {
           handleModal={handleModal}
           isOpen={open}
           apiFunction={createCatalog}
+          keysToInvalidate={["catalogs"]}
         />
       )}
     </div>

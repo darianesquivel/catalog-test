@@ -25,14 +25,8 @@ export default function CustomNavBar({ className }: any) {
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isAddProducts = /addproducts\/.+/gi.test(currentUrl);
   const sectionTitle = "Catalog Explorer";
-  const handleClose = async () => {
-    const catalogId = currentUrl.split("/").reverse()[0];
-    await queryClientConfig.invalidateQueries([
-      `catalogs/:${catalogId}`,
-      catalogId,
-    ]);
-    setOpen(false);
-  };
+  const catalogId = currentUrl.split("/").reverse()[0];
+  const handleClose = async () => {};
 
   useEffect(() => {
     const unlisten = history.listen((...props) => {
@@ -49,9 +43,10 @@ export default function CustomNavBar({ className }: any) {
       {open && (
         <FormCreator
           isOpen={open}
-          handleModal={handleClose}
+          handleModal={() => setOpen(false)}
           apiFunction={updateCatalog}
           initialValues={{ name, id }}
+          keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
         />
       )}
       <AppBar

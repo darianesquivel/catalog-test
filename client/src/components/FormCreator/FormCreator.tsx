@@ -62,6 +62,7 @@ type Tprops = {
     name?: string;
     id: string;
   };
+  keysToInvalidate: string[];
 };
 
 const FormCreator = ({
@@ -69,6 +70,7 @@ const FormCreator = ({
   isOpen,
   apiFunction,
   initialValues,
+  keysToInvalidate,
 }: Tprops) => {
   const classes = useStyles();
   const stateValue = initialValues || { name: "", id: "" };
@@ -87,6 +89,7 @@ const FormCreator = ({
       try {
         setSubmiting(true);
         await apiFunction(fields);
+        await queryClientConfig.invalidateQueries(keysToInvalidate);
         setFields({});
         setSubmiting(false);
         setCreated(true);
@@ -99,7 +102,6 @@ const FormCreator = ({
 
   const handleClose = async () => {
     setFields({ name: "", id: "" });
-    await queryClientConfig.invalidateQueries(["catalogs"]);
     setError("");
     setCreated(false);
     handleModal();
@@ -108,7 +110,6 @@ const FormCreator = ({
     if (field.length < 1) return "You need to specify a name for the catalog";
     return null;
   };
-
   return (
     <Dialog
       open={isOpen}
@@ -127,6 +128,7 @@ const FormCreator = ({
           <DialogContent>
             <form className={classes.container} onSubmit={handleSubmit}>
               <TextField
+                disabled={!!submiting}
                 name="name"
                 autoFocus
                 error={!!onValidate(fields.name)}
