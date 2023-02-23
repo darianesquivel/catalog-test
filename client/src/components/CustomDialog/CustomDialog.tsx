@@ -101,11 +101,22 @@ const CustomDialog = ({
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
       className={classes.dialog}
+      fullWidth={true}
     >
       {successed ? (
-        <CustomAlert alertType="success" message={successed} />
+        <CustomAlert
+          alertType="success"
+          message={successed}
+          closeIcon={true}
+          onClose={() => handleClose()}
+        />
       ) : error ? (
-        <CustomAlert alertType="error" message={error.message} />
+        <CustomAlert
+          alertType="error"
+          message={error.message}
+          closeIcon={true}
+          onClose={() => handleClose()}
+        />
       ) : (
         <DialogContent className={classes.container}>
           {children && children}

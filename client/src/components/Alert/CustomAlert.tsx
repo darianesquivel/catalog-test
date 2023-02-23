@@ -1,7 +1,9 @@
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
 import { Alert, AlertTitle } from "@material-ui/lab";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
-const useStyles = makeStyles(() => {
+const useStyles = makeStyles((theme: Theme) => {
   return {
     root: {},
   };
@@ -15,6 +17,8 @@ type TalertProps = {
   propClassName?: any;
   variant?: Tvariant;
   title?: boolean;
+  closeIcon?: boolean;
+  onClose?: () => void;
 };
 export default function CustomAlert({
   alertType,
@@ -22,13 +26,28 @@ export default function CustomAlert({
   propClassName,
   variant,
   title = true,
+  closeIcon = false,
+  onClose,
 }: TalertProps) {
+  const classes = useStyles();
   const variantValue = variant || "standard";
   return (
     <Alert
       severity={alertType}
-      className={propClassName}
+      className={`${classes.root}${propClassName}`}
       variant={variantValue}
+      action={
+        closeIcon && (
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            size="medium"
+            onClick={onClose}
+          >
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+        )
+      }
     >
       {title ? (
         <AlertTitle>
