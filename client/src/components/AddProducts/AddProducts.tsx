@@ -19,7 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Papa from "papaparse";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useStore } from "../DrawerAppbar/DrawerAppbar";
 
 const columns: GridColDef[] = [
   {
@@ -91,6 +92,8 @@ export default function AddProducts() {
   const history = useHistory();
   const classes = useStyles();
   const catalog_id = history.location.pathname.split("/").reverse()[0];
+  const { setSectionName } = useStore();
+  useEffect(() => () => setSectionName(""), [setSectionName]);
 
   const handleFile = (e: any) => {
     // const filterColumnsRegex = /image|title|description|^id$/i;
