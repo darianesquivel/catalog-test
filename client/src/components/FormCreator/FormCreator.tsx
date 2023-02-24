@@ -12,7 +12,8 @@ import {
 //FORMIK
 import { useFormik } from "formik";
 //HOOK
-import { useMutateForm } from "./hooks";
+import { useMutateHook } from "../../hooks";
+import queryClientConfig from "../../ReactQuery/queryClientConfig";
 
 const useStyles = makeStyles(() => ({
   dialog: {
@@ -73,10 +74,7 @@ const FormCreator = ({
         name: "",
         id: "",
       };
-  const { mutate, error, isLoading, isSuccess } = useMutateForm(
-    keysToInvalidate,
-    apiFunction
-  );
+  const { mutate, error, isLoading, isSuccess } = useMutateHook(apiFunction);
 
   const onValidate = yup.object({
     name: yup
@@ -93,7 +91,10 @@ const FormCreator = ({
   const handleSubmit = async (values: any) => {
     if (!formik.errors.name) {
       mutate(values, {
-        onSuccess: () => formik.resetForm(),
+        onSuccess: () => {
+          formik.resetForm();
+          queryClientConfig.invalidateQueries(keysToInvalidate);
+        },
       });
     }
   };
@@ -114,6 +115,8 @@ const FormCreator = ({
         <CustomAlert
           alertType="success"
           message="The catalog was created successfully"
+          closeIcon={true}
+          onClose={handleModal}
         />
       ) : (
         isOpen && (
