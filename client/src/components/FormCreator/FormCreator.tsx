@@ -58,6 +58,7 @@ type Tprops = {
     id: string;
   };
   keysToInvalidate: string[];
+  acceptBtnName: string;
 };
 
 const FormCreator = ({
@@ -66,6 +67,7 @@ const FormCreator = ({
   apiFunction,
   initialValues,
   keysToInvalidate,
+  acceptBtnName,
 }: Tprops) => {
   const classes = useStyles();
   const stateValue = Object.keys(initialValues || {}).length
@@ -74,8 +76,8 @@ const FormCreator = ({
         name: "",
         id: "",
       };
-  const { mutate, error, isLoading, isSuccess } = useMutateHook(apiFunction);
-
+  const { mutate, error, isLoading, isSuccess, data } =
+    useMutateHook(apiFunction);
   const onValidate = yup.object({
     name: yup
       .string()
@@ -114,7 +116,7 @@ const FormCreator = ({
       {isSuccess ? (
         <CustomAlert
           alertType="success"
-          message="The catalog was created successfully"
+          message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
           closeIcon={true}
           onClose={handleModal}
         />
@@ -166,7 +168,7 @@ const FormCreator = ({
                       onClick={() => formik.handleSubmit()}
                       disabled={!formik.values.name || !!formik.errors.name}
                     >
-                      Create
+                      {acceptBtnName}
                     </Button>
                   )}
                 </div>

@@ -13,7 +13,6 @@ import { useHistory } from "react-router";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
-import queryClientConfig from "../../ReactQuery/queryClientConfig";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
@@ -47,6 +46,7 @@ export default function CustomNavBar({ className }: any) {
           apiFunction={updateCatalog}
           initialValues={{ name, id }}
           keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
+          acceptBtnName="Update"
         />
       )}
       <AppBar

@@ -137,6 +137,7 @@ export default function CatalogCard({
         apiFunction={updateCatalog}
         initialValues={{ id, name }}
         keysToInvalidate={["catalogs"]}
+        acceptBtnName="Update"
       />
     ) : option === "remove" ? (
       <CustomDialog

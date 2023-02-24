@@ -53,6 +53,7 @@ export default function CatalogCreator({ className }: any) {
           isOpen={open}
           apiFunction={createCatalog}
           keysToInvalidate={["catalogs"]}
+          acceptBtnName="Create"
         />
       )}
     </div>
