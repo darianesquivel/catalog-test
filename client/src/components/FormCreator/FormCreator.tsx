@@ -20,7 +20,7 @@ const useStyles = makeStyles(() => ({
     position: "relative",
   },
   container: {
-    width: "500px",
+    minWidth: "500px",
     margin: "0 auto",
     padding: "30px",
     display: "flex",

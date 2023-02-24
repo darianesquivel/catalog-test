@@ -3,19 +3,20 @@ import CustomAlert from "../Alert/CustomAlert";
 
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Dialog, DialogActions, DialogContent } from "@material-ui/core";
 import { useMutateHook } from "../../hooks";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   dialog: {},
   container: {
-    width: "500px",
+    minWidth: "500px",
+    margin: "0 auto",
     display: "flex",
     flexDirection: "column",
-    borderRadius: "8px !important",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     gap: "20px",
+    padding: theme.spacing(2),
   },
   childrenBox: {},
   button: {
@@ -81,7 +82,7 @@ const CustomDialog = ({
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
       className={classes.dialog}
-      fullWidth={true}
+      // fullWidth={true}
     >
       {isSuccess ? (
         <CustomAlert
