@@ -137,13 +137,14 @@ export default function CatalogCard({
         apiFunction={updateCatalog}
         initialValues={{ id, name }}
         keysToInvalidate={["catalogs"]}
+        acceptBtnName="Update"
       />
     ) : option === "remove" ? (
       <CustomDialog
         isOpen={Boolean(option)}
         handleModal={handleClose}
         handleAccept={() => removeCatalog({ id })}
-        queryKey="catalogs"
+        queryKey={["catalogs"]}
       >
         <Typography variant="h6">
           You are about to delete the catalog <b>{name}</b>. Are you sure?

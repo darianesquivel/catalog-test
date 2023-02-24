@@ -1,9 +1,5 @@
-import { useEffect, useState } from "react";
-import queryClientConfig from "../../ReactQuery/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
-
-// API
-import createCatalog from "../../api/createCatalog";
+import * as yup from "yup";
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,13 +9,18 @@ import {
   DialogActions,
   DialogContent,
 } from "@material-ui/core";
+//FORMIK
+import { useFormik } from "formik";
+//HOOK
+import { useMutateHook } from "../../hooks";
+import queryClientConfig from "../../ReactQuery/queryClientConfig";
 
 const useStyles = makeStyles(() => ({
   dialog: {
     position: "relative",
   },
   container: {
-    width: "500px",
+    minWidth: "500px",
     margin: "0 auto",
     padding: "30px",
     display: "flex",
@@ -44,25 +45,20 @@ const useStyles = makeStyles(() => ({
   },
   buttonProgress: {
     color: "green[500]",
-    // position: "absolute",
   },
   dialogActions: {},
 }));
-// types
-type Tcatalog = {
-  name: string;
-  id: string;
-  description: string;
-};
+
 type Tprops = {
   handleModal: () => void;
   isOpen: boolean;
   apiFunction: (...params: any) => any;
   initialValues?: {
-    name?: string;
+    name: string;
     id: string;
   };
   keysToInvalidate: string[];
+  acceptBtnName: string;
 };
 
 const FormCreator = ({
@@ -71,44 +67,43 @@ const FormCreator = ({
   apiFunction,
   initialValues,
   keysToInvalidate,
+  acceptBtnName,
 }: Tprops) => {
   const classes = useStyles();
-  const stateValue = initialValues || { name: "", id: "" };
-  const [fields, setFields] = useState<any>(stateValue);
-  const [error, setError] = useState("");
-  const [submiting, setSubmiting] = useState(false);
-  const [created, setCreated] = useState(false);
+  const stateValue = Object.keys(initialValues || {}).length
+    ? initialValues
+    : {
+        name: "",
+        id: "",
+      };
+  const { mutate, error, isLoading, isSuccess, data } =
+    useMutateHook(apiFunction);
+  const onValidate = yup.object({
+    name: yup
+      .string()
+      .required("You need to specify a name for the catalog")
+      .max(30, "The catalog name should not be longer than 15 characters"),
+  });
+  const formik = useFormik<any>({
+    initialValues: stateValue,
+    validationSchema: onValidate,
+    onSubmit: (values) => handleSubmit(values),
+  });
 
-  const handleChange = (e: any) => {
-    setFields({ ...fields, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    if (fields?.name && !onValidate(fields.name)) {
-      try {
-        setSubmiting(true);
-        await apiFunction(fields);
-        await queryClientConfig.invalidateQueries(keysToInvalidate);
-        setFields({});
-        setSubmiting(false);
-        setCreated(true);
-      } catch (err: any) {
-        setError(err);
-        setSubmiting(false);
-      }
+  const handleSubmit = async (values: any) => {
+    if (!formik.errors.name) {
+      mutate(values, {
+        onSuccess: () => {
+          formik.resetForm();
+          queryClientConfig.invalidateQueries(keysToInvalidate);
+        },
+      });
     }
   };
 
   const handleClose = async () => {
-    setFields({ name: "", id: "" });
-    setError("");
-    setCreated(false);
+    formik.resetForm();
     handleModal();
-  };
-  const onValidate = (field = "") => {
-    if (field.length < 1) return "You need to specify a name for the catalog";
-    return null;
   };
   return (
     <Dialog
@@ -118,25 +113,28 @@ const FormCreator = ({
       aria-describedby="simple-modal-description"
       className={classes.dialog}
     >
-      {created ? (
+      {isSuccess ? (
         <CustomAlert
           alertType="success"
-          message="The catalog was created successfully"
+          message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
+          closeIcon={true}
+          onClose={handleModal}
         />
       ) : (
         isOpen && (
           <DialogContent>
-            <form className={classes.container} onSubmit={handleSubmit}>
+            <form className={classes.container} onSubmit={formik.handleSubmit}>
               <TextField
-                disabled={!!submiting}
+                disabled={isLoading}
                 name="name"
                 autoFocus
-                error={!!onValidate(fields.name)}
+                error={formik.touched.name && Boolean(formik.errors.name)}
                 label="Catalog name"
-                value={fields.name}
-                helperText={onValidate(fields.name)}
+                value={formik.values.name}
+                helperText={formik.touched.name && formik.errors.name}
                 variant="outlined"
-                onChange={handleChange}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
               />
               {error && (
                 <CustomAlert
@@ -151,11 +149,12 @@ const FormCreator = ({
                   size="small"
                   onClick={handleModal}
                   className={classes.cancelButton}
+                  disabled={isLoading}
                 >
                   Cancel
                 </Button>
                 <div className={classes.buttonWrapper}>
-                  {submiting ? (
+                  {isLoading ? (
                     <CircularProgress
                       size={28}
                       className={classes.buttonProgress}
@@ -166,9 +165,10 @@ const FormCreator = ({
                       variant="contained"
                       color="primary"
                       size="small"
-                      onClick={handleSubmit}
+                      onClick={() => formik.handleSubmit()}
+                      disabled={!formik.values.name || !!formik.errors.name}
                     >
-                      Create
+                      {acceptBtnName}
                     </Button>
                   )}
                 </div>

@@ -1,27 +1,22 @@
-import { useEffect, useState } from "react";
 import queryClientConfig from "../../ReactQuery/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
 
-// API
 // MUI
-import { Button, CircularProgress, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import {
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-} from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
+import { makeStyles, Theme } from "@material-ui/core/styles";
+import { Dialog, DialogActions, DialogContent } from "@material-ui/core";
+import { useMutateHook } from "../../hooks";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme: Theme) => ({
   dialog: {},
   container: {
-    width: "500px",
+    minWidth: "500px",
+    margin: "0 auto",
     display: "flex",
     flexDirection: "column",
-    borderRadius: "8px !important",
-    justifyContent: "space-evenly",
+    justifyContent: "center",
     gap: "20px",
+    padding: theme.spacing(2),
   },
   childrenBox: {},
   button: {
@@ -48,18 +43,13 @@ const useStyles = makeStyles(() => ({
   },
   dialogActions: {},
 }));
-// types
-type Tcatalog = {
-  name: string;
-  id: string;
-  description: string;
-};
+
 type Tprops = {
   handleModal: () => void;
   isOpen: boolean;
-  handleAccept: (values?: any) => void;
+  handleAccept: (values?: any) => any;
   children?: any;
-  queryKey?: string;
+  queryKey?: string[];
 };
 
 const CustomDialog = ({
@@ -70,27 +60,18 @@ const CustomDialog = ({
   queryKey,
 }: Tprops) => {
   const classes = useStyles();
-  const [error, setError] = useState<any>("");
-  const [submiting, setSubmiting] = useState(false);
-  const [successed, setSuccessed] = useState<any>(false);
-  // Este dialogo debe renderizar los childrens opcionalmente, sea un form, un texto o un error
-  // para el sucsess o el error podrá reutilizar el componente de alert
+
+  const { mutate, error, isLoading, isSuccess, data } =
+    useMutateHook(handleAccept);
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-
-    try {
-      setSubmiting(true);
-      const res = await handleAccept();
-      setSubmiting(false);
-      setSuccessed(res);
-    } catch (err: any) {
-      setError(err);
-      setSubmiting(false);
-    }
+    mutate();
   };
 
   const handleClose = async () => {
-    await queryClientConfig.invalidateQueries([`${queryKey}`]);
+    // we don't do the invalidation in onSuccess because of the rerender of all the cards
+    // which makes the success alert visible only a few microseconds
+    queryClientConfig.invalidateQueries(queryKey);
     handleModal();
   };
 
@@ -101,19 +82,21 @@ const CustomDialog = ({
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
       className={classes.dialog}
-      fullWidth={true}
+      // fullWidth={true}
     >
-      {successed ? (
+      {isSuccess ? (
         <CustomAlert
           alertType="success"
-          message={successed}
+          message={`${data}`}
           closeIcon={true}
           onClose={() => handleClose()}
         />
       ) : error ? (
         <CustomAlert
           alertType="error"
-          message={error.message}
+          message={`The process could not be completed because of ${
+            Object(error).message
+          }`}
           closeIcon={true}
           onClose={() => handleClose()}
         />
@@ -132,7 +115,7 @@ const CustomDialog = ({
               >
                 Cancel
               </Button>
-              {submiting ? (
+              {isLoading ? (
                 <CircularProgress
                   size={28}
                   className={classes.buttonProgress}
