@@ -1,10 +1,5 @@
-import { useEffect, useState } from "react";
-import queryClientConfig from "../../ReactQuery/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
 import * as yup from "yup";
-
-// API
-import createCatalog from "../../api/createCatalog";
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -14,8 +9,9 @@ import {
   DialogActions,
   DialogContent,
 } from "@material-ui/core";
+//FORMIK
 import { useFormik } from "formik";
-import { useMutation } from "@tanstack/react-query";
+//HOOK
 import { useMutateForm } from "./hooks";
 
 const useStyles = makeStyles(() => ({
@@ -48,16 +44,10 @@ const useStyles = makeStyles(() => ({
   },
   buttonProgress: {
     color: "green[500]",
-    // position: "absolute",
   },
   dialogActions: {},
 }));
-// types
-type Tcatalog = {
-  name: string;
-  id: string;
-  description: string;
-};
+
 type Tprops = {
   handleModal: () => void;
   isOpen: boolean;
@@ -83,12 +73,10 @@ const FormCreator = ({
         name: "",
         id: "",
       };
-  const { mutate, error, isLoading, isSuccess, isIdle } = useMutateForm(
+  const { mutate, error, isLoading, isSuccess } = useMutateForm(
     keysToInvalidate,
     apiFunction
   );
-  console.log({ mutate, error, isLoading });
-  console.log({ keysToInvalidate });
 
   const onValidate = yup.object({
     name: yup
@@ -104,25 +92,14 @@ const FormCreator = ({
 
   const handleSubmit = async (values: any) => {
     if (!formik.errors.name) {
-      mutate(values);
-      //   try {
-      //     setSubmiting(true);
-      //     await apiFunction(fields);
-      //     await queryClientConfig.invalidateQueries(keysToInvalidate);
-      // setFields({});
-      formik.resetForm();
-      //     setSubmiting(false);
-      //     setCreated(true);
-      //   } catch (err: any) {
-      //     setError(err);
-      //     setSubmiting(false);
-      //   }
+      mutate(values, {
+        onSuccess: () => formik.resetForm(),
+      });
     }
   };
 
   const handleClose = async () => {
     formik.resetForm();
-    // setCreated(false);
     handleModal();
   };
   return (
@@ -167,6 +144,7 @@ const FormCreator = ({
                   size="small"
                   onClick={handleModal}
                   className={classes.cancelButton}
+                  disabled={isLoading}
                 >
                   Cancel
                 </Button>
