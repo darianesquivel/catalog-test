@@ -165,12 +165,11 @@ router.put("/catalogs/update", async (req: Request, res: Response) => {
 
   try {
     const currentCatalog: any = await catalogs.findByPk(id);
-
-    currentCatalog.update({
+    const updatedCatalog = await currentCatalog.update({
       ...currentCatalog,
       name,
     });
-    res.status(200).send(`Updated succeeded ${currentCatalog}`);
+    res.status(200).send(updatedCatalog);
   } catch (err) {
     res.status(503).send(err);
   }
