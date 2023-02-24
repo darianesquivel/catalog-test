@@ -143,7 +143,7 @@ export default function CatalogCard({
         isOpen={Boolean(option)}
         handleModal={handleClose}
         handleAccept={() => removeCatalog({ id })}
-        queryKey="catalogs"
+        queryKey={["catalogs"]}
       >
         <Typography variant="h6">
           You are about to delete the catalog <b>{name}</b>. Are you sure?
