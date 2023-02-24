@@ -76,13 +76,19 @@ const FormCreator = ({
         name: "",
         id: "",
       };
+  const initialName = stateValue?.name || "";
   const { mutate, error, isLoading, isSuccess, data } =
     useMutateHook(apiFunction);
   const onValidate = yup.object({
     name: yup
       .string()
       .required("You need to specify a name for the catalog")
-      .max(30, "The catalog name should not be longer than 15 characters"),
+      .max(30, "The catalog name should not be longer than 15 characters")
+      .test(
+        "length",
+        "The field value should be different to be updated",
+        (data: string) => data !== initialName
+      ),
   });
   const formik = useFormik<any>({
     initialValues: stateValue,
