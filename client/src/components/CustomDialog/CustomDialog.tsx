@@ -1,4 +1,4 @@
-import queryClientConfig from "../../ReactQuery/queryClientConfig";
+import queryClientConfig from "../../config/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
 
 // MUI

@@ -40,7 +40,7 @@ const CatalogExplorer = () => {
       }
     >
       <CatalogCreator />
-
+      {console.log("rerender c e")}
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
           return (

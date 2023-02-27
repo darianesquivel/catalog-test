@@ -22,7 +22,7 @@ import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import removeCatalog from "../../api/removeCatalog";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
-// este tipado se repite en catalog explorer, modularizar
+// the below type we should reuse in Catalog Explorer
 type TcatalogCard = {
   id: string;
   name: string;
@@ -128,6 +128,7 @@ export default function CatalogCard({
   const date = createdAt ? new Date(createdAt).toLocaleString() : "no date";
   const defaultImage =
     products?.[Math.ceil(Math.random() * productCount)]?.image;
+
   const menuOpen = Boolean(anchorEl);
   const targetId = menuOpen ? "simple-popover" : undefined;
   const renderDialog =
