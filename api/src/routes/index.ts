@@ -6,44 +6,47 @@ const router = Router();
 
 const { catalogs, product } = database.models;
 //CREATE CATALOG
-router.post("/catalogs/new", async (req: Request, res: Response) => {
+router.post("/catalogs/catalog", async (req: Request, res: Response) => {
   const { name } = req.body;
   try {
-    const catalog = await catalogs.findOrCreate({
+    const newCatalog = await catalogs.findOrCreate({
       where: {
         name,
         created_at: new Date(),
       },
     });
-    res.status(200).send("Catalog created!");
+    res.status(200).json(newCatalog);
   } catch (err) {
     res.send(err);
   }
 });
 
 //ADD PRODUCTS
-router.post("/addproducts/:id", async (req: Request, res: Response) => {
-  const products = req.body;
-  console.log("cerooo--> ", products[0]);
-  try {
-    for (const prod of products) {
-      const { id, title, description, catalog_id, image } = prod;
+router.post(
+  "/catalogs/:catalog_id/products",
+  async (req: Request, res: Response) => {
+    // catalog_id may be redundant but we could take it from params
+    const products = req.body;
+    try {
+      for (const prod of products) {
+        const { id, title, description, catalog_id, image } = prod;
 
-      await product.findOrCreate({
-        where: {
-          // id,
-          name: title,
-          description,
-          catalog_id,
-          image,
-        },
-      });
+        await product.findOrCreate({
+          where: {
+            // id,
+            name: title,
+            description,
+            catalog_id,
+            image,
+          },
+        });
+      }
+      res.status(200).send("Products added successfuly");
+    } catch (err: any) {
+      res.status(503).send(err.message);
     }
-    res.status(200).send("Products created");
-  } catch (err: any) {
-    res.status(503).send(err.message);
   }
-});
+);
 
 //GET CATALOGS
 router.get("/catalogs", async (req: Request, res: Response) => {
@@ -73,7 +76,6 @@ router.get("/catalogs", async (req: Request, res: Response) => {
       });
     }
 
-    fullData.reverse();
     res.status(200).json(fullData);
   } catch (err) {
     res.status(404).send(err);
@@ -108,60 +110,10 @@ router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
   }
 });
 
-//POST CREATE PRDODUCT
-router.post("/catalogs/product/", async (req: Request, res: Response) => {
-  const { catalog_id, name, description, image } = req.body;
-
-  try {
-    const newProduct = await product.findOrCreate({
-      where: {
-        name,
-        description,
-        image,
-        catalog_id: catalog_id,
-        // created_at: new Date(),
-      },
-    });
-    res.status(200).json(newProduct);
-  } catch (err) {
-    res.status(503).send(err);
-  }
-});
-
-// DELETE PRODUCT
-router.delete("/catalogs/product/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    const currentProduct: any = await product.findByPk(id);
-    const productName = currentProduct?.name;
-    await currentProduct?.destroy();
-    res.json(`${productName} deleted successfully `);
-  } catch (err) {
-    res.status(503).send(err);
-  }
-});
-
-// Update todo
-router.put("/catalogs/product/:id", async (req: Request, res: Response) => {
-  const { id, name, description, image } = req.body;
-
-  try {
-    const item: any = await product.findByPk(id);
-    item.update({
-      ...item,
-      name,
-      description,
-      image,
-    });
-    res.status(200).send(`Updated succeeded ${item}`);
-  } catch (err) {
-    res.status(503).send(err);
-  }
-});
-
 // Update Catalog
-router.put("/catalogs/update", async (req: Request, res: Response) => {
-  const { id, name } = req.body;
+router.put("/catalogs/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { name } = req.body;
 
   try {
     const currentCatalog: any = await catalogs.findByPk(id);
@@ -175,8 +127,11 @@ router.put("/catalogs/update", async (req: Request, res: Response) => {
   }
 });
 // DELETE CATALOIG
-router.delete("/catalogs/delete/:id", async (req: Request, res: Response) => {
+router.delete("/catalogs/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
+
+  // Here we should also should remove all the products related to this catalot
+  // To do that y might need to make the relationship in sequelize
   try {
     const currentCatalog: any = await catalogs.findByPk(id);
     const catalogName = currentCatalog.name;
@@ -187,7 +142,7 @@ router.delete("/catalogs/delete/:id", async (req: Request, res: Response) => {
   }
 });
 
-// CARGHAR DATOS EN DB
+// FUNCTION TO TEST: CREATE A CATALOG WITH PRODUCTS
 async function insertData(product: any, catalogs: any) {
   //inserting one catalog
   try {
@@ -204,7 +159,6 @@ async function insertData(product: any, catalogs: any) {
     where: { name: "Test catalog" },
   });
 
-  // inserting products
   const json = await axios
     .get("https://dummyjson.com/products")
     .then((r) => r.data.products)

@@ -21,7 +21,7 @@ import CustomDialog from "../CustomDialog/CustomDialog";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import removeCatalog from "../../api/removeCatalog";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 // este tipado se repite en catalog explorer, modularizar
 type TcatalogCard = {
   id: string;

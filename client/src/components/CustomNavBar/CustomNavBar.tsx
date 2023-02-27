@@ -10,7 +10,7 @@ import { faAngleLeft, faPen } from "@fortawesome/free-solid-svg-icons";
 import useStyles from "./Styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 
