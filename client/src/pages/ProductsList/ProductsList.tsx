@@ -14,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SummaryDetails from "../ProductDetails/SummaryDetails";
 import { useEffect, useMemo, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { useHistory, useParams } from "react-router";
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -91,8 +92,15 @@ const ProductsList = (props: any) => {
 
   const products = catalog ? catalog[0].products : [];
   const rows: GridRowsProp = products;
+  const params: any = useParams();
+  const history = useHistory();
+
   useEffect(() => {
     setSectionInfo(catalog?.[0]?.name, catalog?.[0]?.id);
+    const initialValues = params.productId
+      ? products.find((data: any) => data.id === params.productId)
+      : undefined;
+    setInfo(initialValues);
     return () => setSectionInfo("");
   }, [catalog, setSectionInfo]);
 
@@ -130,9 +138,14 @@ const ProductsList = (props: any) => {
           rowsPerPageOptions={[100]}
           checkboxSelection
           disableSelectionOnClick
-          onCellClick={(cell: any) =>
-            cell.field === "info" ? setInfo(cell.row) : ""
-          }
+          onCellClick={(cell: any) => {
+            if (cell.field === "image")
+              return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
+            if (cell.field === "info") {
+              setInfo(cell.row);
+              return history.push(`/catalogs/${catalogId}/${cell.id}/`);
+            }
+          }}
         />
       </div>
       {info && <SummaryDetails {...info} closeModal={setInfo} />}

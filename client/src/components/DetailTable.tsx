@@ -32,7 +32,7 @@ export default function DetailTable({ rows }: Trows) {
   return (
     <div className={classes.container}>
       {renderRows.map((value: any, index: number) => (
-        <Tooltip title={value}>
+        <Tooltip title={value} key={`${value}-${index}`}>
           <span
             className={`${index % 2 === 0 ? classes.bold : ""} ${
               classes.bullet
