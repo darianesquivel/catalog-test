@@ -39,7 +39,7 @@ const columns: GridColDef[] = [
   { field: "description", headerName: "Description", width: 150 },
 ];
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   table: {
     width: "100%",
   },
@@ -65,16 +65,31 @@ const useStyles = makeStyles(() => ({
   inputContainer: {
     width: "100%",
     height: 500,
-
     display: "flex",
     justifyContent: "center",
     padding: "20px",
     borderRadius: "8px",
     boxSizing: "border-box",
   },
+  labelInput: {
+    width: "100%",
+    border: "1px dashed #e6e6e6",
+    borderRadius: "8px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme.palette.background.default,
+    transition: "0.3s",
+    "&:hover": {
+      backgroundColor: theme.palette.grey[200],
+      border: "1px dashed #6A5DF9",
+    },
+    cursor: "pointer",
+  },
   buttonInput: {
     width: "100%",
-    border: "1px dashed #6A5DF9",
+    height: "100%",
   },
   typography: {
     fontSize: "13px",
@@ -157,28 +172,29 @@ export default function AddProducts() {
         </TableHead>
         {!viewData ? (
           <div className={classes.inputContainer}>
-            <Button className={classes.buttonInput}>
-              <input
-                accept={".csv"}
-                id="contained-button-file"
-                type="file"
-                hidden
-                onChange={handleFile}
+            <input
+              accept={".csv"}
+              id="contained-button-file"
+              type="file"
+              hidden
+              onChange={handleFile}
+            />
+            <label
+              className={classes.labelInput}
+              htmlFor="contained-button-file"
+            >
+              <img
+                src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
+                alt=""
+                className={classes.image}
               />
-              <label htmlFor="contained-button-file">
-                <img
-                  src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
-                  alt=""
-                  className={classes.image}
-                />
-                <Typography className={classes.typographyBold}>
-                  What data do you wish to import?
-                </Typography>
-                <Typography className={classes.typography}>
-                  Upload a CSV or Excel file to start the import process.
-                </Typography>
-              </label>
-            </Button>
+              <Typography className={classes.typographyBold}>
+                What data do you wish to import?
+              </Typography>
+              <Typography className={classes.typography}>
+                Upload a CSV or Excel file to start the import process.
+              </Typography>
+            </label>
           </div>
         ) : (
           <TableBody className={classes.tableData}>
