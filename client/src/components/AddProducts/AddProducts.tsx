@@ -22,6 +22,7 @@ import Papa from "papaparse";
 import { useEffect, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 import { useParams } from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 type TProducts = {
   id: string;
@@ -67,12 +68,15 @@ const useStyles = makeStyles((theme) => ({
     height: 500,
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
     padding: "20px",
     borderRadius: "8px",
     boxSizing: "border-box",
   },
   labelInput: {
     width: "100%",
+    height: 450,
+
     border: "1px dashed #e6e6e6",
     borderRadius: "8px",
     display: "flex",
@@ -109,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
 export default function AddProducts() {
   const [data, setData] = useState([]);
   const [viewData, setViewData] = useState(false);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
   const classes = useStyles();
   const { id } = useParams<TProducts>();
@@ -117,13 +122,13 @@ export default function AddProducts() {
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
   const handleFile = (e: any) => {
-    Papa.parse(e.target.files[0], {
+    setLoading(true);
+    const file = e.target.files[0];
+    Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
-        // this is only temporal to avoid crashing the app
-        // Darian to handle the errors
         const sanitizedData = csvData
           .map((obj: any) => {
             const { id, description, title, image } = obj || {};
@@ -133,6 +138,7 @@ export default function AddProducts() {
 
         setData(sanitizedData);
         setViewData(true);
+        setLoading(false);
       },
     });
   };
@@ -171,31 +177,37 @@ export default function AddProducts() {
           </TableRow>
         </TableHead>
         {!viewData ? (
-          <div className={classes.inputContainer}>
-            <input
-              accept={".csv"}
-              id="contained-button-file"
-              type="file"
-              hidden
-              onChange={handleFile}
-            />
-            <label
-              className={classes.labelInput}
-              htmlFor="contained-button-file"
-            >
-              <img
-                src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
-                alt=""
-                className={classes.image}
+          loading ? (
+            <div className={classes.inputContainer}>
+              <CircularProgress />
+            </div>
+          ) : (
+            <div className={classes.inputContainer}>
+              <input
+                accept={".csv"}
+                id="contained-button-file"
+                type="file"
+                hidden
+                onChange={handleFile}
               />
-              <Typography className={classes.typographyBold}>
-                What data do you wish to import?
-              </Typography>
-              <Typography className={classes.typography}>
-                Upload a CSV or Excel file to start the import process.
-              </Typography>
-            </label>
-          </div>
+              <label
+                className={classes.labelInput}
+                htmlFor="contained-button-file"
+              >
+                <img
+                  src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
+                  alt=""
+                  className={classes.image}
+                />
+                <Typography className={classes.typographyBold}>
+                  What data do you wish to import?
+                </Typography>
+                <Typography className={classes.typography}>
+                  Upload a CSV or Excel file to start the import process.
+                </Typography>
+              </label>
+            </div>
+          )
         ) : (
           <TableBody className={classes.tableData}>
             <TableRow>
