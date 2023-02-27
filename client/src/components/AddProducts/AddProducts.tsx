@@ -21,6 +21,11 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Papa from "papaparse";
 import { useEffect, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { useParams } from "react-router-dom";
+
+type TProducts = {
+  id: string;
+};
 
 const columns: GridColDef[] = [
   {
@@ -91,7 +96,8 @@ export default function AddProducts() {
   const [viewData, setViewData] = useState(false);
   const history = useHistory();
   const classes = useStyles();
-  const catalog_id = history.location.pathname.split("/").reverse()[0];
+  const { id } = useParams<TProducts>();
+
   const { setSectionInfo } = useStore();
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
@@ -128,11 +134,11 @@ export default function AddProducts() {
       title: product.title,
       description: product.description,
       image: product.image,
-      catalog_id: catalog_id,
+      catalog_id: id,
     }));
     await addProducts(fulldata);
     setViewData(false);
-    history.push(`/catalogs/${catalog_id}`);
+    history.push(`/catalogs/${id}`);
   };
 
   return (
