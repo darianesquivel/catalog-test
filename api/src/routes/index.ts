@@ -141,7 +141,6 @@ router.delete("/catalogs/:id", async (req: Request, res: Response) => {
     res.status(503).send(err);
   }
 });
-
 // FUNCTION TO TEST: CREATE A CATALOG WITH PRODUCTS
 async function insertData(product: any, catalogs: any) {
   //inserting one catalog

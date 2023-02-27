@@ -125,6 +125,7 @@ export default function CatalogCard({
     const eventName = event.target.id;
     setOption(eventName);
   };
+  const date = createdAt ? new Date(createdAt).toLocaleString() : "no date";
   const defaultImage =
     products?.[Math.ceil(Math.random() * productCount)]?.image;
   const menuOpen = Boolean(anchorEl);
@@ -202,10 +203,7 @@ export default function CatalogCard({
 
           {productCount < 1 ? (
             <CardMedia
-              onClick={() => {
-                setSectionInfo("Catalog Upload", id);
-                history.push(`/addproducts/${id}`);
-              }}
+              onClick={() => history.push(`/catalogs/${id}/upload`)}
               className={classes.media}
               children={
                 <>
@@ -237,7 +235,7 @@ export default function CatalogCard({
             >{`${productCount > 1 ? productCount : 0} products`}</Typography>
             <Typography className={classes.createdAt}>
               <FontAwesomeIcon size="1x" icon={faCalendarDay} />
-              {`Created: ${createdAt ? createdAt : "no date"}`}
+              {`Created: ${date}`}
             </Typography>
           </CardContent>
         </CardContent>

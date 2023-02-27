@@ -21,20 +21,18 @@ export default function CustomNavBar({ className }: any) {
     (state: any) => state
   );
   const history = useHistory();
+
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
-  const isAddProducts = /addproducts\/.+/gi.test(currentUrl);
-  const sectionTitle = "Catalog Explorer";
+  const isUpload = /\/upload$/gi.test(currentUrl);
+  const sectionTitle = isUpload ? "Catalog upload" : "Catalog Explorer";
   const catalogId = currentUrl.split("/").reverse()[0];
-  const handleClose = async () => {};
 
   useEffect(() => {
     const unlisten = history.listen((...props) => {
       const { pathname } = props?.[0] || {};
       setCurrentUrl(pathname);
     });
-    return () => {
-      unlisten();
-    };
+    return () => unlisten();
   }, [history, setCurrentUrl]);
   const { id, name } = sectionInfo;
   return (
@@ -55,7 +53,7 @@ export default function CustomNavBar({ className }: any) {
       >
         <Toolbar className={classes.toolbar} disableGutters={true}>
           <div className={classes.mainConetnt}>
-            {isProductListView || isAddProducts ? (
+            {isProductListView || isUpload ? (
               <IconButton
                 className={classes.icons}
                 onClick={() => history.goBack()}
@@ -87,7 +85,7 @@ export default function CustomNavBar({ className }: any) {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => history.push(`/addproducts/${catalogId}`)}
+                onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
               >
                 Add products
               </Button>
