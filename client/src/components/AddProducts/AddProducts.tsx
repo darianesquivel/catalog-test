@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 
 import addProducts from "../../api/addProducts";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Papa from "papaparse";
 import { useEffect, useState } from "react";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 
 const columns: GridColDef[] = [
   {
@@ -91,7 +91,9 @@ export default function AddProducts() {
   const [viewData, setViewData] = useState(false);
   const history = useHistory();
   const classes = useStyles();
-  const catalog_id = history.location.pathname.split("/").reverse()[0];
+  // to do : change for catalog_id
+  const { id: catalog_id } = useParams<{ id: string }>();
+
   const { setSectionInfo } = useStore();
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
@@ -130,7 +132,7 @@ export default function AddProducts() {
       image: product.image,
       catalog_id: catalog_id,
     }));
-    await addProducts(fulldata);
+    await addProducts(catalog_id, fulldata);
     setViewData(false);
     history.push(`/catalogs/${catalog_id}`);
   };

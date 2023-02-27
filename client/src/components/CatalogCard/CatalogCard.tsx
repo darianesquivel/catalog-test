@@ -21,8 +21,8 @@ import CustomDialog from "../CustomDialog/CustomDialog";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import removeCatalog from "../../api/removeCatalog";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
-// este tipado se repite en catalog explorer, modularizar
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
+// the below type we should reuse in Catalog Explorer
 type TcatalogCard = {
   id: string;
   name: string;
@@ -125,8 +125,10 @@ export default function CatalogCard({
     const eventName = event.target.id;
     setOption(eventName);
   };
+  const date = createdAt ? new Date(createdAt).toLocaleString() : "no date";
   const defaultImage =
     products?.[Math.ceil(Math.random() * productCount)]?.image;
+
   const menuOpen = Boolean(anchorEl);
   const targetId = menuOpen ? "simple-popover" : undefined;
   const renderDialog =
@@ -202,10 +204,7 @@ export default function CatalogCard({
 
           {productCount < 1 ? (
             <CardMedia
-              onClick={() => {
-                setSectionInfo("Catalog Upload", id);
-                history.push(`/addproducts/${id}`);
-              }}
+              onClick={() => history.push(`/catalogs/${id}/upload`)}
               className={classes.media}
               children={
                 <>
@@ -237,7 +236,7 @@ export default function CatalogCard({
             >{`${productCount > 1 ? productCount : 0} products`}</Typography>
             <Typography className={classes.createdAt}>
               <FontAwesomeIcon size="1x" icon={faCalendarDay} />
-              {`Created: ${createdAt ? createdAt : "no date"}`}
+              {`Created: ${date}`}
             </Typography>
           </CardContent>
         </CardContent>

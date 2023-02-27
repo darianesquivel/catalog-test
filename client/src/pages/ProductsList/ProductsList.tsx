@@ -13,7 +13,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SummaryDetails from "../ProductDetails/SummaryDetails";
 import { useEffect, useMemo, useState } from "react";
-import { useStore } from "../../components/DrawerAppbar/DrawerAppbar";
+import { useStore } from "../DrawerAppbar/DrawerAppbar";
 
 const useStyles = makeStyles(() => ({
   container: {

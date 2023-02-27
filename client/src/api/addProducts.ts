@@ -1,6 +1,6 @@
 import axios from "axios";
-export default async function addProducts(params: any) {
+export default async function addProducts(catalogId: string, data: any) {
   return await axios
-    .post("/addproducts/:id", [...params])
+    .post(`/catalogs/${catalogId}/products`, [...data])
     .then((res: any) => res.data);
 }

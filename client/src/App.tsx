@@ -1,6 +1,6 @@
 import axios from "axios";
 //component
-import DrawerAppbar from "./components/DrawerAppbar/DrawerAppbar";
+import DrawerAppbar from "./pages/DrawerAppbar/DrawerAppbar";
 
 axios.defaults.baseURL = "http://localhost:3001/";
 
