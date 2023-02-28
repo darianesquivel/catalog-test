@@ -1,6 +1,13 @@
-import { Grid, ImageList, ImageListItem } from "@material-ui/core";
+import { Divider, Grid, ImageList, ImageListItem } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
+import Accordion from "@material-ui/core/Accordion";
+import AccordionSummary from "@material-ui/core/AccordionSummary";
+import AccordionDetails from "@material-ui/core/AccordionDetails";
+import Typography from "@material-ui/core/Typography";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import DetailTable from "../../components/DetailTable";
+
 type Tparams = {
   id: string;
   image: string;
@@ -9,12 +16,16 @@ type Tparams = {
 
 const useStyles = makeStyles((theme: Theme) => ({
   gridContainer: {
-    background: "black",
+    background: theme.palette.background.paper,
     height: "calc(100vh - 115px)",
   },
   leftBox: {
     background: theme.palette.background.default,
     height: "100%",
+  },
+  rightBox: {
+    // background: "pink",
+    padding: theme.spacing(1, 2),
   },
 
   imagesContainer: {
@@ -52,6 +63,28 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(0.3),
     flexGrow: 1,
   },
+  accordionBox: {
+    width: "100%",
+  },
+  header: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: theme.spacing(2),
+  },
+  divider: {
+    marginBottom: theme.spacing(2),
+  },
+  details: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: theme.spacing(2),
+  },
+  extraStyles: {
+    gap: theme.spacing(2),
+    padding: theme.spacing(0),
+    gridTemplateColumns: "2fr 3fr",
+  },
+  productTitle: {},
 }));
 export default function ProductDetails({ id, description, image }: Tparams) {
   const classes = useStyles();
@@ -60,6 +93,12 @@ export default function ProductDetails({ id, description, image }: Tparams) {
   );
   const [imagesState, setImagesState] = useState<any>([]);
   const [selected, setSelected] = useState<any>(imagesState?.[0]);
+  const keyValues = [
+    { key: "title", value: "Title value" },
+    { key: "images", value: "url images" },
+    { key: "mainImageUrl", value: "main image" },
+    { key: "description", value: "description again" },
+  ];
 
   useEffect(() => {
     Promise.all(images)
@@ -72,7 +111,6 @@ export default function ProductDetails({ id, description, image }: Tparams) {
 
   return (
     <>
-      <div>ProductDetail</div>
       <Grid container className={classes.gridContainer}>
         <Grid item xs={9} className={classes.leftBox}>
           <Grid container className={classes.imagesContainer}>
@@ -94,7 +132,85 @@ export default function ProductDetails({ id, description, image }: Tparams) {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item> Item 2</Grid>
+        <Grid item className={classes.rightBox} xs={3}>
+          <div className={classes.header}>
+            <Typography variant="subtitle1">Products Details</Typography>
+            <Typography variant="body2">
+              <span>Product ID</span>
+              <span>id value</span>
+            </Typography>
+            <Divider className={classes.divider} />
+          </div>
+          <div className={classes.accordionBox}>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography variant="caption">Product information</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                <div className={classes.productTitle}>
+                  <Typography variant="h6"> Product Title</Typography>
+                </div>
+                <div>
+                  <Typography variant="body2"> Description</Typography>
+                  <Typography variant="body2">
+                    {" "}
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Suspendisse malesuada lacus ex, sit amet blandit leo
+                    lobortis eget.
+                  </Typography>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion disabled>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel2a-content"
+                id="panel2a-header"
+              >
+                <Typography variant="caption">Assistant</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
+                  eget.
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel3a-content"
+                id="panel3a-header"
+              >
+                <Typography variant="caption">Metadata</Typography>
+              </AccordionSummary>
+              <AccordionDetails className={classes.details}>
+                {/* {keyValues.map(({ key, value }) => (
+                  <Grid container spacing={3}>
+                    <Grid item xs={6}>
+                      {" "}
+                      {key}
+                    </Grid>
+                    <Grid item xs={6}>
+                      {" "}
+                      {value}
+                    </Grid>
+                  </Grid>
+                ))} */}
+                <DetailTable
+                  rows={keyValues}
+                  noBold
+                  extraStyles={classes.extraStyles}
+                />
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        </Grid>
       </Grid>
     </>
   );

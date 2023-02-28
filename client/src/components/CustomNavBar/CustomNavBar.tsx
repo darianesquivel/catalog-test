@@ -20,11 +20,17 @@ export default function CustomNavBar({ className }: any) {
   const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
     (state: any) => state
   );
+  const { id, name } = sectionInfo;
+  console.log({ name });
   const history = useHistory();
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isUpload = /\/upload$/gi.test(currentUrl);
-  const sectionTitle = isUpload ? "Catalog upload" : "Catalog Explorer";
+  const sectionTitle = isUpload
+    ? "Catalog upload"
+    : name
+    ? name
+    : "Catalog Explorer";
   const catalogId = currentUrl.split("/").reverse()[0];
 
   useEffect(() => {
@@ -34,7 +40,7 @@ export default function CustomNavBar({ className }: any) {
     });
     return () => unlisten();
   }, [history, setCurrentUrl]);
-  const { id, name } = sectionInfo;
+
   return (
     <div>
       {open && (
@@ -65,9 +71,7 @@ export default function CustomNavBar({ className }: any) {
             )}
 
             <div className={classes.sectionName}>
-              <Typography variant="h6">
-                {sectionInfo?.name || sectionTitle}
-              </Typography>
+              <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
             {isProductListView && (

@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SummaryDetails from "../ProductDetails/SummaryDetails";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 import { useHistory, useParams } from "react-router";
 
@@ -73,7 +73,14 @@ const columns: GridColDef[] = [
     field: "image",
     headerName: "Image",
     width: 150,
-    renderCell: (params) => <img src={params.row.image} alt="" width="80px" />,
+    renderCell: (params) => (
+      <img
+        src={params.row.image}
+        alt=""
+        width="80px"
+        style={{ cursor: "pointer" }}
+      />
+    ),
   },
   { field: "id", headerName: "id", width: 150 },
   { field: "name", headerName: "Title", width: 150 },
@@ -139,8 +146,11 @@ const ProductsList = (props: any) => {
           checkboxSelection
           disableSelectionOnClick
           onCellClick={(cell: any) => {
-            if (cell.field === "image")
+            console.log({ cell });
+            if (cell.field === "image") {
+              setSectionInfo(cell.row.name);
               return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
+            }
             if (cell.field === "info") {
               setInfo(cell.row);
               return history.push(`/catalogs/${catalogId}/${cell.id}/`);
