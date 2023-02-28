@@ -3,10 +3,10 @@ type Tparams = {
   catalogId: string;
   productId: string;
 };
-export default async function getProductInfo<Promise>({
+export default async function getProductInfo({
   catalogId,
   productId,
-}: Tparams): Promise {
+}: Tparams) {
   return await axios
     .get(`/catalogs/${catalogId}/${productId}`)
     .then((res: any) => res.data);

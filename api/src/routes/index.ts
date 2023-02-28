@@ -109,6 +109,20 @@ router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
     res.status(503).send(error);
   }
 });
+// GET A SINGLE PRODUCT
+router.get(
+  "/catalogs/:catalogId/:productId",
+  async (req: Request, res: Response) => {
+    const { catalogId, productId } = req.params;
+
+    try {
+      const currentProd = await product.findByPk(productId);
+      res.status(200).json(currentProd);
+    } catch (error) {
+      res.status(503).send(error);
+    }
+  }
+);
 
 // Update Catalog
 router.put("/catalogs/:id", async (req: Request, res: Response) => {

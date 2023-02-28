@@ -7,6 +7,9 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DetailTable from "../../components/DetailTable";
+import { useParams } from "react-router";
+import getProductInfo from "../../api/getProductInfo";
+import { useQuery } from "@tanstack/react-query";
 
 type Tparams = {
   id: string;
@@ -86,8 +89,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   productTitle: {},
 }));
-export default function ProductDetails({ id, description, image }: Tparams) {
+export default function ProductDetails() {
   const classes = useStyles();
+  const { id: catalogId, productId } = useParams<{
+    id: string;
+    productId: string;
+  }>();
+
+  const {
+    data: product,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useQuery(["productInfo"], () => getProductInfo({ catalogId, productId }));
+  console.log({ product, isSuccess });
+
   const images = [1, 2, 3, 4, 5, 5, 7, 8].map((v, i) =>
     fetch("https://picsum.photos/2000/1400")
   );
