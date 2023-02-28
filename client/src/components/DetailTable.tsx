@@ -18,17 +18,21 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   bullet: {
     cursor: "pointer",
-    // textOverflow: "elipsis",
+  },
+  ellipsis: {
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
 }));
 
 type Trows = {
   rows: { key: string; value: string }[];
-  noBold?: boolean;
+  keysNobold?: boolean;
   extraStyles?: any;
 };
 
-export default function DetailTable({ rows, noBold, extraStyles }: Trows) {
+export default function DetailTable({ rows, keysNobold, extraStyles }: Trows) {
   const classes = useStyles();
   const renderRows = rows.map((row: any) => Object.values(row)).flat();
 
@@ -37,11 +41,11 @@ export default function DetailTable({ rows, noBold, extraStyles }: Trows) {
       {renderRows.map((value: any, index: number) => (
         <Tooltip title={value} key={`${value}-${index}`}>
           <span
-            className={`${index % 2 === 0 && !noBold ? classes.bold : ""} ${
+            className={`${index % 2 === 0 && !keysNobold ? classes.bold : ""} ${
               classes.bullet
-            }`}
+            } ${classes.ellipsis}`}
           >
-            {value.length > 100 ? value.substring(0, 52) + " ..." : value}
+            {value}
           </span>
         </Tooltip>
       ))}

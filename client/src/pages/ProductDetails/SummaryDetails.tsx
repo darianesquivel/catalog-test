@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Container,
-  Typography,
-  Toolbar,
-  Button,
-  IconButton,
-} from "@material-ui/core";
+import { Container, Typography, Toolbar, IconButton } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import CustomTabs from "../../components/CustomTabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
