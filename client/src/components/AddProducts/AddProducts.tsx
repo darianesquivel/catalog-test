@@ -119,12 +119,14 @@ export default function AddProducts() {
     isLoading,
     isSuccess,
     data: mutateData,
+    isError,
   } = useMutateHook(() => addProducts(catalog_id, data));
 
   console.log({
     isLoading,
     isSuccess,
     mutateData,
+    isError,
   });
 
   const { setSectionInfo } = useStore();
@@ -167,8 +169,8 @@ export default function AddProducts() {
       catalog_id: catalog_id,
     }));
     mutate();
-    setViewData(false);
-    history.push(`/catalogs/${catalog_id}`);
+    // setViewData(false);
+    // history.push(`/catalogs/${catalog_id}`);
   };
 
   return (
