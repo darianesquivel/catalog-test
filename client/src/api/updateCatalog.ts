@@ -6,7 +6,7 @@ type Tparams = {
 };
 export default async function updateCatalog({ name, id }: Tparams) {
   return await axios
-    .put(`/catalogs/update`, {
+    .put(`/catalogs/${id}`, {
       id,
       name,
     })

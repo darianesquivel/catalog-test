@@ -40,18 +40,15 @@ const CatalogExplorer = () => {
       }
     >
       <CatalogCreator />
+      {console.log("rerender c e")}
       {status === "success" &&
         catalogs.map((catalog: TcatalogCard) => {
-          const date = catalog["created_at"]
-            ? new Date(catalog["created_at"]).toLocaleString()
-            : "";
-
           return (
             <CatalogCard
               key={catalog.id}
               id={catalog.id}
               name={catalog.name}
-              createdAt={date}
+              createdAt={catalog["created_at"]}
               productCount={catalog.productCount}
               products={catalog.products}
             />

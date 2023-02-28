@@ -1,5 +1,6 @@
 import {
   Button,
+  CircularProgress,
   makeStyles,
   Paper,
   Table,
@@ -12,7 +13,7 @@ import {
 } from "@material-ui/core";
 
 import addProducts from "../../api/addProducts";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,13 +21,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Papa from "papaparse";
 import { useEffect, useState } from "react";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
-import { useParams } from "react-router-dom";
-import CircularProgress from "@material-ui/core/CircularProgress";
-
-type TProducts = {
-  id: string;
-};
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 
 const columns: GridColDef[] = [
   {
@@ -116,7 +111,8 @@ export default function AddProducts() {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const classes = useStyles();
-  const { id } = useParams<TProducts>();
+  // to do : change for catalog_id
+  const { id: catalog_id } = useParams<{ id: string }>();
 
   const { setSectionInfo } = useStore();
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
@@ -155,11 +151,11 @@ export default function AddProducts() {
       title: product.title,
       description: product.description,
       image: product.image,
-      catalog_id: id,
+      catalog_id: catalog_id,
     }));
-    await addProducts(fulldata);
+    await addProducts(catalog_id, fulldata);
     setViewData(false);
-    history.push(`/catalogs/${id}`);
+    history.push(`/catalogs/${catalog_id}`);
   };
 
   return (

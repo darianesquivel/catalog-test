@@ -16,14 +16,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
-import CatalogExplorer from "../../pages/CatalogExplorer/CatalogExplorer";
-import ProductsList from "../../pages/ProductsList/ProductsList";
-import ProductDetails from "../../pages/ProductDetails/ProductDetails";
-import AddProducts from "../AddProducts/AddProducts";
+import CatalogExplorer from "../CatalogExplorer/CatalogExplorer";
+import ProductsList from "../ProductsList/ProductsList";
+import ProductDetails from "../ProductDetails/ProductDetails";
+import AddProducts from "../../components/AddProducts/AddProducts";
 import "../../app.css";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import CustomNavBar from "../CustomNavBar/CustomNavBar";
+import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
 import { useStyles } from "./Styles";
 const drawerButtons = [
   {
@@ -177,7 +177,7 @@ export default function MiniDrawer() {
             <Route exact path="/catalogs" component={CatalogExplorer} />
             <Route exact path="/catalogs/:id" component={ProductsList} />
             <Route exact path="/details" component={ProductDetails} />
-            <Route exact path="/addproducts/:id" component={AddProducts} />
+            <Route exact path="/catalogs/:id/upload" component={AddProducts} />
           </Switch>
         </div>
       </div>

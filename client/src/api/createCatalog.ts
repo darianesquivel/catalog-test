@@ -5,7 +5,7 @@ type content = {
 };
 export default async function createCatalog(params: content) {
   return await axios
-    .post("/catalogs/new", {
+    .post("/catalogs/catalog", {
       ...params,
     })
     .then((res: any) => res.data);
