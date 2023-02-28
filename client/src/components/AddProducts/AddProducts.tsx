@@ -22,6 +22,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Papa from "papaparse";
 import { useEffect, useState } from "react";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
+import { useMutateHook } from "../../hooks";
 
 const columns: GridColDef[] = [
   {
@@ -113,6 +114,18 @@ export default function AddProducts() {
   const classes = useStyles();
   // to do : change for catalog_id
   const { id: catalog_id } = useParams<{ id: string }>();
+  const {
+    mutate,
+    isLoading,
+    isSuccess,
+    data: mutateData,
+  } = useMutateHook(() => addProducts(catalog_id, data));
+
+  console.log({
+    isLoading,
+    isSuccess,
+    mutateData,
+  });
 
   const { setSectionInfo } = useStore();
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
@@ -146,14 +159,14 @@ export default function AddProducts() {
 
   const handleSubmit = async () => {
     // the catalogId is added to the products uploaded via CSV
-    const fulldata = data.map((product: any) => ({
+    const fulldata: any = data.map((product: any) => ({
       id: product.id,
       title: product.title,
       description: product.description,
       image: product.image,
       catalog_id: catalog_id,
     }));
-    await addProducts(catalog_id, fulldata);
+    mutate();
     setViewData(false);
     history.push(`/catalogs/${catalog_id}`);
   };
