@@ -175,6 +175,7 @@ export default function MiniDrawer() {
           <Switch>
             <Route exact path="/" component={CatalogExplorer} />
             <Route exact path="/catalogs" component={CatalogExplorer} />
+            <Route exact path="/catalogs/:id/upload" component={AddProducts} />
             <Route
               exact
               path="/catalogs/:id/:productId?"
@@ -186,7 +187,6 @@ export default function MiniDrawer() {
               path="/catalogs/:id/:productId/details"
               component={ProductDetails}
             />
-            <Route exact path="/catalogs/:id/upload" component={AddProducts} />
           </Switch>
         </div>
       </div>

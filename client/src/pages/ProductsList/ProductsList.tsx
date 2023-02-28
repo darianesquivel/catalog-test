@@ -147,10 +147,8 @@ const ProductsList = (props: any) => {
           disableSelectionOnClick
           onCellClick={(cell: any) => {
             console.log({ cell });
-            if (cell.field === "image") {
-              setSectionInfo(cell.row.name);
+            if (cell.field === "image")
               return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
-            }
             if (cell.field === "info") {
               setInfo(cell.row);
               return history.push(`/catalogs/${catalogId}/${cell.id}/`);
