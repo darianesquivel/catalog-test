@@ -5,6 +5,9 @@ import CatalogCard from "../../components/CatalogCard/CatalogCard";
 import CatalogCreator from "../../components/CatalogCard/CatalogCreator";
 // MUI
 import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@material-ui/core";
+
+import CustomAlert from "../../components/Alert/CustomAlert";
 
 type TcatalogCard = {
   id: string;
@@ -15,7 +18,7 @@ type TcatalogCard = {
   productCount: number;
   className?: any;
 };
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   gridContainer: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax( 290px, 1fr))",
@@ -26,33 +29,54 @@ const useStyles = makeStyles(() => ({
     gridTemplateColumns: "repeat(5, 1fr)",
     gap: "16px",
   },
+  loading: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 
 const CatalogExplorer = () => {
   const classes = useStyles();
   const { data: catalogs, status } = useQuery(["catalogs"], getAllCatalogs);
+
   return (
-    <div
-      className={
-        !catalogs || catalogs?.length < 5
-          ? classes.containerNoData
-          : classes.gridContainer
-      }
-    >
-      <CatalogCreator />
-      {status === "success" &&
-        catalogs.map((catalog: TcatalogCard) => {
-          return (
-            <CatalogCard
-              key={catalog.id}
-              id={catalog.id}
-              name={catalog.name}
-              createdAt={catalog["created_at"]}
-              productCount={catalog.productCount}
-              products={catalog.products}
-            />
-          );
-        })}
+    <div>
+      {status === "loading" ? (
+        <div className={classes.loading}>
+          <CircularProgress />
+        </div>
+      ) : null}
+
+      {status === "success" ? (
+        <div
+          className={
+            !catalogs || catalogs?.length < 5
+              ? classes.containerNoData
+              : classes.gridContainer
+          }
+        >
+          <CatalogCreator />
+          {catalogs.map((catalog: TcatalogCard) => {
+            return (
+              <CatalogCard
+                key={catalog.id}
+                id={catalog.id}
+                name={catalog.name}
+                createdAt={catalog["created_at"]}
+                productCount={catalog.productCount}
+                products={catalog.products}
+              />
+            );
+          })}
+        </div>
+      ) : null}
+
+      {status === "error" ? (
+        <div>
+          <CustomAlert alertType="error" message={`an error has occurred`} />
+        </div>
+      ) : null}
     </div>
   );
 };
