@@ -1,4 +1,3 @@
-import { makeStyles, createStyles } from "@material-ui/core/styles";
 import {
   CardContent,
   Typography,
@@ -22,6 +21,10 @@ import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import removeCatalog from "../../api/removeCatalog";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
+
+//STYLES
+import useStyles from "./styles";
+
 // the below type we should reuse in Catalog Explorer
 type TcatalogCard = {
   id: string;
@@ -31,73 +34,6 @@ type TcatalogCard = {
   image?: string;
   productCount: number;
 };
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      height: 355,
-      borderRadius: "8px",
-      display: "flex",
-    },
-    cardContainer: {
-      width: "100%",
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      padding: "0px",
-    },
-    media: {
-      height: 300,
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      color: "#6A5DF9",
-      gap: "8px",
-      textDecoration: "none",
-      cursor: "pointer",
-    },
-    mediaContent: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-    },
-    headerContainer: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "space-between",
-      boxSizing: "border-box",
-    },
-    footerContainer: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-    },
-    typography: {
-      fontWeight: 200,
-    },
-    products: {
-      color: "#6A5DF9",
-      fontSize: "14px",
-      marginBottom: "5px",
-      cursor: "pointer",
-    },
-    createdAt: {
-      display: "flex",
-      alignItems: "center",
-      color: "grey",
-      fontWeight: "lighter",
-      fontSize: "14px",
-      gap: "8px",
-    },
-    link: {
-      width: "100%",
-      textDecoration: "none",
-      color: "inherit",
-    },
-  })
-);
 
 export default function CatalogCard({
   id,
