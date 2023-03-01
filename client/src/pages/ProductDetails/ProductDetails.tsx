@@ -1,5 +1,4 @@
 import { Divider, Grid, CircularProgress } from "@material-ui/core";
-import { makeStyles, Theme } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
