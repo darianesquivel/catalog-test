@@ -1,4 +1,4 @@
-import { Divider, Grid, ImageList, ImageListItem } from "@material-ui/core";
+import { Divider, Grid, CircularProgress } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import React, { useEffect, useState } from "react";
 import Accordion from "@material-ui/core/Accordion";
@@ -11,6 +11,7 @@ import { useParams } from "react-router";
 import getProductInfo from "../../api/getProductInfo";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import CustomAlert from "../../components/Alert/CustomAlert";
 
 type Tproduct = {
   id: string;
@@ -35,9 +36,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   leftBox: {
     background: theme.palette.background.default,
     height: "100%",
+    position: "relative",
   },
   rightBox: {
     padding: theme.spacing(1, 2),
+    position: "relative",
   },
 
   imagesContainer: {
@@ -107,6 +110,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "grid",
     gap: theme.spacing(2),
   },
+  center: {
+    display: "block",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+  },
 }));
 export default function ProductDetails() {
   const classes = useStyles();
@@ -115,7 +124,7 @@ export default function ProductDetails() {
     productId: string;
   }>();
 
-  const { data, isLoading, isError, isSuccess } = useQuery(
+  const { data, isLoading, error, isSuccess } = useQuery(
     [`productInfo/${productId}`],
     () => getProductInfo({ catalogId, productId })
   );
@@ -124,8 +133,8 @@ export default function ProductDetails() {
 
   const { setSectionInfo } = useStore((state) => state);
 
-  const images = [1, 2, 3, 4, 5, 5, 7, 8].map((v, i) =>
-    fetch("https://picsum.photos/2000/1400")
+  const images = [1, 2, 3, 4, 5, 5, 7, 8].map(
+    (v, i) => "https://picsum.photos/2000/1400"
   );
   const [imagesState, setImagesState] = useState<any>([]);
   const [selected, setSelected] = useState<any>(imagesState?.[0]);
@@ -139,12 +148,7 @@ export default function ProductDetails() {
   useEffect(() => {
     setSectionInfo(product.name);
 
-    Promise.all(images)
-      .then((values) => {
-        setImagesState(values.map((e) => e.url));
-        // setSelected(values[0]?.url);
-      })
-      .catch((er) => console.log(er));
+    setImagesState(images);
     return () => setSectionInfo("");
   }, [product?.name, setSectionInfo]);
 
@@ -152,7 +156,9 @@ export default function ProductDetails() {
     <>
       <Grid container className={classes.gridContainer}>
         <Grid item xs={9} className={classes.leftBox}>
-          {isLoading ? "Loading..." : null}
+          {isLoading ? (
+            <CircularProgress size={28} className={classes.center} />
+          ) : null}
           {isSuccess ? (
             <Grid container className={classes.imagesContainer}>
               <Grid item xs={2} className={classes.carousel}>
@@ -176,11 +182,18 @@ export default function ProductDetails() {
               </Grid>
             </Grid>
           ) : null}
-          {isError ? "there was an errror" : null}
+          {error && (
+            <CustomAlert
+              alertType="error"
+              message={`There was an error creating the catalog: ${error}`}
+            />
+          )}
         </Grid>
 
         <Grid item className={classes.rightBox} xs={3}>
-          {isLoading ? "Loading..." : null}
+          {isLoading ? (
+            <CircularProgress size={28} className={classes.center} />
+          ) : null}
 
           {isSuccess ? (
             <>
@@ -251,6 +264,11 @@ export default function ProductDetails() {
                 </Accordion>
               </div>
             </>
+          ) : error ? (
+            <CustomAlert
+              alertType="error"
+              message={`There was an error creating the catalog: ${error}`}
+            />
           ) : null}
         </Grid>
       </Grid>

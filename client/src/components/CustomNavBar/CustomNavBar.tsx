@@ -21,11 +21,11 @@ export default function CustomNavBar({ className }: any) {
     (state: any) => state
   );
   const { id, name } = sectionInfo;
-  console.log({ name });
   const history = useHistory();
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isUpload = /\/upload$/gi.test(currentUrl);
+  const isDetails = /\/details$/gi.test(currentUrl);
   const sectionTitle = isUpload
     ? "Catalog upload"
     : name
@@ -74,7 +74,7 @@ export default function CustomNavBar({ className }: any) {
               <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
-            {isProductListView && (
+            {isProductListView && !isDetails && (
               <IconButton
                 className={classes.icons}
                 onClick={() => setOpen(true)}
@@ -85,7 +85,7 @@ export default function CustomNavBar({ className }: any) {
           </div>
 
           <div className={classes.endSection}>
-            {isProductListView && (
+            {isProductListView && !isDetails && (
               <Button
                 variant="outlined"
                 color="primary"
