@@ -61,10 +61,6 @@ router.get("/catalogs", async (req: Request, res: Response) => {
         where: {
           catalog_id: id,
         },
-        order: [
-          ["created_at", "DESC"],
-          ["name", "ASC"],
-        ],
       });
 
       const productCount = catalogProducts.length;
@@ -75,7 +71,7 @@ router.get("/catalogs", async (req: Request, res: Response) => {
         products: catalogProducts,
       });
     }
-
+    fullData.reverse();
     res.status(200).json(fullData);
   } catch (err) {
     res.status(404).send(err);
