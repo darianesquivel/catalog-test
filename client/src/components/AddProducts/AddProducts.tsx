@@ -64,11 +64,20 @@ export default function AddProducts() {
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
+        // this is only temporal to avoid crashing the app
+        // Darian to handle the errors
 
         const sanitizedData = csvData
           .map((obj: any) => {
-            const { id, description, title, image } = obj || {};
-            return { id, description, title, image, catalog_id: catalogId };
+            const { id, description, title, image, Images } = obj || {};
+            return {
+              id,
+              description,
+              title,
+              image,
+              catalog_id: catalogId,
+              allImages: Images,
+            };
           })
           .filter((obj: any) => obj.description && obj.title && obj.image);
 

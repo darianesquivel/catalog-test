@@ -21,6 +21,7 @@ type Tproduct = {
   updated_at?: any;
   image: string;
   catalog_id: string;
+  allImages?: string[];
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -128,29 +129,27 @@ export default function ProductDetails() {
     [`productInfo/${productId}`],
     () => getProductInfo({ catalogId, productId })
   );
-
-  const product: Tproduct = data || {};
+  const product: Tproduct = data?.[0] || {};
 
   const { setSectionInfo } = useStore((state) => state);
 
-  const images = [1, 2, 3, 4, 5, 5, 7, 8].map(
-    (v, i) => "https://picsum.photos/2000/1400"
-  );
   const [imagesState, setImagesState] = useState<any>([]);
   const [selected, setSelected] = useState<any>(imagesState?.[0]);
   const keyValues = [
     { key: "title", value: product.name },
-    { key: "images", value: "url images" },
+    {
+      key: "images",
+      value: imagesState?.join(", ") || "-",
+    },
     { key: "mainImageUrl", value: product.image },
     { key: "description", value: product.description },
   ];
 
   useEffect(() => {
     setSectionInfo(product.name);
-
-    setImagesState(images);
+    setImagesState(product.allImages?.map((obj: any) => obj?.url));
     return () => setSectionInfo("");
-  }, [product?.name, setSectionInfo]);
+  }, [product, setSectionInfo]);
 
   return (
     <>
@@ -162,10 +161,12 @@ export default function ProductDetails() {
           {isSuccess ? (
             <Grid container className={classes.imagesContainer}>
               <Grid item xs={2} className={classes.carousel}>
-                {imagesState.map((url: any) =>
+                {imagesState?.map((url: string) =>
                   url ? (
                     <img
                       src={url}
+                      key={url}
+                      alt={`${product.name}`}
                       className={`${classes.img}`}
                       onClick={() => setSelected(url)}
                     />

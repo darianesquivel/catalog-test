@@ -4,7 +4,7 @@ import database from "../db";
 import axios from "axios";
 const router = Router();
 
-const { catalogs, product } = database.models;
+const { catalogs, product, images } = database.models;
 //CREATE CATALOG
 router.post("/catalogs/catalog", async (req: Request, res: Response) => {
   const { name } = req.body;
@@ -29,9 +29,13 @@ router.post(
     const products = req.body;
     try {
       for (const prod of products) {
-        const { id, title, description, catalog_id, image } = prod;
+        const { id, title, description, catalog_id, image, allImages } = prod;
+        const extraImages = allImages
+          ? allImages.split(",").map((url: string) => url?.trim())
+          : [];
+        console.log({ extraImages });
 
-        await product.findOrCreate({
+        const newProduct = await product.findOrCreate({
           where: {
             // id,
             name: title,
@@ -40,7 +44,19 @@ router.post(
             image,
           },
         });
+        console.log({ newProduct });
+        if (extraImages?.length) {
+          for (let image of extraImages) {
+            await images.findOrCreate({
+              where: {
+                url: image,
+                product_id: newProduct[0].dataValues.id,
+              },
+            });
+          }
+        }
       }
+
       res.status(200).send("Products added successfuly");
     } catch (err: any) {
       res.status(503).send(err.message);
@@ -64,7 +80,6 @@ router.get("/catalogs", async (req: Request, res: Response) => {
       });
 
       const productCount = catalogProducts.length;
-
       fullData.push({
         ...catalog.dataValues,
         productCount,
@@ -110,10 +125,16 @@ router.get(
   "/catalogs/:catalogId/:productId",
   async (req: Request, res: Response) => {
     const { catalogId, productId } = req.params;
-
     try {
       const currentProd = await product.findByPk(productId);
-      res.status(200).json(currentProd);
+      const relatedImages = await images.findAll({
+        where: {
+          product_id: productId,
+        },
+      });
+      res
+        .status(200)
+        .json([{ ...currentProd?.dataValues, allImages: relatedImages }]);
     } catch (error) {
       res.status(503).send(error);
     }
