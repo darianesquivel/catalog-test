@@ -11,7 +11,7 @@ import {
   faPen,
   faRedoAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import useStyles from "./styles";
+import useStyles from "./Styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory, useParams } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
