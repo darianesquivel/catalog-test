@@ -7,7 +7,6 @@ import CatalogCreator from "../../components/CatalogCard/CatalogCreator";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
 
-import { useHistory } from "react-router";
 import CustomAlert from "../../components/Alert/CustomAlert";
 
 type TcatalogCard = {
@@ -40,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 const CatalogExplorer = () => {
   const classes = useStyles();
   const { data: catalogs, status } = useQuery(["catalogs"], getAllCatalogs);
-  const history = useHistory();
 
   return (
     <div>
