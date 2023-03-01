@@ -72,7 +72,6 @@ export default function AddProducts() {
           })
           .filter((obj: any) => obj.description && obj.title && obj.image);
 
-        console.log("sanitizedData", sanitizedData);
         setUpload(false);
         setData(sanitizedData);
         setPreview(true);
