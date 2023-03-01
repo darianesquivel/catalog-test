@@ -96,6 +96,7 @@ const ProductsList = (props: any) => {
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
   );
+  const { currentUrl } = useStore((state) => state);
 
   const products = catalog ? catalog[0].products : [];
   const rows: GridRowsProp = products;
@@ -104,12 +105,12 @@ const ProductsList = (props: any) => {
 
   useEffect(() => {
     setSectionInfo(catalog?.[0]?.name, catalog?.[0]?.id);
-    const initialValues = params.productId
-      ? products.find((data: any) => data.id === params.productId)
-      : undefined;
+    const initialValues = products.find(
+      (data: any) => data.id === params.productId
+    );
     setInfo(initialValues);
     return () => setSectionInfo("");
-  }, [catalog, setSectionInfo]);
+  }, [catalog, setSectionInfo, currentUrl]);
 
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>
@@ -146,7 +147,6 @@ const ProductsList = (props: any) => {
           checkboxSelection
           disableSelectionOnClick
           onCellClick={(cell: any) => {
-            console.log({ cell });
             if (cell.field === "image")
               return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
             if (cell.field === "info") {

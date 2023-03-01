@@ -62,7 +62,10 @@ export default function CustomNavBar({ className }: any) {
             {isProductListView || isUpload ? (
               <IconButton
                 className={classes.icons}
-                onClick={() => history.goBack()}
+                onClick={() => {
+                  if (isDetails) history.goBack();
+                  else history.push("/catalogs");
+                }}
               >
                 <FontAwesomeIcon icon={faAngleLeft} size="sm" />
               </IconButton>
