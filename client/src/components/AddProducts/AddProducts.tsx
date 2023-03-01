@@ -105,13 +105,13 @@ export default function AddProducts() {
         const csvData: any = result.data;
         // this is only temporal to avoid crashing the app
         // Darian to handle the errors
+
         const sanitizedData = csvData
           .map((obj: any) => {
-            const { id, description, title, image } = obj || {};
-            return { id, description, title, image };
+            const { id, description, title, image, Images } = obj || {};
+            return { id, description, title, image, Images };
           })
           .filter((obj: any) => obj.description && obj.title && obj.image);
-
         setData(sanitizedData);
         setViewData(true);
       },
@@ -131,7 +131,9 @@ export default function AddProducts() {
       description: product.description,
       image: product.image,
       catalog_id: catalog_id,
+      allImages: product.Images,
     }));
+
     await addProducts(catalog_id, fulldata);
     setViewData(false);
     history.push(`/catalogs/${catalog_id}`);
