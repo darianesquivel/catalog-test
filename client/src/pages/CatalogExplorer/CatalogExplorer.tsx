@@ -38,17 +38,23 @@ const useStyles = makeStyles((theme) => ({
 
 const CatalogExplorer = () => {
   const classes = useStyles();
-  const { data: catalogs, status } = useQuery(["catalogs"], getAllCatalogs);
+  const {
+    data: catalogs,
+    isError,
+    isLoading,
+    isSuccess,
+    error,
+  } = useQuery(["catalogs"], getAllCatalogs);
 
   return (
     <div>
-      {status === "loading" ? (
+      {isLoading ? (
         <div className={classes.loading}>
           <CircularProgress />
         </div>
       ) : null}
 
-      {status === "success" ? (
+      {isSuccess ? (
         <div
           className={
             !catalogs || catalogs?.length < 5
@@ -72,9 +78,12 @@ const CatalogExplorer = () => {
         </div>
       ) : null}
 
-      {status === "error" ? (
+      {isError ? (
         <div>
-          <CustomAlert alertType="error" message={`an error has occurred`} />
+          <CustomAlert
+            alertType="error"
+            message={`An error occurred while loading the catalogs: ${error}`}
+          />
         </div>
       ) : null}
     </div>
