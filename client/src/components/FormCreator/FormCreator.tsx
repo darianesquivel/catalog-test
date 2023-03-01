@@ -53,6 +53,7 @@ type Tprops = {
   handleModal: () => void;
   isOpen: boolean;
   apiFunction: (...params: any) => any;
+  extraFn?: () => void;
   initialValues?: {
     name: string;
     id: string;
@@ -68,6 +69,7 @@ const FormCreator = ({
   initialValues,
   keysToInvalidate,
   acceptBtnName,
+  extraFn,
 }: Tprops) => {
   const classes = useStyles();
   const stateValue = Object.keys(initialValues || {}).length
@@ -102,6 +104,7 @@ const FormCreator = ({
         onSuccess: () => {
           formik.resetForm();
           queryClientConfig.invalidateQueries(keysToInvalidate);
+          extraFn?.();
         },
       });
     }

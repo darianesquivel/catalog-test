@@ -34,7 +34,7 @@ export default function CustomAlert({
   return (
     <Alert
       severity={alertType}
-      className={`${classes.root}${propClassName}`}
+      className={`${classes.root} ${propClassName}`}
       variant={variantValue}
       action={
         closeIcon && (
