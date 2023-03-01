@@ -20,11 +20,10 @@ import CatalogExplorer from "../CatalogExplorer/CatalogExplorer";
 import ProductsList from "../ProductsList/ProductsList";
 import ProductDetails from "../ProductDetails/ProductDetails";
 import AddProducts from "../../components/AddProducts/AddProducts";
-import "../../app.css";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
-import { useStyles } from "./Styles";
+import { useStyles } from "./styles";
 const drawerButtons = [
   {
     text: "Data Explorer",
@@ -86,7 +85,7 @@ export default function MiniDrawer() {
 
   return (
     <BrowserRouter>
-      <div className={`${classes.root} App`}>
+      <div className={classes.root}>
         <CustomNavBar
           className={clsx(classes.appBar, {
             [classes.appBarShift]: open,
