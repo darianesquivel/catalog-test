@@ -129,7 +129,6 @@ router.get(
   "/catalogs/:catalogId/:productId",
   async (req: Request, res: Response) => {
     const { catalogId, productId } = req.params;
-    console.log({ productId });
     try {
       const currentProd = await product.findByPk(productId);
       const relatedImages = await images.findAll({

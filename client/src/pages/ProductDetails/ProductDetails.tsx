@@ -149,7 +149,7 @@ export default function ProductDetails() {
     setSectionInfo(product.name);
     setImagesState(product.allImages?.map((obj: any) => obj?.url));
     return () => setSectionInfo("");
-  }, [product?.name, setSectionInfo]);
+  }, [product, setSectionInfo]);
 
   return (
     <>
