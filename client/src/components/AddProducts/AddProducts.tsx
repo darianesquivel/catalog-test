@@ -4,6 +4,7 @@ import addProducts from "../../api/addProducts";
 import Papa from "papaparse";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import { useMutateHook } from "../../hooks";
+import CustomAlert from "../Alert/CustomAlert";
 
 //MUI
 import {
@@ -29,9 +30,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //STYLES
 import useStyles from "./styles";
-
-import CustomDialog from "../CustomDialog/CustomDialog";
-import CustomAlert from "../Alert/CustomAlert";
 
 const columns: GridColDef[] = [
   {
@@ -73,6 +71,8 @@ export default function AddProducts() {
             return { id, description, title, image, catalog_id: catalogId };
           })
           .filter((obj: any) => obj.description && obj.title && obj.image);
+
+        console.log("sanitizedData", sanitizedData);
         setUpload(false);
         setData(sanitizedData);
         setPreview(true);
@@ -177,7 +177,7 @@ export default function AddProducts() {
           </Dialog>
         ) : null}
 
-        {preview && !isError && !isLoading && !isSuccess ? (
+        {preview && !isError && !isLoading && !isSuccess && data.length > 0 ? (
           <TableBody className={classes.tableData}>
             <TableRow>
               <TableCell align="center">
@@ -196,8 +196,28 @@ export default function AddProducts() {
           </TableBody>
         ) : null}
 
+        {preview && data.length < 1 ? (
+          <Dialog
+            open={data.length < 1}
+            onClose={handleCancel}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <CustomAlert
+              alertType="error"
+              message={`Please check that the CSV has the following columns (id - title - description - image)`}
+              closeIcon={true}
+              onClose={handleCancel}
+            />
+          </Dialog>
+        ) : null}
+
         <TableHead className={classes.tableFooter}>
-          {preview && !isError && !isLoading && !isSuccess ? (
+          {preview &&
+          !isError &&
+          !isLoading &&
+          !isSuccess &&
+          data.length > 0 ? (
             <>
               <Button
                 variant="contained"
