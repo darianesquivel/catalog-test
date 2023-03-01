@@ -1,13 +1,11 @@
-import { makeStyles, Theme } from "@material-ui/core/styles";
+//MUI
 import { Alert, AlertTitle } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
-const useStyles = makeStyles((theme: Theme) => {
-  return {
-    root: {},
-  };
-});
+//STYLES
+import useStyles from "./styles";
+
 type Tseverity = "error" | "warning" | "info" | "success";
 type Tvariant = "filled" | "outlined" | "standard";
 
