@@ -181,7 +181,6 @@ export default function MiniDrawer() {
               path="/catalogs/:id/:productId?"
               component={ProductsList}
             />
-            {/* <Route exact path="/details" component={ProductDetails} /> */}
             <Route
               exact
               path="/catalogs/:id/:productId/details"
