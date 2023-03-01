@@ -20,11 +20,17 @@ export default function CustomNavBar({ className }: any) {
   const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
     (state: any) => state
   );
+  const { id, name } = sectionInfo;
   const history = useHistory();
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isUpload = /\/upload$/gi.test(currentUrl);
-  const sectionTitle = isUpload ? "Catalog upload" : "Catalog Explorer";
+  const isDetails = /\/details$/gi.test(currentUrl);
+  const sectionTitle = isUpload
+    ? "Catalog upload"
+    : name
+    ? name
+    : "Catalog Explorer";
   const catalogId = currentUrl.split("/").reverse()[0];
 
   useEffect(() => {
@@ -34,7 +40,7 @@ export default function CustomNavBar({ className }: any) {
     });
     return () => unlisten();
   }, [history, setCurrentUrl]);
-  const { id, name } = sectionInfo;
+
   return (
     <div>
       {open && (
@@ -56,7 +62,10 @@ export default function CustomNavBar({ className }: any) {
             {isProductListView || isUpload ? (
               <IconButton
                 className={classes.icons}
-                onClick={() => history.goBack()}
+                onClick={() => {
+                  if (isDetails) history.goBack();
+                  else history.push("/catalogs");
+                }}
               >
                 <FontAwesomeIcon icon={faAngleLeft} size="sm" />
               </IconButton>
@@ -65,12 +74,10 @@ export default function CustomNavBar({ className }: any) {
             )}
 
             <div className={classes.sectionName}>
-              <Typography variant="h6">
-                {sectionInfo?.name || sectionTitle}
-              </Typography>
+              <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
-            {isProductListView && (
+            {isProductListView && !isDetails && (
               <IconButton
                 className={classes.icons}
                 onClick={() => setOpen(true)}
@@ -81,7 +88,7 @@ export default function CustomNavBar({ className }: any) {
           </div>
 
           <div className={classes.endSection}>
-            {isProductListView && (
+            {isProductListView && !isDetails && (
               <Button
                 variant="outlined"
                 color="primary"
