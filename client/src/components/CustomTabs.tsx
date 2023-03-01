@@ -1,16 +1,10 @@
 import React from "react";
 import { Paper, Tabs, Tab } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import useStyles from "./styles";
 
 interface TpropsArray {
   tabValues: { columnName: string; content: any; disabled?: boolean }[];
 }
-
-const useStyles = makeStyles({
-  content: {
-    height: "100%",
-  },
-});
 
 export default function CustomTabs({ tabValues }: TpropsArray) {
   const classes = useStyles();
