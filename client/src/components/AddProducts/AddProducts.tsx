@@ -1,6 +1,17 @@
+import { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import addProducts from "../../api/addProducts";
+import Papa from "papaparse";
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
+import { useMutateHook } from "../../hooks";
+import CustomAlert from "../Alert/CustomAlert";
+
+//MUI
 import {
   Button,
-  makeStyles,
+  CircularProgress,
+  Dialog,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -10,17 +21,15 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { ReplayOutlined } from "@material-ui/icons";
 
-import addProducts from "../../api/addProducts";
-import { useHistory, useParams } from "react-router-dom";
-
+//FA
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import Papa from "papaparse";
-import { useEffect, useState } from "react";
-import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
+//STYLES
+import useStyles from "./styles";
 
 const columns: GridColDef[] = [
   {
@@ -34,107 +43,58 @@ const columns: GridColDef[] = [
   { field: "description", headerName: "Description", width: 150 },
 ];
 
-const useStyles = makeStyles(() => ({
-  table: {
-    width: "100%",
-  },
-  tableHead: {
-    height: 60,
-  },
-  tableFooter: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    padding: "10px",
-    gap: "10px",
-  },
-  button: {
-    borderRadius: "8px",
-  },
-  tableData: {
-    height: 600,
-  },
-  icons: {
-    marginRight: "5px",
-  },
-  inputContainer: {
-    width: "100%",
-    height: 500,
-
-    display: "flex",
-    justifyContent: "center",
-    padding: "20px",
-    borderRadius: "8px",
-    boxSizing: "border-box",
-  },
-  buttonInput: {
-    width: "100%",
-    border: "1px dashed #6A5DF9",
-  },
-  typography: {
-    fontSize: "13px",
-    textTransform: "none",
-    color: "grey",
-  },
-  typographyBold: {
-    fontSize: "16px",
-    fontWeight: "bold",
-    textTransform: "none",
-  },
-  image: {
-    width: "150px",
-  },
-}));
-
 export default function AddProducts() {
   const [data, setData] = useState([]);
-  const [viewData, setViewData] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [upload, setUpload] = useState(true);
   const history = useHistory();
   const classes = useStyles();
-  // to do : change for catalog_id
-  const { id: catalog_id } = useParams<{ id: string }>();
+  const { id: catalogId } = useParams<{ id: string }>();
+  const { mutate, isLoading, isSuccess, isError } = useMutateHook(() =>
+    addProducts(catalogId, data)
+  );
 
   const { setSectionInfo } = useStore();
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
   const handleFile = (e: any) => {
-    Papa.parse(e.target.files[0], {
+    const file = e.target.files[0];
+    Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
-        // this is only temporal to avoid crashing the app
-        // Darian to handle the errors
+
         const sanitizedData = csvData
           .map((obj: any) => {
             const { id, description, title, image } = obj || {};
-            return { id, description, title, image };
+            return { id, description, title, image, catalog_id: catalogId };
           })
           .filter((obj: any) => obj.description && obj.title && obj.image);
 
+        setUpload(false);
         setData(sanitizedData);
-        setViewData(true);
+        setPreview(true);
       },
     });
   };
 
   const handleCancel = () => {
-    setViewData(false);
+    setPreview(false);
+    setUpload(true);
     setData([]);
   };
 
   const handleSubmit = async () => {
-    // the catalogId is added to the products uploaded via CSV
-    const fulldata = data.map((product: any) => ({
-      id: product.id,
-      title: product.title,
-      description: product.description,
-      image: product.image,
-      catalog_id: catalog_id,
-    }));
-    await addProducts(catalog_id, fulldata);
-    setViewData(false);
-    history.push(`/catalogs/${catalog_id}`);
+    mutate();
+  };
+
+  const handleReLoad = () => {
+    history.go(0);
+  };
+
+  const handleIsSuccess = () => {
+    history.push(`/catalogs/${catalogId}`);
   };
 
   return (
@@ -151,32 +111,72 @@ export default function AddProducts() {
             </TableCell>
           </TableRow>
         </TableHead>
-        {!viewData ? (
+
+        {upload ? (
           <div className={classes.inputContainer}>
-            <Button className={classes.buttonInput}>
-              <input
-                accept={".csv"}
-                id="contained-button-file"
-                type="file"
-                hidden
-                onChange={handleFile}
+            <input
+              accept={".csv"}
+              id="contained-button-file"
+              type="file"
+              hidden
+              onChange={handleFile}
+            />
+            <label
+              className={classes.labelInput}
+              htmlFor="contained-button-file"
+            >
+              <img
+                src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
+                alt=""
+                className={classes.image}
               />
-              <label htmlFor="contained-button-file">
-                <img
-                  src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
-                  alt=""
-                  className={classes.image}
-                />
-                <Typography className={classes.typographyBold}>
-                  What data do you wish to import?
-                </Typography>
-                <Typography className={classes.typography}>
-                  Upload a CSV or Excel file to start the import process.
-                </Typography>
-              </label>
-            </Button>
+              <Typography className={classes.typographyBold}>
+                What data do you wish to import?
+              </Typography>
+              <Typography className={classes.typography}>
+                Upload a CSV or Excel file to start the import process.
+              </Typography>
+            </label>
           </div>
-        ) : (
+        ) : null}
+
+        {isError ? (
+          <div className={classes.error}>
+            <Typography>an error has occurred</Typography>
+            <IconButton
+              onClick={handleReLoad}
+              color="primary"
+              aria-label="reload"
+            >
+              <ReplayOutlined />
+            </IconButton>
+          </div>
+        ) : null}
+
+        {isLoading ? (
+          <div className={classes.loading}>
+            <Typography> Loading </Typography>
+            <CircularProgress />
+          </div>
+        ) : null}
+
+        {isSuccess ? (
+          <Dialog
+            open={isSuccess}
+            onClose={handleIsSuccess}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <CustomAlert
+              alertType="success"
+              message={`Products were successfully loaded`}
+              closeIcon={true}
+              onClose={handleIsSuccess}
+            />
+          </Dialog>
+        ) : null}
+
+        {preview && !isError && !isLoading && !isSuccess && data.length > 0 ? (
           <TableBody className={classes.tableData}>
             <TableRow>
               <TableCell align="center">
@@ -193,12 +193,30 @@ export default function AddProducts() {
               </TableCell>
             </TableRow>
           </TableBody>
-        )}
+        ) : null}
 
-        {/* Reder result table */}
+        {preview && data.length < 1 ? (
+          <Dialog
+            open={data.length < 1}
+            onClose={handleCancel}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          >
+            <CustomAlert
+              alertType="error"
+              message={`Please check that the CSV has the following columns (id - title - description - image)`}
+              closeIcon={true}
+              onClose={handleCancel}
+            />
+          </Dialog>
+        ) : null}
 
         <TableHead className={classes.tableFooter}>
-          {viewData ? (
+          {preview &&
+          !isError &&
+          !isLoading &&
+          !isSuccess &&
+          data.length > 0 ? (
             <>
               <Button
                 variant="contained"
