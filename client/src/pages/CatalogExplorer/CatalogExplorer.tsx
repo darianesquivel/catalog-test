@@ -5,10 +5,10 @@ import CatalogCard from "../../components/CatalogCard/CatalogCard";
 import CatalogCreator from "../../components/CatalogCard/CatalogCreator";
 // MUI
 import { makeStyles } from "@material-ui/core/styles";
-import { CircularProgress, IconButton, Typography } from "@material-ui/core";
-import { ReplayOutlined } from "@material-ui/icons";
+import { CircularProgress } from "@material-ui/core";
 
 import { useHistory } from "react-router";
+import CustomAlert from "../../components/Alert/CustomAlert";
 
 type TcatalogCard = {
   id: string;
@@ -35,13 +35,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
   },
-  error: {
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
 }));
 
 const CatalogExplorer = () => {
@@ -49,10 +42,6 @@ const CatalogExplorer = () => {
   const { data: catalogs, status } = useQuery(["catalogs"], getAllCatalogs);
   const history = useHistory();
 
-  const handleReLoad = () => {
-    history.push("/catalogs");
-  };
-  console.log("status", status);
   return (
     <div>
       {status === "loading" ? (
@@ -86,15 +75,8 @@ const CatalogExplorer = () => {
       ) : null}
 
       {status === "error" ? (
-        <div className={classes.error}>
-          <Typography>an error has occurred</Typography>
-          <IconButton
-            onClick={handleReLoad}
-            color="primary"
-            aria-label="reload"
-          >
-            <ReplayOutlined />
-          </IconButton>
+        <div>
+          <CustomAlert alertType="error" message={`an error has occurred`} />
         </div>
       ) : null}
     </div>
