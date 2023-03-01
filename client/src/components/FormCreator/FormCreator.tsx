@@ -2,7 +2,6 @@ import CustomAlert from "../Alert/CustomAlert";
 import * as yup from "yup";
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
   Dialog,
@@ -15,39 +14,8 @@ import { useFormik } from "formik";
 import { useMutateHook } from "../../hooks";
 import queryClientConfig from "../../config/queryClientConfig";
 
-const useStyles = makeStyles(() => ({
-  dialog: {
-    position: "relative",
-  },
-  container: {
-    minWidth: "500px",
-    margin: "0 auto",
-    padding: "30px",
-    display: "flex",
-    flexFlow: "column",
-    gap: "20px",
-  },
-  button: {
-    width: "40px",
-    alignSelf: "flex-end",
-    objectFit: "contain",
-  },
-  cancelButton: {
-    color: "rgb(43, 153, 216)",
-    background: "rgba(43, 153, 216, 0.2)",
-  },
-  buttonWrapper: {
-    display: "flex",
-    alignItems: "center",
-    minWidth: "70px",
-    justifyContent: "center",
-    position: "relative",
-  },
-  buttonProgress: {
-    color: "green[500]",
-  },
-  dialogActions: {},
-}));
+//STYLES
+import useStyles from "./styles";
 
 type Tprops = {
   handleModal: () => void;
@@ -151,7 +119,7 @@ const FormCreator = ({
                   message={`There was an error creating the catalog: ${error}`}
                 />
               )}
-              <DialogActions className={classes.dialogActions}>
+              <DialogActions>
                 <Button
                   variant="contained"
                   color="primary"
