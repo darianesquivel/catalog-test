@@ -6,13 +6,18 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import { faAngleLeft, faPen } from "@fortawesome/free-solid-svg-icons";
-import useStyles from "./Styles";
+import {
+  faAngleLeft,
+  faPen,
+  faRedoAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import useStyles from "./styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory } from "react-router";
+import { useHistory, useParams } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
+import queryClientConfig from "../../config/queryClientConfig";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
@@ -31,7 +36,12 @@ export default function CustomNavBar({ className }: any) {
     : name
     ? name
     : "Catalog Explorer";
+  // We cannot use params here because this component is outer react router
   const catalogId = currentUrl.split("/").reverse()[0];
+
+  const handleRefresh = () => {
+    queryClientConfig.invalidateQueries(["catalogs"]);
+  };
 
   useEffect(() => {
     const unlisten = history.listen((...props) => {
@@ -77,7 +87,13 @@ export default function CustomNavBar({ className }: any) {
               <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
-            {isProductListView && !isDetails && (
+            {sectionTitle.includes("Catalog Explorer") && (
+              <IconButton className={classes.icons} onClick={handleRefresh}>
+                <FontAwesomeIcon icon={faRedoAlt} size="sm" />
+              </IconButton>
+            )}
+
+            {isProductListView && !isDetails && !isUpload && (
               <IconButton
                 className={classes.icons}
                 onClick={() => setOpen(true)}
@@ -88,7 +104,7 @@ export default function CustomNavBar({ className }: any) {
           </div>
 
           <div className={classes.endSection}>
-            {isProductListView && !isDetails && (
+            {isProductListView && !isDetails && !isUpload && (
               <Button
                 variant="outlined"
                 color="primary"
