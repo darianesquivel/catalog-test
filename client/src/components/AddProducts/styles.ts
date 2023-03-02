@@ -1,43 +1,36 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+  tableContainer: {
+    height: `calc(100vh - 100px)`,
+  },
   table: {
-    width: "100%",
+    height: "100%",
   },
   tableHead: {
-    height: 60,
+    height: "8%",
+  },
+  tableBody: {
+    height: "90%",
   },
   tableFooter: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    padding: "10px",
-    gap: "10px",
+    height: "8%",
   },
   button: {
     borderRadius: "8px",
   },
   tableData: {
-    height: 600,
+    height: "100%",
   },
   icons: {
-    marginRight: "5px",
+    marginRight: theme.spacing(1),
   },
   inputContainer: {
-    width: "100%",
-    height: 500,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-    borderRadius: "8px",
-    boxSizing: "border-box",
+    height: "100%",
   },
   labelInput: {
-    width: "100%",
-    height: 450,
-
-    border: "1px dashed #e6e6e6",
+    height: "100%",
+    border: `1px dashed ${theme.palette.grey[300]}`,
     borderRadius: "8px",
     display: "flex",
     flexDirection: "column",
@@ -47,43 +40,36 @@ const useStyles = makeStyles((theme) => ({
     transition: "0.3s",
     "&:hover": {
       backgroundColor: theme.palette.grey[200],
-      border: "1px dashed #6A5DF9",
+      border: `1px dashed ${theme.palette.primary.main}`,
     },
     cursor: "pointer",
   },
-  buttonInput: {
-    width: "100%",
-    height: "100%",
-  },
   typography: {
-    fontSize: "13px",
-    textTransform: "none",
-    color: "grey",
+    color: theme.palette.grey[700],
   },
   typographyBold: {
-    fontSize: "16px",
     fontWeight: "bold",
-    textTransform: "none",
+    marginBottom: theme.spacing(1),
   },
   image: {
     width: "150px",
   },
-  error: {
-    width: "100%",
-    height: 450,
+  buttons: {
     display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
+    gap: theme.spacing(2),
+  },
+  error: {
+    display: "flex",
+    justifyContent: "center",
   },
   loading: {
     width: "100%",
-    height: 450,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    gap: "10px",
+    gap: theme.spacing(2),
   },
 }));
 
