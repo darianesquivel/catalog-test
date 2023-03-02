@@ -116,7 +116,7 @@ export default function AddProducts() {
         <TableBody className={classes.tableBody}>
           <TableRow>
             <TableCell>
-              {/* {upload ? (
+              {upload ? (
                 <div className={classes.inputContainer}>
                   <input
                     accept={".csv"}
@@ -148,9 +148,9 @@ export default function AddProducts() {
                     </Typography>
                   </label>
                 </div>
-              ) : null} */}
+              ) : null}
 
-              {upload ? (
+              {isError ? (
                 <div className={classes.error}>
                   <CustomAlert
                     alertType="error"
