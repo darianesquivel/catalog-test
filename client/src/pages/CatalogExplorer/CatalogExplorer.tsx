@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import getAllCatalogs from "../../api/getAllCatalogs";
-import CatalogCard from "../../components/CatalogCard/CatalogCard";
+import CatalogCard from "../../components/Cards/CatalogCard/CatalogCard";
 //Component
-import CatalogCreator from "../../components/CatalogCard/CatalogCreator";
+import CatalogCreator from "../../components/Cards/CatalogCreator/CatalogCreator";
 // MUI
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress } from "@material-ui/core";
