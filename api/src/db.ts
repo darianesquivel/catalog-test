@@ -17,7 +17,7 @@ const basename = path.basename(__filename);
 
 const modelDefiners: any[] = [];
 
-// Leemos todos los archivos de la carpeta Models, los requerimos y agregamos al arreglo modelDefiners
+// We take each defined model and create each one passing the the sequelize instance as param
 fs.readdirSync(path.join(__dirname, "/models"))
   .filter(
     (file) =>
@@ -29,10 +29,12 @@ fs.readdirSync(path.join(__dirname, "/models"))
 
 modelDefiners.forEach((model) => model(database));
 
-// Relationships
-// const { product, catalogs } = database.models;
+// Relationships - refactor
+// const { product, catalogs, images } = database.models;
 
-// catalogs.hasMany(product, { foreignKey: "id", as: "catalog" });
-// product.belongsTo(catalogs, { foreignKey: "id", as: "product" });
+// catalogs.hasMany(product);
+// product.belongsTo(catalogs);
+// product.hasMany(images);
+// images.belongsTo(product);
 
 export default database;
