@@ -1,13 +1,8 @@
-import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Alert, AlertTitle } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
+import useStyles from "./styles";
 
-const useStyles = makeStyles((theme: Theme) => {
-  return {
-    root: {},
-  };
-});
 type Tseverity = "error" | "warning" | "info" | "success";
 type Tvariant = "filled" | "outlined" | "standard";
 
