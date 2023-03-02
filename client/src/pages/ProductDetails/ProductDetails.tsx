@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   rightBox: {
     padding: theme.spacing(1, 2),
     position: "relative",
+    overflow: "auto",
   },
 
   imagesContainer: {
@@ -93,13 +94,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   details: {
     display: "grid",
     gridTemplateColumns: "1fr",
+    padding: theme.spacing(1),
   },
-  extraStyles: {
-    gap: theme.spacing(2),
-    padding: theme.spacing(0),
-    gridTemplateColumns: "2fr 3fr",
-    overflow: "hidden",
-  },
+  extraStyles: {},
   idBox: {
     display: "flex",
     justifyContent: "space-between",
@@ -258,7 +255,6 @@ export default function ProductDetails() {
                   <AccordionDetails className={classes.details}>
                     <DetailTable
                       rows={keyValues}
-                      keysNobold
                       extraStyles={classes.extraStyles}
                     />
                   </AccordionDetails>

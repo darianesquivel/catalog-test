@@ -61,7 +61,7 @@ export default function SummaryDetails({
   const tabs = [
     {
       columnName: "Metadata",
-      content: <DetailTable rows={metadataContent} />,
+      content: <DetailTable rows={metadataContent} boldKeys />,
     },
     {
       columnName: "Enrichment",

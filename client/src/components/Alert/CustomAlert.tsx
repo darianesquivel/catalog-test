@@ -16,7 +16,7 @@ type TalertProps = {
   message: string;
   propClassName?: any;
   variant?: Tvariant;
-  title?: boolean;
+  title?: string;
   closeIcon?: boolean;
   onClose?: () => void;
 };
@@ -25,12 +25,13 @@ export default function CustomAlert({
   message,
   propClassName,
   variant,
-  title = true,
+  title,
   closeIcon = false,
   onClose,
 }: TalertProps) {
   const classes = useStyles();
   const variantValue = variant || "standard";
+  const currentTitle = title ? title : alertType;
   return (
     <Alert
       severity={alertType}
@@ -51,7 +52,7 @@ export default function CustomAlert({
     >
       {title ? (
         <AlertTitle>
-          {alertType.replace(/^[a-z]/gi, (r) => r.toUpperCase())}
+          {currentTitle.replace(/^[a-z]/gi, (r) => r.toUpperCase())}
         </AlertTitle>
       ) : null}
       {message}
