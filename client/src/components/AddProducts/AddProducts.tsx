@@ -227,7 +227,6 @@ export default function AddProducts() {
                 <div className={classes.buttons}>
                   <Button
                     variant="contained"
-                    color="primary"
                     className={classes.button}
                     disabled={data.length < 1}
                     onClick={handleSubmit}
