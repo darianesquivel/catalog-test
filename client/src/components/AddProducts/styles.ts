@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     height: "8%",
   },
   button: {
-    borderRadius: theme.spacing(1),
+    borderRadius: "8px",
   },
   tableData: {
     height: "100%",
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   labelInput: {
     height: "100%",
     border: `1px dashed ${theme.palette.grey[300]}`,
-    borderRadius: theme.spacing(1),
+    borderRadius: "8px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -54,22 +54,22 @@ const useStyles = makeStyles((theme) => ({
   image: {
     width: "150px",
   },
-  error: {
-    width: "100%",
-    height: 450,
+  buttons: {
     display: "flex",
-    flexDirection: "column",
     justifyContent: "center",
-    alignItems: "center",
+    gap: theme.spacing(2),
+  },
+  error: {
+    display: "flex",
+    justifyContent: "center",
   },
   loading: {
     width: "100%",
-    height: 450,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    gap: "10px",
+    gap: theme.spacing(2),
   },
 }));
 

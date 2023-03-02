@@ -11,7 +11,6 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -22,7 +21,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { ReplayOutlined } from "@material-ui/icons";
 
 //FA
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -50,7 +48,7 @@ export default function AddProducts() {
   const history = useHistory();
   const classes = useStyles();
   const { id: catalogId } = useParams<{ id: string }>();
-  const { mutate, isLoading, isSuccess, isError } = useMutateHook(() =>
+  const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
     addProducts(catalogId, data)
   );
 
@@ -96,10 +94,6 @@ export default function AddProducts() {
     mutate();
   };
 
-  const handleReLoad = () => {
-    history.go(0);
-  };
-
   const handleIsSuccess = () => {
     history.push(`/catalogs/${catalogId}`);
   };
@@ -122,7 +116,7 @@ export default function AddProducts() {
         <TableBody className={classes.tableBody}>
           <TableRow>
             <TableCell>
-              {upload ? (
+              {/* {upload ? (
                 <div className={classes.inputContainer}>
                   <input
                     accept={".csv"}
@@ -154,18 +148,14 @@ export default function AddProducts() {
                     </Typography>
                   </label>
                 </div>
-              ) : null}
+              ) : null} */}
 
-              {isError ? (
+              {upload ? (
                 <div className={classes.error}>
-                  <Typography>an error has occurred</Typography>
-                  <IconButton
-                    onClick={handleReLoad}
-                    color="primary"
-                    aria-label="reload"
-                  >
-                    <ReplayOutlined />
-                  </IconButton>
+                  <CustomAlert
+                    alertType="error"
+                    message={`There was an error creating the catalog: ${error}`}
+                  />
                 </div>
               ) : null}
 
@@ -234,7 +224,7 @@ export default function AddProducts() {
               !isLoading &&
               !isSuccess &&
               data.length > 0 ? (
-                <>
+                <div className={classes.buttons}>
                   <Button
                     variant="contained"
                     color="primary"
@@ -252,7 +242,7 @@ export default function AddProducts() {
                   >
                     Cancel
                   </Button>
-                </>
+                </div>
               ) : null}
             </TableCell>
           </TableRow>
