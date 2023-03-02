@@ -107,7 +107,6 @@ export default function CustomNavBar({ className }: any) {
           </div>
 
           <div className={classes.endSection}>
-            {console.log({ catalogId })}
             {isProductListView && !isDetails && !isUpload && (
               <Button
                 variant="outlined"
