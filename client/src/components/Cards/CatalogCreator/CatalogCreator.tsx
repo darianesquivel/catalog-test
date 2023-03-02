@@ -1,6 +1,6 @@
 import { useState } from "react";
-import FormCreator from "../FormCreator/FormCreator";
-import createCatalog from "../../api/createCatalog";
+import FormCreator from "../../FormCreator/FormCreator";
+import createCatalog from "../../../api/createCatalog";
 
 // MUI
 import { CardActionArea, Typography, Card } from "@material-ui/core/";
