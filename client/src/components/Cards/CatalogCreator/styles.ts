@@ -8,9 +8,9 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     height: theme.spacing(40),
     borderRadius: theme.spacing(0.5),
-    border: `1px dashed #6A5DF9`,
+    border: `1px dashed ${theme.palette.primary.main}`,
     textAlign: "center",
-    color: "#6A5DF9",
+    color: theme.palette.primary.main,
   },
 }));
 

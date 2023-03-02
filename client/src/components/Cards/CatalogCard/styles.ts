@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) =>
       height: "100%",
       display: "flex",
       flexDirection: "column",
+      justifyContent: "space-between",
       padding: theme.spacing(0),
     },
     media: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) =>
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      color: "#6A5DF9",
+      color: theme.palette.primary.main,
       gap: theme.spacing(1),
       cursor: "pointer",
     },
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) =>
       fontWeight: 200,
     },
     products: {
-      color: "#6A5DF9",
+      color: theme.palette.primary.main,
       fontSize: theme.spacing(1.8),
       marginBottom: theme.spacing(1),
       cursor: "pointer",
