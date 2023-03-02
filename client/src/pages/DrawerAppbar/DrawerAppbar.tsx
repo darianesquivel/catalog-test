@@ -24,7 +24,7 @@ import "../../app.css";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
-import { useStyles } from "./Styles";
+import { useStyles } from "./styles";
 const drawerButtons = [
   {
     text: "Data Explorer",

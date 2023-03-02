@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Toolbar,
   AppBar,
@@ -11,9 +11,10 @@ import {
   faPen,
   faRedoAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import useStyles from "./Styles";
+
+import useStyles from "./styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
