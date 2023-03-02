@@ -1,44 +1,37 @@
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+  tableContainer: {
+    height: `calc(100vh - 100px)`,
+  },
   table: {
-    width: "100%",
+    height: "100%",
   },
   tableHead: {
-    height: 60,
+    height: "8%",
+  },
+  tableBody: {
+    height: "90%",
   },
   tableFooter: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    padding: "10px",
-    gap: "10px",
+    height: "8%",
   },
   button: {
-    borderRadius: "8px",
+    borderRadius: theme.spacing(1),
   },
   tableData: {
-    height: 600,
+    height: "100%",
   },
   icons: {
-    marginRight: "5px",
+    marginRight: theme.spacing(1),
   },
   inputContainer: {
-    width: "100%",
-    height: 500,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-    borderRadius: "8px",
-    boxSizing: "border-box",
+    height: "100%",
   },
   labelInput: {
-    width: "100%",
-    height: 450,
-
-    border: "1px dashed #e6e6e6",
-    borderRadius: "8px",
+    height: "100%",
+    border: `1px dashed ${theme.palette.grey[300]}`,
+    borderRadius: theme.spacing(1),
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
@@ -47,23 +40,16 @@ const useStyles = makeStyles((theme) => ({
     transition: "0.3s",
     "&:hover": {
       backgroundColor: theme.palette.grey[200],
-      border: "1px dashed #6A5DF9",
+      border: `1px dashed ${theme.palette.primary.main}`,
     },
     cursor: "pointer",
   },
-  buttonInput: {
-    width: "100%",
-    height: "100%",
-  },
   typography: {
-    fontSize: "13px",
-    textTransform: "none",
-    color: "grey",
+    color: theme.palette.grey[700],
   },
   typographyBold: {
-    fontSize: "16px",
     fontWeight: "bold",
-    textTransform: "none",
+    marginBottom: theme.spacing(1),
   },
   image: {
     width: "150px",

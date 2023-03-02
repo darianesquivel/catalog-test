@@ -64,8 +64,6 @@ export default function AddProducts() {
       skipEmptyLines: true,
       complete: function (result) {
         const csvData: any = result.data;
-        // this is only temporal to avoid crashing the app
-        // Darian to handle the errors
 
         const sanitizedData = csvData
           .map((obj: any) => {
@@ -107,7 +105,7 @@ export default function AddProducts() {
   };
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer className={classes.tableContainer} component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead className={classes.tableHead}>
           <TableRow>
@@ -121,74 +119,84 @@ export default function AddProducts() {
           </TableRow>
         </TableHead>
 
-        {upload ? (
-          <div className={classes.inputContainer}>
-            <input
-              accept={".csv"}
-              id="contained-button-file"
-              type="file"
-              hidden
-              onChange={handleFile}
-            />
-            <label
-              className={classes.labelInput}
-              htmlFor="contained-button-file"
-            >
-              <img
-                src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
-                alt=""
-                className={classes.image}
-              />
-              <Typography className={classes.typographyBold}>
-                What data do you wish to import?
-              </Typography>
-              <Typography className={classes.typography}>
-                Upload a CSV or Excel file to start the import process.
-              </Typography>
-            </label>
-          </div>
-        ) : null}
+        <TableBody className={classes.tableBody}>
+          <TableRow>
+            <TableCell>
+              {upload ? (
+                <div className={classes.inputContainer}>
+                  <input
+                    accept={".csv"}
+                    id="contained-button-file"
+                    type="file"
+                    hidden
+                    onChange={handleFile}
+                  />
+                  <label
+                    className={classes.labelInput}
+                    htmlFor="contained-button-file"
+                  >
+                    <img
+                      src="https://duploservices-prod01-public2-415703579972.s3.amazonaws.com/scale-illustration-74a56dd7b4daa3127c4605c7475d1b10.png"
+                      alt=""
+                      className={classes.image}
+                    />
+                    <Typography
+                      className={classes.typographyBold}
+                      variant={"body1"}
+                    >
+                      What data do you wish to import?
+                    </Typography>
+                    <Typography
+                      className={classes.typography}
+                      variant={"caption"}
+                    >
+                      Upload a CSV or Excel file to start the import process.
+                    </Typography>
+                  </label>
+                </div>
+              ) : null}
 
-        {isError ? (
-          <div className={classes.error}>
-            <Typography>an error has occurred</Typography>
-            <IconButton
-              onClick={handleReLoad}
-              color="primary"
-              aria-label="reload"
-            >
-              <ReplayOutlined />
-            </IconButton>
-          </div>
-        ) : null}
+              {isError ? (
+                <div className={classes.error}>
+                  <Typography>an error has occurred</Typography>
+                  <IconButton
+                    onClick={handleReLoad}
+                    color="primary"
+                    aria-label="reload"
+                  >
+                    <ReplayOutlined />
+                  </IconButton>
+                </div>
+              ) : null}
 
-        {isLoading ? (
-          <div className={classes.loading}>
-            <Typography> Loading </Typography>
-            <CircularProgress />
-          </div>
-        ) : null}
+              {isLoading ? (
+                <div className={classes.loading}>
+                  <Typography> Loading </Typography>
+                  <CircularProgress />
+                </div>
+              ) : null}
 
-        {isSuccess ? (
-          <Dialog
-            open={isSuccess}
-            onClose={handleIsSuccess}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            <CustomAlert
-              alertType="success"
-              message={`Products were successfully loaded`}
-              closeIcon={true}
-              onClose={handleIsSuccess}
-            />
-          </Dialog>
-        ) : null}
+              {isSuccess ? (
+                <Dialog
+                  open={isSuccess}
+                  onClose={handleIsSuccess}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                >
+                  <CustomAlert
+                    alertType="success"
+                    message={`Products were successfully loaded`}
+                    closeIcon={true}
+                    onClose={handleIsSuccess}
+                  />
+                </Dialog>
+              ) : null}
 
-        {preview && !isError && !isLoading && !isSuccess && data.length > 0 ? (
-          <TableBody className={classes.tableData}>
-            <TableRow>
-              <TableCell align="center">
+              {preview &&
+              !isError &&
+              !isLoading &&
+              !isSuccess &&
+              data.length > 0 ? (
                 <DataGrid
                   rows={data}
                   columns={columns}
@@ -199,54 +207,56 @@ export default function AddProducts() {
                   className={classes.tableData}
                   getRowId={(row: any) => row.title}
                 />
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        ) : null}
+              ) : null}
 
-        {preview && data.length < 1 ? (
-          <Dialog
-            open={data.length < 1}
-            onClose={handleCancel}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          >
-            <CustomAlert
-              alertType="error"
-              message={`Please check that the CSV has the following columns (id - title - description - image)`}
-              closeIcon={true}
-              onClose={handleCancel}
-            />
-          </Dialog>
-        ) : null}
+              {preview && data.length < 1 ? (
+                <Dialog
+                  open={data.length < 1}
+                  onClose={handleCancel}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                >
+                  <CustomAlert
+                    alertType="error"
+                    message={`Please check that the CSV has the following columns (id - title - description - image)`}
+                    closeIcon={true}
+                    onClose={handleCancel}
+                  />
+                </Dialog>
+              ) : null}
+            </TableCell>
+          </TableRow>
 
-        <TableHead className={classes.tableFooter}>
-          {preview &&
-          !isError &&
-          !isLoading &&
-          !isSuccess &&
-          data.length > 0 ? (
-            <>
-              <Button
-                variant="contained"
-                color="primary"
-                className={classes.button}
-                disabled={data.length < 1}
-                onClick={handleSubmit}
-              >
-                Import Products
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleCancel}
-                className={classes.button}
-              >
-                Cancel
-              </Button>
-            </>
-          ) : null}
-        </TableHead>
+          <TableRow className={classes.tableFooter}>
+            <TableCell>
+              {preview &&
+              !isError &&
+              !isLoading &&
+              !isSuccess &&
+              data.length > 0 ? (
+                <>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    disabled={data.length < 1}
+                    onClick={handleSubmit}
+                  >
+                    Import Products
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleCancel}
+                    className={classes.button}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : null}
+            </TableCell>
+          </TableRow>
+        </TableBody>
       </Table>
     </TableContainer>
   );
