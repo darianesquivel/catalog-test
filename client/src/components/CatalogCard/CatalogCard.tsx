@@ -155,7 +155,6 @@ export default function CatalogCard({
           message="This action can't be undone."
           alertType="error"
           variant="filled"
-          title={false}
         />
       </CustomDialog>
     ) : null;
