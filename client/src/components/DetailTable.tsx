@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Tooltip } from "@material-ui/core/";
+import { Tooltip, Typography } from "@material-ui/core/";
+import CopyToClipBoard from "./copyToClipBoard/CopyToClipBoard";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -8,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1.2),
     overflow: "auto",
     display: "grid",
-    gridTemplateColumns: "1fr 3fr",
+    gridTemplateColumns: "1fr ",
     gap: theme.spacing(2),
     rowGap: theme.spacing(2),
     justifyContent: "space-between",
@@ -24,31 +25,60 @@ const useStyles = makeStyles((theme: Theme) => ({
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
   },
+  row: {
+    overflow: "hidden",
+    display: "flex",
+    alignItems: "center",
+    height: "24px",
+  },
+  keys: { minWidth: theme.spacing(15) },
+  values: {},
 }));
 
 type Trows = {
   rows: { key: string; value: string }[];
-  keysNobold?: boolean;
+  boldKeys?: boolean;
   extraStyles?: any;
 };
 
-export default function DetailTable({ rows, keysNobold, extraStyles }: Trows) {
+export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
   const classes = useStyles();
-  const renderRows = rows.map((row: any) => Object.values(row)).flat();
+  const [showClipBoard, setShowClipboard] = useState<any>(null);
 
+  const textRef = useRef(null);
   return (
     <div className={`${classes.container} ${extraStyles}`}>
-      {renderRows.map((value: any, index: number) => (
-        <Tooltip title={value} key={`${value}-${index}`}>
-          <span
-            className={`${index % 2 === 0 && !keysNobold ? classes.bold : ""} ${
-              classes.bullet
-            } ${classes.ellipsis}`}
+      {rows.map(({ key, value }, index: number) => {
+        return (
+          <div
+            className={classes.row}
+            key={`${value}-${index}`}
+            onMouseEnter={() => setShowClipboard(index)}
+            onMouseLeave={() => setShowClipboard(null)}
           >
-            {value}
-          </span>
-        </Tooltip>
-      ))}
+            <Tooltip title={value}>
+              <Typography
+                variant="body2"
+                className={`${classes.keys} ${boldKeys ? classes.bold : ""}`}
+              >
+                {key}
+              </Typography>
+            </Tooltip>
+            <>
+              <Tooltip title={value}>
+                <Typography
+                  ref={textRef.current}
+                  variant="body2"
+                  className={`${classes.values} ${classes.ellipsis}`}
+                >
+                  {value}
+                </Typography>
+              </Tooltip>
+              {showClipBoard === index && <CopyToClipBoard value={value} />}
+            </>
+          </div>
+        );
+      })}
     </div>
   );
 }
