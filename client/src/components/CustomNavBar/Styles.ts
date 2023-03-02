@@ -11,13 +11,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: "space-between",
   },
   mainConetnt: {
+    // border: "solid gray 1px",
     padding: "5px",
     display: "flex",
     justifyContent: "start",
     gap: "10px",
   },
+  addProductBtn: {},
   icons: {
     width: "45px",
+    // background: "black",
   },
   sectionName: {
     minWidth: "45px",

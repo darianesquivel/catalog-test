@@ -1,7 +1,30 @@
+import React from "react";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Tooltip } from "@material-ui/core/";
 
-//STYLES
-import useStyles from "./styles";
+const useStyles = makeStyles((theme: Theme) => ({
+  container: {
+    fontFamily: "Inter, -apple-system, Arial, Sans-Serif",
+    padding: theme.spacing(1.2),
+    overflow: "auto",
+    display: "grid",
+    gridTemplateColumns: "1fr 3fr",
+    gap: theme.spacing(2),
+    rowGap: theme.spacing(2),
+    justifyContent: "space-between",
+  },
+  bold: {
+    fontWeight: "bold",
+  },
+  bullet: {
+    cursor: "pointer",
+  },
+  ellipsis: {
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+  },
+}));
 
 type Trows = {
   rows: { key: string; value: string }[];
