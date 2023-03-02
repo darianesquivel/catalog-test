@@ -76,7 +76,7 @@ export default function CustomNavBar({ className }: any) {
               <IconButton
                 className={classes.icons}
                 onClick={() => {
-                  if (isDetails) history.goBack();
+                  if (isDetails || isUpload) history.goBack();
                   else history.push("/catalogs");
                 }}
               >
