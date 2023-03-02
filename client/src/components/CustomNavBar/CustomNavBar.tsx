@@ -38,7 +38,9 @@ export default function CustomNavBar({ className }: any) {
     ? name
     : "Catalog Explorer";
   // We cannot use params here because this component is outer react router
-  const catalogId = currentUrl.split("/").reverse()[0];
+  const catalogId =
+    currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
+    currentUrl.match(/(?<=catalogs\/).+/)?.[0];
 
   const handleRefresh = () => {
     queryClientConfig.invalidateQueries(["catalogs"]);
@@ -74,7 +76,7 @@ export default function CustomNavBar({ className }: any) {
               <IconButton
                 className={classes.icons}
                 onClick={() => {
-                  if (isDetails) history.goBack();
+                  if (isDetails || isUpload) history.goBack();
                   else history.push("/catalogs");
                 }}
               >
