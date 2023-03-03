@@ -36,10 +36,10 @@ const useStyles = makeStyles((theme) =>
     createdAt: {
       display: "flex",
       alignItems: "center",
-      color: theme.palette.grey[600],
-      fontWeight: "lighter",
-      fontSize: "13px",
+      color: theme.palette.grey[500],
+      fontSize: "14px",
       gap: theme.spacing(1),
+      letterSpacing: "0.04em",
     },
   })
 );
