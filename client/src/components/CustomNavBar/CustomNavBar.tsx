@@ -59,7 +59,7 @@ export default function CustomNavBar({ className }: any) {
       {open && (
         <FormCreator
           isOpen={open}
-          handleModal={() => setOpen(false)}
+          onModalChange={() => setOpen(false)}
           apiFunction={updateCatalog}
           initialValues={{ name, id }}
           keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}

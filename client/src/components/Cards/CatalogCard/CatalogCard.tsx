@@ -68,7 +68,7 @@ export default function CatalogCard({
   const renderDialog =
     option === "edit" ? (
       <FormCreator
-        handleModal={handleClose}
+        onModalChange={handleClose}
         isOpen={true}
         apiFunction={updateCatalog}
         initialValues={{ id, name }}
@@ -78,8 +78,8 @@ export default function CatalogCard({
     ) : option === "remove" ? (
       <CustomDialog
         isOpen={Boolean(option)}
-        handleModal={handleClose}
-        handleAccept={() => removeCatalog({ id })}
+        onModalChange={handleClose}
+        onAccept={() => removeCatalog({ id })}
         queryKey={["catalogs"]}
       >
         <Typography variant="h6">
