@@ -8,11 +8,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: "space-between",
     gridTemplateColumns: "4fr 1fr",
   },
-  mainConetnt: {
+  mainContent: {
     display: "flex",
     justifyContent: "start",
     padding: theme.spacing(1),
     gap: theme.spacing(1),
+    marginLeft: theme.spacing(2),
   },
   addProductBtn: {
     borderRadius: theme.shape.borderRadius,
