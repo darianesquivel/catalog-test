@@ -27,7 +27,7 @@ export default function CatalogCreator() {
       </Card>
       {open && (
         <FormCreator
-          handleModal={handleModal}
+          onModalChange={handleModal}
           isOpen={open}
           apiFunction={createCatalog}
           keysToInvalidate={["catalogs"]}

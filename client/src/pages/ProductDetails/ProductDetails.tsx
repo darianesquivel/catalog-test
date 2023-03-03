@@ -94,7 +94,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   details: {
     display: "grid",
     gridTemplateColumns: "1fr",
-    padding: theme.spacing(1),
+    padding: theme.spacing(1, 2, 2, 2),
   },
   extraStyles: {},
   idBox: {
@@ -214,7 +214,7 @@ export default function ProductDetails() {
                       Product information
                     </Typography>
                   </AccordionSummary>
-                  <AccordionDetails className={classes.details}>
+                  <AccordionDetails className={`${classes.details}`}>
                     <div className={classes.productTitle}>
                       <Typography variant="h6">{product.name}</Typography>
                     </div>

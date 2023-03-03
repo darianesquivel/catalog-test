@@ -45,24 +45,23 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 type Tprops = {
-  handleModal: () => void;
+  onModalChange: () => void;
   isOpen: boolean;
-  handleAccept: (values?: any) => any;
+  onAccept: (values?: any) => any;
   children?: any;
   queryKey?: string[];
 };
 
 const CustomDialog = ({
-  handleModal,
+  onModalChange,
   isOpen,
-  handleAccept,
+  onAccept,
   children,
   queryKey,
 }: Tprops) => {
   const classes = useStyles();
 
-  const { mutate, error, isLoading, isSuccess, data } =
-    useMutateHook(handleAccept);
+  const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     mutate();
@@ -72,7 +71,7 @@ const CustomDialog = ({
     // we don't do the invalidation in onSuccess because of the rerender of all the cards
     // which makes the success alert visible only a few microseconds
     queryClientConfig.invalidateQueries(queryKey);
-    handleModal();
+    onModalChange();
   };
 
   return (
