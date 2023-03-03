@@ -98,7 +98,7 @@ const ProductsList = (props: any) => {
   );
   const { currentUrl } = useStore((state) => state);
 
-  const products = catalog ? catalog[0].products : [];
+  const products = catalog ? catalog.products : [];
   const rows: GridRowsProp = products;
   const params: any = useParams();
   const history = useHistory();

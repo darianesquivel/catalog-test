@@ -37,7 +37,7 @@ module.exports = (sequelize: any) => {
       },
       catalog_id: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     },
     { timestamps: false }

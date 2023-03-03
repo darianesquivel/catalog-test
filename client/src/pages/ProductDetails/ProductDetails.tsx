@@ -21,7 +21,7 @@ type Tproduct = {
   updated_at?: any;
   image: string;
   catalog_id: string;
-  allImages?: string[];
+  images?: string[];
 };
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -126,7 +126,7 @@ export default function ProductDetails() {
     [`productInfo/${productId}`],
     () => getProductInfo({ catalogId, productId })
   );
-  const product: Tproduct = data?.[0] || {};
+  const product: Tproduct = data || {};
 
   const { setSectionInfo } = useStore((state) => state);
 
@@ -144,7 +144,7 @@ export default function ProductDetails() {
 
   useEffect(() => {
     setSectionInfo(product.name);
-    setImagesState(product.allImages?.map((obj: any) => obj?.url));
+    setImagesState(product.images?.map((obj: any) => obj?.url));
     return () => setSectionInfo("");
   }, [product?.name, setSectionInfo]);
 
