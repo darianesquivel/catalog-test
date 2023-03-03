@@ -11,6 +11,13 @@ const theme = createTheme({
       light: "#978efb",
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
+  typography: {
+    fontFamily: "Arial",
+    fontSize: 14,
+  },
 });
 
 axios.defaults.baseURL = "http://localhost:3001/";

@@ -4,23 +4,23 @@ const useStyles = makeStyles((theme: Theme) => ({
   mainContainer: { height: "65px" },
   toolbar: {
     width: "100%",
-    background: "white",
-    color: "black",
     display: "grid",
-    gridTemplateColumns: "4fr 1fr",
     justifyContent: "space-between",
+    gridTemplateColumns: "4fr 1fr",
   },
   mainConetnt: {
-    // border: "solid gray 1px",
-    padding: "5px",
     display: "flex",
     justifyContent: "start",
-    gap: "10px",
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
   },
-  addProductBtn: {},
+  addProductBtn: {
+    borderRadius: theme.shape.borderRadius,
+    textTransform: "none",
+    padding: theme.spacing(0.3, 2),
+  },
   icons: {
     width: "45px",
-    // background: "black",
   },
   sectionName: {
     minWidth: "45px",
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   endSection: {
     display: "flex",
     justifyContent: "end",
-    paddingRight: "10px",
+    paddingRight: theme.spacing(2),
   },
 }));
 export default useStyles;
