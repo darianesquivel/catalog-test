@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Typography, Toolbar, IconButton } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import CustomTabs from "../../components/CustomTabs";
+import CustomTabs from "../../components/CustomTabs/CustomTabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import DetailTable from "../../components/DetailTable/DetailTable";
