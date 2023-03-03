@@ -6,7 +6,7 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import DetailTable from "../../components/DetailTable";
+import DetailTable from "../../components/DetailTable/DetailTable";
 import { useParams } from "react-router";
 import getProductInfo from "../../api/getProductInfo";
 import { useQuery } from "@tanstack/react-query";

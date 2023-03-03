@@ -15,7 +15,7 @@ const theme = createTheme({
     borderRadius: 8,
   },
   typography: {
-    fontFamily: "Arial",
+    fontFamily: "Inter, -apple-system, Arial, Sans-Serif",
     fontSize: 14,
   },
 });

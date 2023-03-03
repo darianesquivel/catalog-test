@@ -4,7 +4,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import CustomTabs from "../../components/CustomTabs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons";
-import DetailTable from "../../components/DetailTable";
+import DetailTable from "../../components/DetailTable/DetailTable";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
