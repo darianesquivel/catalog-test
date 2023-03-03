@@ -18,7 +18,7 @@ import queryClientConfig from "../../config/queryClientConfig";
 import useStyles from "./styles";
 
 type Tprops = {
-  handleModal: () => void;
+  onModalChange: () => void;
   isOpen: boolean;
   apiFunction: (...params: any) => any;
   extraFn?: () => void;
@@ -31,7 +31,7 @@ type Tprops = {
 };
 
 const FormCreator = ({
-  handleModal,
+  onModalChange,
   isOpen,
   apiFunction,
   initialValues,
@@ -47,8 +47,7 @@ const FormCreator = ({
         id: "",
       };
   const initialName = stateValue?.name || "";
-  const { mutate, error, isLoading, isSuccess, data } =
-    useMutateHook(apiFunction);
+  const { mutate, error, isLoading, isSuccess } = useMutateHook(apiFunction);
   const onValidate = yup.object({
     name: yup
       .string()
@@ -80,7 +79,7 @@ const FormCreator = ({
 
   const handleClose = async () => {
     formik.resetForm();
-    handleModal();
+    onModalChange();
   };
   return (
     <Dialog
@@ -94,7 +93,7 @@ const FormCreator = ({
           alertType="success"
           message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
           closeIcon={true}
-          onClose={handleModal}
+          onClose={onModalChange}
         />
       ) : (
         isOpen && (
@@ -122,7 +121,7 @@ const FormCreator = ({
                 <Button
                   variant="contained"
                   size="small"
-                  onClick={handleModal}
+                  onClick={onModalChange}
                   disabled={isLoading}
                   className={classes.cancelButton}
                 >
