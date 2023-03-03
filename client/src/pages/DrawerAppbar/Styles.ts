@@ -27,9 +27,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
     },
-    menuButton: {
-      marginRight: 36,
-    },
     hide: {
       display: "none",
     },
@@ -70,30 +67,31 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     buttonList: {
       height: "100vh",
-      padding: "8px 8px",
       display: "flex",
       flexDirection: "column",
-    },
-    icons: {
-      fontSize: "1.30em",
+      padding: theme.spacing(1, 1),
     },
     buttonStyle: {
-      borderRadius: "8px",
-      marginBottom: "6px",
-      color: "#0000008a",
+      borderRadius: theme.shape.borderRadius,
+      marginBottom: theme.spacing(1),
+      color: theme.palette.grey[600],
+    },
+    textButton: {
+      letterSpacing: "0.04em",
     },
     drawerHeader: {
-      borderRadius: "8px",
-      marginBottom: "6px",
+      borderRadius: theme.shape.borderRadius,
+      marginBottom: theme.spacing(1),
     },
     drawerTitle: {
       fontSize: "18px",
+      letterSpacing: "0.04em",
     },
     flexGrow: {
       flexGrow: 1,
     },
     link: {
-      color: "inherit",
+      color: theme.palette.text.primary,
       textDecoration: "none",
       "&:hover": {
         fontSize: "50px",

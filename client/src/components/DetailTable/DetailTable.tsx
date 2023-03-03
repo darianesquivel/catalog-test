@@ -1,39 +1,9 @@
-import React, { useRef, useState } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import { useRef, useState } from "react";
 import { Tooltip, Typography } from "@material-ui/core/";
-import CopyToClipBoard from "./copyToClipBoard/CopyToClipBoard";
+import CopyToClipBoard from "../copyToClipBoard/CopyToClipBoard";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  container: {
-    fontFamily: "Inter, -apple-system, Arial, Sans-Serif",
-    padding: theme.spacing(1.2),
-    overflow: "auto",
-    display: "grid",
-    gridTemplateColumns: "1fr ",
-    gap: theme.spacing(2),
-    rowGap: theme.spacing(2),
-    justifyContent: "space-between",
-  },
-  bold: {
-    fontWeight: "bold",
-  },
-  bullet: {
-    cursor: "pointer",
-  },
-  ellipsis: {
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-  },
-  row: {
-    overflow: "hidden",
-    display: "flex",
-    alignItems: "center",
-    height: "24px",
-  },
-  keys: { minWidth: theme.spacing(15) },
-  values: {},
-}));
+// STYLES
+import useStyles from "./styles";
 
 type Trows = {
   rows: { key: string; value: string }[];
