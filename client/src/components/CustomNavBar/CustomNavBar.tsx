@@ -90,7 +90,7 @@ export default function CustomNavBar({ className }: any) {
               <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
-            {sectionTitle.includes("Catalog Explorer") && (
+            {sectionTitle.includes("Catalog Explorer") && !isDetails && (
               <IconButton className={classes.icons} onClick={handleRefresh}>
                 <FontAwesomeIcon icon={faRedoAlt} size="sm" />
               </IconButton>

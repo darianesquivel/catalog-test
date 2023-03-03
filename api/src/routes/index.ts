@@ -172,6 +172,29 @@ router.delete("/catalogs/:id", async (req: Request, res: Response) => {
     res.status(503).send(err);
   }
 });
+// DUPLICATE CATALOG
+router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const currentCatalog: any = await catalogs.findByPk(id);
+    const catalogName = currentCatalog.name;
+    const catalogProducts = await product.findAll({
+      where: {
+        catalog_id: id,
+      },
+    });
+    const clonedCatalog = await catalogs.create({
+      name: `${catalogName}(clone)`,
+      created_at: new Date(),
+    });
+    console.log(catalogProducts);
+    // await product.bulkCreate({});
+    // res.status(200).send(`${catalogName} deleted successfully `);
+  } catch (err) {
+    res.status(503).send(err);
+  }
+});
 // FUNCTION TO TEST: CREATE A CATALOG WITH PRODUCTS
 async function insertData(product: any, catalogs: any) {
   //inserting one catalog
