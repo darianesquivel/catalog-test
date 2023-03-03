@@ -126,23 +126,24 @@ export default function MiniDrawer() {
                   disabled={button.text === "Data Explorer" ? false : true}
                   key={index}
                   className={classes.buttonStyle}
+                  alignItems="flex-start"
                 >
                   <Link to={button.link}>
                     <ListItemIcon>
-                      <FontAwesomeIcon
-                        className={classes.icons}
-                        icon={button.icon}
-                      />
+                      <FontAwesomeIcon icon={button.icon} size="xl" />
                     </ListItemIcon>
                   </Link>
-                  <ListItemText primary={button.text} />
+                  <ListItemText
+                    primary={button.text}
+                    className={classes.textButton}
+                  />
                 </ListItem>
               ))}
             </div>
             <div>
               <ListItem button disabled className={classes.buttonStyle}>
                 <ListItemIcon>
-                  <FontAwesomeIcon className={classes.icons} icon={faBell} />
+                  <FontAwesomeIcon icon={faBell} size="xl" />
                 </ListItemIcon>
                 <ListItemText primary={"Notifications"} />
               </ListItem>
@@ -153,15 +154,9 @@ export default function MiniDrawer() {
               >
                 <ListItemIcon>
                   {open ? (
-                    <FontAwesomeIcon
-                      className={classes.icons}
-                      icon={faChevronLeft}
-                    />
+                    <FontAwesomeIcon icon={faChevronLeft} size="xl" />
                   ) : (
-                    <FontAwesomeIcon
-                      className={classes.icons}
-                      icon={faChevronRight}
-                    />
+                    <FontAwesomeIcon icon={faChevronRight} size="xl" />
                   )}
                 </ListItemIcon>
                 <ListItemText primary={"Close"} />
