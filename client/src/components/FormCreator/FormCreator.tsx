@@ -2,52 +2,20 @@ import CustomAlert from "../Alert/CustomAlert";
 import * as yup from "yup";
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   TextField,
   Dialog,
   DialogActions,
   DialogContent,
 } from "@material-ui/core";
-//FORMIK
+// FORMIK
 import { useFormik } from "formik";
-//HOOK
+// HOOK
 import { useMutateHook } from "../../hooks";
 import queryClientConfig from "../../config/queryClientConfig";
 
-const useStyles = makeStyles(() => ({
-  dialog: {
-    position: "relative",
-  },
-  container: {
-    minWidth: "500px",
-    margin: "0 auto",
-    padding: "30px",
-    display: "flex",
-    flexFlow: "column",
-    gap: "20px",
-  },
-  button: {
-    width: "40px",
-    alignSelf: "flex-end",
-    objectFit: "contain",
-  },
-  cancelButton: {
-    color: "rgb(43, 153, 216)",
-    background: "rgba(43, 153, 216, 0.2)",
-  },
-  buttonWrapper: {
-    display: "flex",
-    alignItems: "center",
-    minWidth: "70px",
-    justifyContent: "center",
-    position: "relative",
-  },
-  buttonProgress: {
-    color: "green[500]",
-  },
-  dialogActions: {},
-}));
+// STYLES
+import useStyles from "./styles";
 
 type Tprops = {
   handleModal: () => void;
@@ -120,7 +88,6 @@ const FormCreator = ({
       onClose={handleClose}
       aria-labelledby="simple-modal-title"
       aria-describedby="simple-modal-description"
-      className={classes.dialog}
     >
       {isSuccess ? (
         <CustomAlert
@@ -151,14 +118,13 @@ const FormCreator = ({
                   message={`There was an error creating the catalog: ${error}`}
                 />
               )}
-              <DialogActions className={classes.dialogActions}>
+              <DialogActions>
                 <Button
                   variant="contained"
-                  color="primary"
                   size="small"
                   onClick={handleModal}
-                  className={classes.cancelButton}
                   disabled={isLoading}
+                  className={classes.cancelButton}
                 >
                   Cancel
                 </Button>
@@ -170,12 +136,12 @@ const FormCreator = ({
                     />
                   ) : (
                     <Button
-                      className={`${classes.button}`}
                       variant="contained"
                       color="primary"
                       size="small"
                       onClick={() => formik.handleSubmit()}
                       disabled={!formik.values.name || !!formik.errors.name}
+                      className={classes.createButton}
                     >
                       {acceptBtnName}
                     </Button>
