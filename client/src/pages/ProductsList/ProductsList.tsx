@@ -11,7 +11,7 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SummaryDetails from "../ProductDetails/SummaryDetails";
+import SummaryDetails from "../Details/SummaryDetails/SummaryDetails";
 import { useEffect, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 import { useHistory, useParams } from "react-router";

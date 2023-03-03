@@ -18,7 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "../CatalogExplorer/CatalogExplorer";
 import ProductsList from "../ProductsList/ProductsList";
-import ProductDetails from "../ProductDetails/ProductDetails";
+import ProductDetails from "../Details/ProductDetails/ProductDetails";
 import AddProducts from "../../components/AddProducts/AddProducts";
 import "../../app.css";
 import { create } from "zustand";
