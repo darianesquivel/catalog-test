@@ -12,7 +12,7 @@ import {
   faRedoAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-import useStyles from "./styles";
+import useStyles from "./Styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
@@ -26,9 +26,8 @@ export default function CustomNavBar({ className }: any) {
   const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
     (state: any) => state
   );
-  const { id, name } = sectionInfo;
+  const { id, name } = sectionInfo || {};
   const history = useHistory();
-
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isUpload = /\/upload$/gi.test(currentUrl);
   const isDetails = /\/details$/gi.test(currentUrl);

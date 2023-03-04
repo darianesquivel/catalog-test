@@ -16,10 +16,6 @@ module.exports = (sequelize: any) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      product_id: {
-        type: DataTypes.TEXT,
-        allowNull: true,
-      },
       created_at: {
         type: DataTypes.DATE,
         defaulValue: new Date(),

@@ -33,28 +33,23 @@ router.post(
         const extraImages = allImages
           ? allImages.split(",").map((url: string) => url?.trim())
           : [];
-        console.log({ extraImages });
-
-        const newProduct = await product.findOrCreate({
+        const newProduct: any = await product.findOrCreate({
           where: {
-            // id,
             name: title,
             description,
-            catalog_id,
             image,
+            catalogId: catalog_id,
+          },
+          include: {
+            model: catalogs,
           },
         });
-        console.log({ newProduct });
-        if (extraImages?.length) {
-          for (let image of extraImages) {
-            await images.findOrCreate({
-              where: {
-                url: image,
-                product_id: newProduct[0].dataValues.id,
-              },
-            });
-          }
-        }
+        const createdImages = await images.bulkCreate(
+          extraImages.map((url: string) => ({ url }))
+        );
+        // product hasMany images, the following set the productId to all the images
+        await newProduct[0].setImages(createdImages);
+        await newProduct[0].setCatalog(catalog_id);
       }
 
       res.status(200).send("Products added successfuly");
@@ -68,25 +63,15 @@ router.post(
 router.get("/catalogs", async (req: Request, res: Response) => {
   // await insertData(product, catalogs);
   try {
-    const allCatalogs = await catalogs.findAll();
-    const fullData = [];
-
-    for (const catalog of allCatalogs) {
-      const id = catalog.dataValues.id;
-      const catalogProducts = await product.findAll({
-        where: {
-          catalog_id: id,
-        },
-      });
-
-      const productCount = catalogProducts.length;
-      fullData.push({
-        ...catalog.dataValues,
-        productCount,
-        products: catalogProducts,
-      });
-    }
-    fullData.reverse();
+    const allCatalogs = await catalogs.findAll({
+      include: {
+        model: product,
+      },
+    });
+    const fullData = allCatalogs.map((cat: any) => ({
+      ...cat.dataValues,
+      productCount: cat.dataValues.products.length,
+    }));
     res.status(200).json(fullData);
   } catch (err) {
     res.status(404).send(err);
@@ -96,26 +81,13 @@ router.get("/catalogs", async (req: Request, res: Response) => {
 //GET CATALOG BY ID
 router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
   const { catalogId } = req.params;
-  let fullData = [];
   try {
-    const catalogProducts = await catalogs.findAll({
-      where: {
-        id: catalogId,
+    const catalogProducts: any = await catalogs.findByPk(catalogId, {
+      include: {
+        model: product,
       },
     });
-    const products = await product.findAll({
-      where: {
-        catalog_id: catalogId,
-      },
-    });
-
-    fullData = [
-      {
-        ...catalogProducts[0].dataValues,
-        products,
-      },
-    ];
-    res.status(200).json(fullData);
+    res.status(200).json(catalogProducts);
   } catch (error) {
     res.status(503).send(error);
   }
@@ -124,17 +96,14 @@ router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
 router.get(
   "/catalogs/:catalogId/:productId",
   async (req: Request, res: Response) => {
-    const { catalogId, productId } = req.params;
+    const { productId } = req.params;
     try {
-      const currentProd = await product.findByPk(productId);
-      const relatedImages = await images.findAll({
-        where: {
-          product_id: productId,
+      const currentProd = await product.findByPk(productId, {
+        include: {
+          model: images,
         },
       });
-      res
-        .status(200)
-        .json([{ ...currentProd?.dataValues, allImages: relatedImages }]);
+      res.status(200).json(currentProd);
     } catch (error) {
       res.status(503).send(error);
     }
@@ -168,6 +137,74 @@ router.delete("/catalogs/:id", async (req: Request, res: Response) => {
     const catalogName = currentCatalog.name;
     await currentCatalog.destroy();
     res.status(200).send(`${catalogName} deleted successfully `);
+  } catch (err) {
+    res.status(503).send(err);
+  }
+});
+// DUPLICATE CATALOG
+router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const currentCatalog: any = await catalogs.findByPk(id);
+    const catalogName = currentCatalog.name;
+    const catalogProducts: any = await product.findAll({
+      where: {
+        catalogId: id,
+      },
+      include: {
+        model: images,
+      },
+    });
+
+    const clonedCatalog: any = await catalogs.create({
+      name: `${catalogName} (copy)`,
+      created_at: new Date(),
+    });
+
+    // we cannot use bulkCreate because of the images relationship setting
+    for (let { dataValues } of catalogProducts) {
+      if (dataValues) {
+        // getting the attributes we care to duplicate
+        const {
+          id,
+          catalog_id,
+          images: extraImages,
+          catalogId,
+          ...attributes
+        } = dataValues;
+
+        try {
+          // create new products based on the products attributes
+          const createdClone: any = await product.create({
+            ...attributes,
+          });
+
+          // parsing the images so that we are able to clone them
+          const currentImages = extraImages?.length
+            ? extraImages.map(({ dataValues }: any) => ({
+                url: dataValues.url,
+              }))
+            : [];
+
+          // cloning the images
+          const clonedImages: any = await images.bulkCreate(currentImages);
+
+          // setting the catalogId to the prodduct
+          await createdClone.setCatalog(clonedCatalog.id);
+
+          // setting the productId to every image
+          await createdClone.setImages(clonedImages);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+
+    res.status(200).json({
+      message: `${catalogName} duplicated successfully`,
+      ...clonedCatalog.dataValues,
+    });
   } catch (err) {
     res.status(503).send(err);
   }

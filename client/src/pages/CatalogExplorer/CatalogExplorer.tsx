@@ -29,7 +29,6 @@ const CatalogExplorer = () => {
     isSuccess,
     error,
   } = useQuery(["catalogs"], getAllCatalogs);
-
   return (
     <div>
       {isLoading ? (
