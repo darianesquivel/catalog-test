@@ -20,7 +20,6 @@ import CustomDialog from "../../CustomDialog/CustomDialog";
 import FormCreator from "../../FormCreator/FormCreator";
 import updateCatalog from "../../../api/updateCatalog";
 import removeCatalog from "../../../api/removeCatalog";
-import { useStore } from "../../../pages/DrawerAppbar/DrawerAppbar";
 import useStyles from "./styles";
 import clonedCatalog from "../../../api/cloneCatalog";
 
