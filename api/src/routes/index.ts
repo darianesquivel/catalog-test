@@ -46,6 +46,7 @@ router.post(
         const createdImages = await images.bulkCreate(
           extraImages.map((url: string) => ({ url }))
         );
+        // product hasMany images, the following set the productId to all the images
         await newProduct[0].setImages(createdImages);
         await newProduct[0].setCatalog(catalog_id);
       }
@@ -156,33 +157,52 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
     });
 
     const clonedCatalog: any = await catalogs.create({
-      name: `${catalogName}(copy)`,
+      name: `${catalogName} (copy)`,
       created_at: new Date(),
     });
-    // console.log(catalogProducts);
 
-    for (let productData of catalogProducts) {
-      if (productData.dataValues) {
-        const { id, catalog_id, ...attributes } = productData.dataValues;
-        // we cannot use bulkCreate because of the images relationship setting
-        const createdClone: any = await product.create({
-          ...attributes,
-        });
-        const currentImages = productData.dataValues.images.map(
-          ({ dataValues }: any) => ({ url: dataValues.url })
-        );
-        const clonesImages = await images.bulkCreate(currentImages);
-        await createdClone[0].setCatalog(clonedCatalog.id);
-        await createdClone[0].setImages(clonesImages);
+    // we cannot use bulkCreate because of the images relationship setting
+    for (let { dataValues } of catalogProducts) {
+      if (dataValues) {
+        // getting the attributes we care to duplicate
+        const {
+          id,
+          catalog_id,
+          images: extraImages,
+          catalogId,
+          ...attributes
+        } = dataValues;
+
+        try {
+          // create new products based on the products attributes
+          const createdClone: any = await product.create({
+            ...attributes,
+          });
+
+          // parsing the images so that we are able to clone them
+          const currentImages = extraImages?.length
+            ? extraImages.map(({ dataValues }: any) => ({
+                url: dataValues.url,
+              }))
+            : [];
+
+          // cloning the images
+          const clonedImages: any = await images.bulkCreate(currentImages);
+
+          // setting the catalogId to the prodduct
+          await createdClone.setCatalog(clonedCatalog.id);
+
+          // setting the productId to every image
+          await createdClone.setImages(clonedImages);
+        } catch (err) {
+          console.log(err);
+        }
       }
     }
 
-    // const clonedProducts = await product.bulkCreate(attributes);
-    console.log(clonedCatalog);
     res.status(200).json({
       message: `${catalogName} duplicated successfully`,
       ...clonedCatalog.dataValues,
-      // products: clonedProducts,
     });
   } catch (err) {
     res.status(503).send(err);
