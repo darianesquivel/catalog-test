@@ -127,7 +127,6 @@ export default function ProductDetails() {
     () => getProductInfo({ catalogId, productId })
   );
   const product: Tproduct = data || {};
-
   const { setSectionInfo } = useStore((state) => state);
 
   const [imagesState, setImagesState] = useState<any>([]);

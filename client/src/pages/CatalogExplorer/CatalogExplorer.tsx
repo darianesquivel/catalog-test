@@ -45,7 +45,6 @@ const CatalogExplorer = () => {
     isSuccess,
     error,
   } = useQuery(["catalogs"], getAllCatalogs);
-  console.log({ catalogs });
   return (
     <div>
       {isLoading ? (

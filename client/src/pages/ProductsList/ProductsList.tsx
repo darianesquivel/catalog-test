@@ -92,25 +92,28 @@ const ProductsList = (props: any) => {
   const catalogId = props.match.params.id;
   const [info, setInfo] = useState<object>();
   const { setSectionInfo } = useStore();
-  const { data: catalog } = useQuery(
+  const { data: catalog = {} } = useQuery(
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
   );
+
   const { currentUrl } = useStore((state) => state);
 
-  const products = catalog ? catalog.products : [];
+  const products = catalog.products ? catalog.products : [];
+
   const rows: GridRowsProp = products;
   const params: any = useParams();
   const history = useHistory();
 
   useEffect(() => {
-    setSectionInfo(catalog?.[0]?.name, catalog?.[0]?.id);
+    setSectionInfo(catalog.name, catalog.id);
     const initialValues = products.find(
       (data: any) => data.id === params.productId
     );
     setInfo(initialValues);
+
     return () => setSectionInfo("");
-  }, [catalog, setSectionInfo, currentUrl]);
+  }, [catalog, setSectionInfo, currentUrl, params.productId]);
 
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>

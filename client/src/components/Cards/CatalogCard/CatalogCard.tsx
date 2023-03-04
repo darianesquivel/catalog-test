@@ -45,7 +45,6 @@ export default function CatalogCard({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [option, setOption] = useState<string>("");
   const history = useHistory();
-  const { setSectionInfo } = useStore((state: any) => state);
 
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -58,7 +57,6 @@ export default function CatalogCard({
 
   const handleOption = (event: any) => {
     const eventName = event.target.id;
-    console.log({ id });
     setOption(eventName);
   };
   const date = createdAt ? new Date(createdAt).toLocaleString() : "no date";
@@ -169,10 +167,7 @@ export default function CatalogCard({
             defaultImage && (
               <CardMedia
                 className={classes.media}
-                onClick={() => {
-                  setSectionInfo(name, id);
-                  history.push(`/catalogs/${id}`);
-                }}
+                onClick={() => history.push(`/catalogs/${id}`)}
                 image={defaultImage}
               />
             )
@@ -180,9 +175,7 @@ export default function CatalogCard({
           <CardContent>
             <Typography
               className={classes.products}
-              onClick={() => {
-                history.push(`/catalogs/${id}`);
-              }}
+              onClick={() => history.push(`/catalogs/${id}`)}
             >{`${productCount > 1 ? productCount : 0} products`}</Typography>
             <Typography className={classes.createdAt}>
               <FontAwesomeIcon size="1x" icon={faCalendarDay} />
