@@ -176,7 +176,7 @@ export default function CatalogCard({
               className={classes.products}
               onClick={() => history.push(`/catalogs/${id}`)}
             >{`${productCount > 1 ? productCount : 0} products`}</Typography>
-            <Typography className={classes.createdAt}>
+            <Typography className={classes.createdAt} variant="body2">
               <FontAwesomeIcon size="1x" icon={faCalendarDay} />
               {`Created: ${date}`}
             </Typography>

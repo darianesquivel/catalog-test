@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import getCatalogById from "../../api/getCatalogById";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
-import { makeStyles } from "@material-ui/core/styles";
 import { Button, Typography } from "@material-ui/core";
 import {
   faTags,
@@ -11,48 +10,14 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SummaryDetails from "../ProductDetails/SummaryDetails";
+import SummaryDetails from "../Details/SummaryDetails/SummaryDetails";
 import { useEffect, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 import { useHistory, useParams } from "react-router";
 
-const useStyles = makeStyles(() => ({
-  container: {
-    height: "85vh",
-    width: "100%",
-    display: "grid",
-    gridTemplateColumns: "1fr",
-  },
+// STYLES
+import useStyles from "./styles";
 
-  details: {
-    display: "grid",
-    gridTemplateColumns: "3fr 1fr",
-  },
-  mainBox: {
-    // width: "100%",
-  },
-  buttonsContainer: {
-    display: "flex",
-    gap: "15px",
-    marginBottom: "16px",
-  },
-  button: {
-    display: "flex",
-    borderRadius: "8px",
-  },
-  typographyButtons: {
-    fontSize: "15px",
-    textTransform: "capitalize",
-    marginLeft: "10px",
-  },
-  thumbnails: {
-    width: "60px",
-    margin: "0 auto",
-  },
-  datagrid: {
-    width: "100",
-  },
-}));
 const columns: GridColDef[] = [
   {
     field: "info",
