@@ -33,22 +33,17 @@ router.post(
         const extraImages = allImages
           ? allImages.split(",").map((url: string) => url?.trim())
           : [];
-
-        const newProduct: any = await product.findOrCreate({
-          where: {
-            // id,
-            name: title,
-            description,
-            image,
-          },
+        const newProduct: any = await product.create({
+          name: title,
+          description,
+          image,
         });
-
         const createdImages = await images.bulkCreate(
           extraImages.map((url: string) => ({ url }))
         );
         // product hasMany images, the following set the productId to all the images
-        await newProduct[0].setImages(createdImages);
-        await newProduct[0].setCatalog(catalog_id);
+        await newProduct.setImages(createdImages);
+        await newProduct.setCatalog(catalog_id);
       }
 
       res.status(200).send("Products added successfuly");
