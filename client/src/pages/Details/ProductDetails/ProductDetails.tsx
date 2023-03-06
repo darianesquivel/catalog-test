@@ -108,19 +108,22 @@ export default function ProductDetails() {
               <div className={classes.header}>
                 <Typography variant="subtitle1">Products Details</Typography>
                 <Typography variant="body2" className={classes.idBox}>
-                  <Typography variant="caption">Product ID</Typography>
+                  <Typography variant="body2">Product ID</Typography>
                   <Typography variant="caption">{product.id}</Typography>
                 </Typography>
                 <Divider className={classes.divider} />
               </div>
               <div className={classes.accordionBox}>
-                <Accordion>
+                <Accordion className={classes.accordion}>
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                    expandIcon={<ExpandMoreIcon className={classes.icon} />}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography variant="caption">
+                    <Typography
+                      className={classes.accordionTitle}
+                      variant="body2"
+                    >
                       Product information
                     </Typography>
                   </AccordionSummary>
@@ -129,45 +132,54 @@ export default function ProductDetails() {
                       <Typography variant="h6">{product.name}</Typography>
                     </div>
                     <div className={classes.productDesc}>
-                      <Typography variant="body2"> Description</Typography>
+                      <Typography variant="body1"> Description</Typography>
                       <Typography variant="body2">
                         {product.description}
                       </Typography>
                     </div>
                   </AccordionDetails>
+                  <Divider className={classes.divider} />
                 </Accordion>
-                <Divider className={classes.divider} />
-                <Accordion disabled>
+                <Accordion disabled className={classes.accordion}>
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                    expandIcon={<ExpandMoreIcon className={classes.icon} />}
                     aria-controls="panel2a-content"
                     id="panel2a-header"
                   >
-                    <Typography variant="caption">Assistant</Typography>
+                    <Typography
+                      className={classes.accordionTitle}
+                      variant="body2"
+                    >
+                      Assistant
+                    </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Typography>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Suspendisse malesuada lacus ex, sit amet blandit leo
-                      lobortis eget.
-                    </Typography>
+                    <Typography variant="body2">No data</Typography>
                   </AccordionDetails>
+                  <Divider className={classes.divider} />
                 </Accordion>
-                <Divider className={classes.divider} />
-                <Accordion>
+
+                <Accordion className={classes.accordion}>
                   <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
+                    expandIcon={<ExpandMoreIcon className={classes.icon} />}
                     aria-controls="panel3a-content"
                     id="panel3a-header"
                   >
-                    <Typography variant="caption">Metadata</Typography>
+                    <Typography
+                      className={classes.accordionTitle}
+                      variant="body2"
+                    >
+                      Metadata
+                    </Typography>
                   </AccordionSummary>
+
                   <AccordionDetails className={classes.details}>
                     <DetailTable
                       rows={keyValues}
                       extraStyles={classes.extraStyles}
                     />
                   </AccordionDetails>
+                  <Divider className={classes.divider} />
                 </Accordion>
               </div>
             </>

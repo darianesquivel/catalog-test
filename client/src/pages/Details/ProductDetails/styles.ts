@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
-    gap: theme.spacing(4),
+    gap: theme.spacing(1),
     flexWrap: "nowrap",
   },
   leftBox: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "relative",
   },
   rightBox: {
-    padding: theme.spacing(1, 2),
+    padding: theme.spacing(1, 0.5),
     position: "relative",
     overflow: "auto",
   },
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     gap: theme.spacing(2),
   },
   divider: {
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   },
   details: {
     display: "grid",
@@ -89,6 +89,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "absolute",
     top: "50%",
     left: "50%",
+  },
+  accordionTitle: {
+    color: theme.palette.primary.main,
+    "&:hover": {
+      marginBottom: theme.spacing(-1 / 4),
+      borderBottom: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
+  icon: {
+    color: theme.palette.primary.main,
+  },
+  accordion: {
+    boxShadow: "none",
   },
 }));
 
