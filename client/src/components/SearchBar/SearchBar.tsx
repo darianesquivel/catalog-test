@@ -1,14 +1,11 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
-import InputBase from "@material-ui/core/InputBase";
-import SearchIcon from "@material-ui/icons/Search";
 import { useStyles } from "./styles";
 import { useMutateHook } from "../../hooks";
 import queryClientConfig from "../../config/queryClientConfig";
 import getFilteredCatalogs from "../../api/getFilteredCatalogs";
 import { useHistory } from "react-router";
 import {
-  CircularProgress,
   FormControl,
   IconButton,
   InputAdornment,
@@ -27,6 +24,7 @@ export default function SearchBar() {
   );
 
   const initialValue = getUrlTerm(history.location.search);
+
   const [term, setTerm] = useState(initialValue);
 
   const { mutate } = useMutateHook(() => getFilteredCatalogs(term));
