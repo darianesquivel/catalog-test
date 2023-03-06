@@ -12,7 +12,7 @@ import {
   faRedoAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-import useStyles from "./styles";
+import useStyles from "./Styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
@@ -26,9 +26,8 @@ export default function CustomNavBar({ className }: any) {
   const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
     (state: any) => state
   );
-  const { id, name } = sectionInfo;
+  const { id, name } = sectionInfo || {};
   const history = useHistory();
-
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
   const isUpload = /\/upload$/gi.test(currentUrl);
   const isDetails = /\/details$/gi.test(currentUrl);
@@ -59,7 +58,7 @@ export default function CustomNavBar({ className }: any) {
       {open && (
         <FormCreator
           isOpen={open}
-          handleModal={() => setOpen(false)}
+          onModalChange={() => setOpen(false)}
           apiFunction={updateCatalog}
           initialValues={{ name, id }}
           keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
@@ -71,7 +70,7 @@ export default function CustomNavBar({ className }: any) {
         className={`${classes.mainContainer} ${className}`}
       >
         <Toolbar className={classes.toolbar} disableGutters={true}>
-          <div className={classes.mainConetnt}>
+          <div className={classes.mainContent}>
             {isProductListView || isUpload ? (
               <IconButton
                 className={classes.icons}
@@ -82,9 +81,7 @@ export default function CustomNavBar({ className }: any) {
               >
                 <FontAwesomeIcon icon={faAngleLeft} size="sm" />
               </IconButton>
-            ) : (
-              <div className={classes.icons}></div>
-            )}
+            ) : null}
 
             <div className={classes.sectionName}>
               <Typography variant="h6">{sectionTitle}</Typography>
@@ -101,7 +98,7 @@ export default function CustomNavBar({ className }: any) {
                 className={classes.icons}
                 onClick={() => setOpen(true)}
               >
-                <FontAwesomeIcon icon={faPen} size="sm" />
+                <FontAwesomeIcon icon={faPen} size="xs" />
               </IconButton>
             )}
           </div>
@@ -112,6 +109,7 @@ export default function CustomNavBar({ className }: any) {
                 variant="outlined"
                 color="primary"
                 onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+                className={classes.addProductBtn}
               >
                 Add products
               </Button>

@@ -20,8 +20,8 @@ import CustomDialog from "../../CustomDialog/CustomDialog";
 import FormCreator from "../../FormCreator/FormCreator";
 import updateCatalog from "../../../api/updateCatalog";
 import removeCatalog from "../../../api/removeCatalog";
-import { useStore } from "../../../pages/DrawerAppbar/DrawerAppbar";
 import useStyles from "./styles";
+import clonedCatalog from "../../../api/cloneCatalog";
 
 // the below type we should reuse in Catalog Explorer
 type TcatalogCard = {
@@ -44,7 +44,6 @@ export default function CatalogCard({
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [option, setOption] = useState<string>("");
   const history = useHistory();
-  const { setSectionInfo } = useStore((state: any) => state);
 
   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -68,7 +67,7 @@ export default function CatalogCard({
   const renderDialog =
     option === "edit" ? (
       <FormCreator
-        handleModal={handleClose}
+        onModalChange={handleClose}
         isOpen={true}
         apiFunction={updateCatalog}
         initialValues={{ id, name }}
@@ -78,8 +77,8 @@ export default function CatalogCard({
     ) : option === "remove" ? (
       <CustomDialog
         isOpen={Boolean(option)}
-        handleModal={handleClose}
-        handleAccept={() => removeCatalog({ id })}
+        onModalChange={handleClose}
+        onAccept={() => removeCatalog({ id })}
         queryKey={["catalogs"]}
       >
         <Typography variant="h6">
@@ -89,6 +88,22 @@ export default function CatalogCard({
           message="This action can't be undone."
           alertType="error"
           variant="filled"
+        />
+      </CustomDialog>
+    ) : option === "duplicate" ? (
+      <CustomDialog
+        isOpen={Boolean(option)}
+        onModalChange={handleClose}
+        onAccept={() => clonedCatalog(id)}
+        queryKey={["catalogs"]}
+      >
+        <Typography variant="h6">
+          You are about to duplicate the catalog <b>{name}</b>. Are you sure?
+        </Typography>
+        <CustomAlert
+          message="The catalog and all its products will be duplicated"
+          alertType="warning"
+          variant="standard"
         />
       </CustomDialog>
     ) : null;
@@ -151,10 +166,7 @@ export default function CatalogCard({
             defaultImage && (
               <CardMedia
                 className={classes.media}
-                onClick={() => {
-                  setSectionInfo(name, id);
-                  history.push(`/catalogs/${id}`);
-                }}
+                onClick={() => history.push(`/catalogs/${id}`)}
                 image={defaultImage}
               />
             )
@@ -162,11 +174,9 @@ export default function CatalogCard({
           <CardContent>
             <Typography
               className={classes.products}
-              onClick={() => {
-                history.push(`/catalogs/${id}`);
-              }}
+              onClick={() => history.push(`/catalogs/${id}`)}
             >{`${productCount > 1 ? productCount : 0} products`}</Typography>
-            <Typography className={classes.createdAt}>
+            <Typography className={classes.createdAt} variant="body2">
               <FontAwesomeIcon size="1x" icon={faCalendarDay} />
               {`Created: ${date}`}
             </Typography>

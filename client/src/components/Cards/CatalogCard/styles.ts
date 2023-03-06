@@ -4,7 +4,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     catalogCard: {
       height: 355,
-      borderRadius: theme.spacing(1),
+      borderRadius: theme.shape.borderRadius,
     },
     cardContainer: {
       width: "100%",
@@ -29,17 +29,17 @@ const useStyles = makeStyles((theme) =>
     },
     products: {
       color: theme.palette.primary.main,
-      fontSize: theme.spacing(1.8),
+      fontSize: "15px",
       marginBottom: theme.spacing(1),
       cursor: "pointer",
     },
     createdAt: {
       display: "flex",
       alignItems: "center",
-      color: theme.palette.grey[600],
-      fontWeight: "lighter",
-      fontSize: theme.spacing(1.7),
+      color: theme.palette.grey[500],
+      fontSize: "14px",
       gap: theme.spacing(1),
+      letterSpacing: "0.04em",
     },
   })
 );

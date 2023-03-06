@@ -30,11 +30,21 @@ fs.readdirSync(path.join(__dirname, "/models"))
 modelDefiners.forEach((model) => model(database));
 
 // Relationships - refactor
-// const { product, catalogs, images } = database.models;
+const { product, catalogs, images } = database.models;
 
-// catalogs.hasMany(product);
-// product.belongsTo(catalogs);
-// product.hasMany(images);
-// images.belongsTo(product);
+catalogs.hasMany(product, {
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+product.belongsTo(catalogs);
+product.hasMany(images, {
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+images.belongsTo(product, {
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
 export default database;
