@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    height: "85vh",
+    height: "calc(100vh - 145px)",
     width: "100%",
     display: "grid",
     gridTemplateColumns: "1fr",
@@ -12,7 +12,9 @@ const useStyles = makeStyles((theme) => ({
     display: "grid",
     gridTemplateColumns: "3fr 1fr",
   },
-  mainBox: {},
+  mainBox: {
+    height: "calc(100vh - 145px)",
+  },
   buttonsContainer: {
     display: "flex",
     gap: theme.spacing(2),
