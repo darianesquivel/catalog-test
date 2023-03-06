@@ -13,7 +13,7 @@ import {
   OutlinedInput,
   Typography,
 } from "@material-ui/core";
-import { Search, Replay } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 
 export default function SearchBar() {
   const classes = useStyles();
