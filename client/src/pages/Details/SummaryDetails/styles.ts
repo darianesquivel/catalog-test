@@ -2,12 +2,11 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    height: "calc(100vh - 145px)",
+    height: "calc(100vh - 103px)",
     display: "flex",
-    flexFlow: "column",
+    flexDirection: "column",
     padding: theme.spacing(1),
-    paddingLeft: theme.spacing(1),
-    gap: theme.spacing(3),
+    boxSizing: "content-box",
   },
   header: {
     display: "grid",
@@ -23,7 +22,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     lineHeight: "18px",
   },
   accordion: {},
-  titleSection: {},
+  titleSection: {
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(2),
+    padding: theme.spacing(2, 0),
+  },
+  title: {},
+  brand: {},
   headerButtons: {
     display: "grid",
     gridTemplateColumns: "repeat(3, 1fr)",
