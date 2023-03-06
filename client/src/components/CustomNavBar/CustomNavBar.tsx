@@ -19,6 +19,7 @@ import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import queryClientConfig from "../../config/queryClientConfig";
+import SearchBar from "../SearchBar/SearchBar";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
@@ -46,11 +47,10 @@ export default function CustomNavBar({ className }: any) {
   };
 
   useEffect(() => {
-    const unlisten = history.listen((...props) => {
-      const { pathname } = props?.[0] || {};
-      setCurrentUrl(pathname);
+    history.listen((...props) => {
+      const { pathname, search } = props?.[0] || {};
+      setCurrentUrl(pathname + search);
     });
-    return () => unlisten();
   }, [history, setCurrentUrl]);
 
   return (
@@ -114,7 +114,9 @@ export default function CustomNavBar({ className }: any) {
                 Add products
               </Button>
             )}
-            {/* {searchBar && <SearchBar />} */}
+            {sectionTitle.includes("Catalog Explorer") && !isDetails && (
+              <SearchBar />
+            )}
           </div>
         </Toolbar>
       </AppBar>
