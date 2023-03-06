@@ -9,7 +9,7 @@ import CatalogCreator from "../../components/Cards/CatalogCreator/CatalogCreator
 import { CircularProgress, Snackbar } from "@material-ui/core";
 // REACT
 import { useHistory } from "react-router";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 // STYLES
 import useStyles from "./styles";
@@ -29,8 +29,13 @@ const CatalogExplorer = (props: any) => {
   const classes = useStyles();
   const history = useHistory();
   queryClientConfig.invalidateQueries(["catalogs"]); // it is required when clicking to the catalog explorer button
-  // could not use useSearchParams
-  const query = history.location.search?.match(/(?<=term=).+/gi)?.[0];
+  // could not use useSearchQueryParams
+  const getUrlTerm = useCallback(
+    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
+    []
+  );
+
+  const query = getUrlTerm(history.location.search);
 
   const [open, setOpen] = useState(true);
 
@@ -42,11 +47,8 @@ const CatalogExplorer = (props: any) => {
     error,
   } = useQuery<any>(["catalogs"], () => {
     // we declare term here to get the last url data
-    const term = history.location.search?.match(/(?<=term=).+/gi)?.[0];
-    console.log({
-      term,
-      query,
-    });
+    const term = getUrlTerm(history.location.search);
+
     if (term) {
       return getFilteredCatalogs(term);
     } else {
@@ -108,9 +110,7 @@ const CatalogExplorer = (props: any) => {
               // onClose={handleClose}
               title="Not found"
               alertType="info"
-              message={`Catalogs not found with the name: ${
-                history.location.search?.match(/(?<=\=).+/gi)?.[0]
-              }`}
+              message={`Catalogs not found with the name: ${query}`}
             />
           </Snackbar>
         </div>

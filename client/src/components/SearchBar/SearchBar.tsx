@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from "@material-ui/icons/Search";
@@ -11,8 +11,12 @@ import { useHistory } from "react-router";
 export default function SearchBar() {
   const classes = useStyles();
   const history = useHistory();
+  const getUrlTerm = useCallback(
+    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
+    []
+  );
 
-  const initialValue = history.location.search?.match(/(?<=term\=).+/gi)?.[0];
+  const initialValue = getUrlTerm(history.location.search);
   const [term, setTerm] = useState(initialValue);
 
   const { mutate } = useMutateHook(() => getFilteredCatalogs(term));
@@ -43,6 +47,7 @@ export default function SearchBar() {
         <div className={classes.searchIcon}>
           <SearchIcon />
         </div>
+        {/* To do : change the input base by the darian's component */}
         <InputBase
           placeholder="Search…"
           value={term}
