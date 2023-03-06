@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%",
     display: "grid",
     justifyContent: "space-between",
-    gridTemplateColumns: "4fr 1fr",
+    gridTemplateColumns: "1fr 1fr",
   },
   mainContent: {
     display: "flex",

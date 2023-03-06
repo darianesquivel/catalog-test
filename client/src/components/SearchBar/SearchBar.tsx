@@ -7,6 +7,16 @@ import { useMutateHook } from "../../hooks";
 import queryClientConfig from "../../config/queryClientConfig";
 import getFilteredCatalogs from "../../api/getFilteredCatalogs";
 import { useHistory } from "react-router";
+import {
+  CircularProgress,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+} from "@material-ui/core";
+import { Search, Replay } from "@material-ui/icons";
 
 export default function SearchBar() {
   const classes = useStyles();
@@ -24,9 +34,11 @@ export default function SearchBar() {
     const { value } = event.target;
     setTerm(value);
   };
+
   // Agregar el isLoading
   const handleSubmit = (event: any) => {
     event.preventDefault();
+    console.log("se subitea");
     if (!term) {
       setTerm("");
       history.push("/catalogs");
@@ -42,23 +54,25 @@ export default function SearchBar() {
     }
   };
   return (
-    <form className={classes.root} onSubmit={handleSubmit}>
-      <div className={classes.search}>
-        <div className={classes.searchIcon}>
-          <SearchIcon />
-        </div>
-        {/* To do : change the input base by the darian's component */}
-        <InputBase
-          placeholder="Search…"
+    <form className={classes.searchBar} onSubmit={handleSubmit}>
+      <FormControl fullWidth margin="dense" variant="outlined">
+        <InputLabel htmlFor="search">
+          <Typography variant="body2"> Search for Catalog </Typography>
+        </InputLabel>
+        <OutlinedInput
+          id="search"
           value={term}
           onChange={handleChange}
-          classes={{
-            root: classes.inputRoot,
-            input: classes.inputInput,
-          }}
-          inputProps={{ "aria-label": "search" }}
+          endAdornment={
+            <InputAdornment disablePointerEvents position="end">
+              <IconButton edge="end">
+                <Search />
+              </IconButton>
+            </InputAdornment>
+          }
+          labelWidth={117}
         />
-      </div>
+      </FormControl>
     </form>
   );
 }
