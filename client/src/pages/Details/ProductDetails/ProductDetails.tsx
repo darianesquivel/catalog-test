@@ -56,7 +56,7 @@ export default function ProductDetails() {
     setSectionInfo(product.name);
     setImagesState(product.images?.map((obj: any) => obj?.url));
     return () => setSectionInfo("");
-  }, [product?.name, setSectionInfo]);
+  }, [product?.name, setSectionInfo, product?.images]);
 
   return (
     <>
@@ -84,6 +84,7 @@ export default function ProductDetails() {
               </Grid>
               <Grid item xs={10} className={classes.mainImgGrid} zeroMinWidth>
                 <img
+                  alt={`${product.name}`}
                   src={selected || product.image}
                   className={classes.mainImage}
                 />
