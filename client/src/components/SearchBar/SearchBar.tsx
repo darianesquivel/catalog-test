@@ -24,7 +24,7 @@ export default function SearchBar() {
     const { value } = event.target;
     setTerm(value);
   };
-
+  // Agregar el isLoading
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (!term) {
