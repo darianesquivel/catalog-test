@@ -11,11 +11,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // STYLES
 import useStyles from "./styles";
+import { useHistory } from "react-router";
 
 export default function CatalogCreator() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const handleModal = () => setOpen((prev) => !prev);
+  const history = useHistory();
 
   return (
     <>
@@ -32,6 +34,11 @@ export default function CatalogCreator() {
           apiFunction={createCatalog}
           keysToInvalidate={["catalogs"]}
           acceptBtnName="Create"
+          extraFn={(resData) => {
+            const createdCatalogId = resData[0]?.id;
+            if (createdCatalogId)
+              history.push(`/catalogs/${createdCatalogId}/upload`);
+          }}
         />
       )}
     </>
