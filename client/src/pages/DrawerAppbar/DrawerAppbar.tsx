@@ -62,7 +62,7 @@ export const useStore = create(
       sectionInfo: "",
       setSectionInfo: (name: string, id?: string) =>
         set((state: any) => ({ ...state, sectionInfo: { name, id } })),
-      mode: "dark",
+      mode: "light",
       setMode: () =>
         set((state: any) => ({
           ...state,
