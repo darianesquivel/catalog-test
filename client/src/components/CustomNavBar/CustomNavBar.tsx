@@ -84,7 +84,7 @@ export default function CustomNavBar({ className }: any) {
       setTerm(getUrlTerm(search) || "");
       setCurrentUrl(pathname + search);
     });
-  }, [history, setCurrentUrl, getUrlTerm, isLoading]);
+  }, [history, setCurrentUrl, getUrlTerm, isLoading, setIsSearching]);
 
   return (
     <div>
