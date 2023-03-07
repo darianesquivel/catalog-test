@@ -13,7 +13,6 @@ import { useCallback, useState } from "react";
 
 // STYLES
 import useStyles from "./styles";
-import queryClientConfig from "../../config/queryClientConfig";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 
 type TcatalogCard = {
@@ -29,16 +28,14 @@ type TcatalogCard = {
 const CatalogExplorer = (props: any) => {
   const classes = useStyles();
   const history = useHistory();
-  queryClientConfig.invalidateQueries(["catalogs"]); // it is required when clicking to the catalog explorer button
   // could not use useSearchQueryParams
   const getUrlTerm = useCallback(
     (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
     []
   );
-  const isSearching = useStore((state) => state.isSearching);
+  const { searchingData } = useStore((state) => state);
   const query = getUrlTerm(history.location.search);
   const [open, setOpen] = useState(true);
-
   const {
     data: catalogs,
     isError,
@@ -48,19 +45,43 @@ const CatalogExplorer = (props: any) => {
   } = useQuery<any>(["catalogs"], () => {
     // we declare term here to get the last url data
     const term = getUrlTerm(history.location.search);
-
     if (term) {
       return getFilteredCatalogs(term);
     } else {
       return getAllCatalogs();
     }
   });
-
   const handleSnackBar = () => setOpen(false);
 
   return (
     <div>
-      {isLoading || isSearching ? (
+      {catalogs && !catalogs.length && !isLoading && query ? (
+        <div>
+          <Snackbar
+            open={open}
+            autoHideDuration={5000}
+            onClose={handleSnackBar}
+            style={{ top: "80px" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <CustomAlert
+              // onClose={handleClose}
+              title="Not found"
+              alertType="info"
+              message={`Catalogs not found with the name: ${query}`}
+            />
+          </Snackbar>
+        </div>
+      ) : null}
+
+      {isError ? (
+        <div>
+          <CustomAlert
+            alertType="error"
+            message={`An error occurred while loading the catalogs: ${error}`}
+          />
+        </div>
+      ) : isLoading || searchingData.isSearching ? (
         <div className={classes.loading}>
           <CircularProgress />
         </div>
@@ -85,33 +106,6 @@ const CatalogExplorer = (props: any) => {
               />
             );
           })}
-        </div>
-      ) : null}
-
-      {isError ? (
-        <div>
-          <CustomAlert
-            alertType="error"
-            message={`An error occurred while loading the catalogs: ${error}`}
-          />
-        </div>
-      ) : null}
-      {!catalogs?.length && !isLoading && query ? (
-        <div>
-          <Snackbar
-            open={open}
-            autoHideDuration={5000}
-            onClose={handleSnackBar}
-            style={{ top: "80px" }}
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          >
-            <CustomAlert
-              // onClose={handleClose}
-              title="Not found"
-              alertType="info"
-              message={`Catalogs not found with the name: ${query}`}
-            />
-          </Snackbar>
         </div>
       ) : null}
     </div>
