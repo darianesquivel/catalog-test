@@ -67,9 +67,6 @@ const ProductsList = (props: any) => {
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
   );
-  // const { mutate, isLoading, isError, data } = useMutateHook(() =>
-  //   removeProducts({ id: catalogId, productsId: selected })
-  // );
   const { currentUrl } = useStore((state) => state);
 
   const products = useMemo(

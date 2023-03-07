@@ -30,6 +30,7 @@ export default function CustomNavBar({ className }: any) {
   const { id, name } = sectionInfo || {};
   const history = useHistory();
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
+
   const isUpload = /\/upload$/gi.test(currentUrl);
   const isDetails = /\/details$/gi.test(currentUrl);
   const sectionTitle = isUpload
@@ -37,6 +38,7 @@ export default function CustomNavBar({ className }: any) {
     : name
     ? name
     : "Catalog Explorer";
+  const isMainSection = sectionTitle.includes("Catalog Explorer");
   // We cannot use params here because this component is outer react router
   const catalogId =
     currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
@@ -87,24 +89,24 @@ export default function CustomNavBar({ className }: any) {
               <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
-            {sectionTitle.includes("Catalog Explorer") && !isDetails && (
+            {isMainSection && !isDetails ? (
               <IconButton className={classes.icons} onClick={handleRefresh}>
                 <FontAwesomeIcon icon={faRedoAlt} size="sm" />
               </IconButton>
-            )}
+            ) : null}
 
-            {isProductListView && !isDetails && !isUpload && (
+            {isProductListView && !isDetails && !isUpload ? (
               <IconButton
                 className={classes.icons}
                 onClick={() => setOpen(true)}
               >
                 <FontAwesomeIcon icon={faPen} size="xs" />
               </IconButton>
-            )}
+            ) : null}
           </div>
 
           <div className={classes.endSection}>
-            {isProductListView && !isDetails && !isUpload && (
+            {isProductListView && !isDetails && !isUpload ? (
               <Button
                 variant="outlined"
                 color="primary"
@@ -113,10 +115,9 @@ export default function CustomNavBar({ className }: any) {
               >
                 Add products
               </Button>
-            )}
-            {sectionTitle.includes("Catalog Explorer") && !isDetails && (
+            ) : isMainSection ? (
               <SearchBar />
-            )}
+            ) : null}
           </div>
         </Toolbar>
       </AppBar>

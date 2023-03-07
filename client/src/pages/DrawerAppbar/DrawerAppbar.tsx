@@ -60,6 +60,10 @@ export const useStore = create(
       sectionInfo: "",
       setSectionInfo: (name: string, id?: string) =>
         set((state: any) => ({ ...state, sectionInfo: { name, id } })),
+
+      searchTerm: "",
+      setSearchTerm: (term: string) =>
+        set((state: any) => ({ ...state, searchTerm: term })),
     }),
     {
       name: "drawer-storage",

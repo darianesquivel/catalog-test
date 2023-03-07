@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useStyles } from "./styles";
 import { useMutateHook } from "../../hooks";
@@ -23,20 +23,26 @@ export default function SearchBar() {
     []
   );
 
-  const initialValue = getUrlTerm(history.location.search);
-
-  const [term, setTerm] = useState(initialValue);
-
+  const [term, setTerm] = useState<string>("");
   const { mutate } = useMutateHook(() => getFilteredCatalogs(term));
   const handleChange = (event: any) => {
     const { value } = event.target;
     setTerm(value);
   };
 
-  // Agregar el isLoading
+  useEffect(() => {
+    const searchValue: string = getUrlTerm(history.location.search) || "";
+    setTerm(searchValue);
+
+    return history.listen(({ search }) => {
+      setTerm(getUrlTerm(search) || "");
+    });
+  }, [getUrlTerm, history]);
+
+  // Add a loading component
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log("se subitea");
+
     if (!term) {
       setTerm("");
       history.push("/catalogs");
@@ -62,7 +68,7 @@ export default function SearchBar() {
           value={term}
           onChange={handleChange}
           endAdornment={
-            <InputAdornment disablePointerEvents position="end">
+            <InputAdornment onClick={handleSubmit} position="end">
               <IconButton edge="end">
                 <Search />
               </IconButton>
