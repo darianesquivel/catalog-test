@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Tooltip, Typography } from "@material-ui/core/";
-import CopyToClipBoard from "../copyToClipBoard/CopyToClipBoard";
+import CopyToClipBoard from "../CopyToClipBoard/CopyToClipBoard";
 
 // STYLES
 import useStyles from "./styles";
