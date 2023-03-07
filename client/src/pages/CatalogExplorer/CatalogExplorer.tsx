@@ -14,6 +14,7 @@ import { useCallback, useState } from "react";
 // STYLES
 import useStyles from "./styles";
 import queryClientConfig from "../../config/queryClientConfig";
+import { useStore } from "../DrawerAppbar/DrawerAppbar";
 
 type TcatalogCard = {
   id: string;
@@ -34,9 +35,8 @@ const CatalogExplorer = (props: any) => {
     (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
     []
   );
-
+  const isSearching = useStore((state) => state.isSearching);
   const query = getUrlTerm(history.location.search);
-
   const [open, setOpen] = useState(true);
 
   const {
@@ -55,17 +55,16 @@ const CatalogExplorer = (props: any) => {
       return getAllCatalogs();
     }
   });
+
   const handleSnackBar = () => setOpen(false);
 
   return (
     <div>
-      {isLoading ? (
+      {isLoading || isSearching ? (
         <div className={classes.loading}>
           <CircularProgress />
         </div>
-      ) : null}
-
-      {isSuccess ? (
+      ) : isSuccess ? (
         <div
           className={
             !catalogs || catalogs?.length < 5

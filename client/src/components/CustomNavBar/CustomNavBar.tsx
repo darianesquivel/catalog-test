@@ -32,12 +32,11 @@ export default function CustomNavBar({ className }: any) {
 
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
-  const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
-    (state: any) => state
-  );
+  const { currentUrl, sectionInfo, setCurrentUrl, setIsSearching } =
+    useStore<any>((state: any) => state);
   const { id, name } = sectionInfo || {};
   const history = useHistory();
-  const { mutate } = useMutateHook(() => getFilteredCatalogs(term));
+  const { mutate, isLoading } = useMutateHook(() => getFilteredCatalogs(term));
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
 
@@ -77,6 +76,7 @@ export default function CustomNavBar({ className }: any) {
     setTerm(value);
   };
   useEffect(() => {
+    setIsSearching(isLoading);
     const searchValue: string = getUrlTerm(history.location.search) || "";
     setTerm(searchValue);
     history.listen((props) => {
@@ -84,7 +84,7 @@ export default function CustomNavBar({ className }: any) {
       setTerm(getUrlTerm(search) || "");
       setCurrentUrl(pathname + search);
     });
-  }, [history, setCurrentUrl, getUrlTerm]);
+  }, [history, setCurrentUrl, getUrlTerm, isLoading]);
 
   return (
     <div>

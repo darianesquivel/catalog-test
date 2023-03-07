@@ -60,10 +60,9 @@ export const useStore = create(
       sectionInfo: "",
       setSectionInfo: (name: string, id?: string) =>
         set((state: any) => ({ ...state, sectionInfo: { name, id } })),
-
-      searchTerm: "",
-      setSearchTerm: (term: string) =>
-        set((state: any) => ({ ...state, searchTerm: term })),
+      isSearching: false,
+      setIsSearching: (value: boolean) =>
+        set((state: any) => ({ ...state, isSearching: value })),
     }),
     {
       name: "drawer-storage",
@@ -71,7 +70,8 @@ export const useStore = create(
       partialize: (state) => {
         return Object.fromEntries(
           Object.entries(state).filter(
-            ([key]) => !["currentUrl", "sectionInfo"].includes(key)
+            ([key]) =>
+              !["currentUrl", "sectionInfo", "isSearching"].includes(key)
           )
         );
       },
