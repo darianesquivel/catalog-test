@@ -56,18 +56,25 @@ export default function SummaryDetails({
           <img src={image} className={classes.image} alt="main url" />
         </div>
         <div className={classes.titleSection}>
-          <Typography variant="body1">Title</Typography>
-          <span>{name}</span>
-          <Typography variant="body1">Brand</Typography>
-          <span> Default</span>
+          <div>
+            <Typography variant="body2">Title</Typography>
+            <Typography className={classes.title} variant="caption">
+              {name}
+            </Typography>
+          </div>
+
+          <div>
+            <Typography variant="body2">Brand</Typography>
+            <Typography className={classes.brand} variant="caption">
+              Default
+            </Typography>
+          </div>
         </div>
       </div>
       <div className={classes.description}>
-        <Typography>Description</Typography>
-        <p>{description}</p>
+        <Typography variant="body2">Description</Typography>
+        <Typography variant="caption">{description}</Typography>
       </div>
-      {/* below could be a children */}
-
       <CustomTabs tabValues={tabs} />
     </Container>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Paper, Tabs, Tab } from "@material-ui/core";
 
 // STYLES
@@ -10,11 +10,10 @@ interface TpropsArray {
 
 export default function CustomTabs({ tabValues }: TpropsArray) {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
   const handleChange = (event: React.ChangeEvent<{}>, newIndex: number) => {
     setValue(newIndex);
   };
-
   return (
     <Paper square className={classes.content}>
       <Tabs
@@ -28,10 +27,11 @@ export default function CustomTabs({ tabValues }: TpropsArray) {
             label={column.columnName}
             disabled={column.disabled}
             key={`${idx + column.columnName}`}
-          ></Tab>
+            className={classes.headerTab}
+          />
         ))}
       </Tabs>
-      <div className={classes.content}>{tabValues[value]?.content}</div>
+      <div className={classes.contentTabs}>{tabValues[value]?.content}</div>
     </Paper>
   );
 }

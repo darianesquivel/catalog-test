@@ -13,6 +13,8 @@ import {
   faChevronRight,
   faChevronLeft,
   faBell,
+  faMoon,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -20,11 +22,11 @@ import CatalogExplorer from "../CatalogExplorer/CatalogExplorer";
 import ProductsList from "../ProductsList/ProductsList";
 import ProductDetails from "../Details/ProductDetails/ProductDetails";
 import AddProducts from "../../components/AddProducts/AddProducts";
-import "../../app.css";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
 import { useStyles } from "./Styles";
+import queryClientConfig from "../../config/queryClientConfig";
 const drawerButtons = [
   {
     text: "Data Explorer",
@@ -60,6 +62,15 @@ export const useStore = create(
       sectionInfo: "",
       setSectionInfo: (name: string, id?: string) =>
         set((state: any) => ({ ...state, sectionInfo: { name, id } })),
+      mode: "light",
+      setMode: () =>
+        set((state: any) => ({
+          ...state,
+          mode: state.mode === "light" ? "dark" : "light",
+        })),
+      searchingData: { isSearching: false },
+      setSearchingData: (data: any) =>
+        set((state: any) => ({ ...state, searchingData: { ...data } })),
     }),
     {
       name: "drawer-storage",
@@ -67,7 +78,8 @@ export const useStore = create(
       partialize: (state) => {
         return Object.fromEntries(
           Object.entries(state).filter(
-            ([key]) => !["currentUrl", "sectionInfo"].includes(key)
+            ([key]) =>
+              !["currentUrl", "sectionInfo", "searchingData"].includes(key)
           )
         );
       },
@@ -79,6 +91,8 @@ export default function MiniDrawer() {
   const classes = useStyles();
   const open = useStore((state: any) => state.open);
   const setOpen = useStore((state: any) => state.setOpen);
+  const mode = useStore((state: any) => state.mode);
+  const setMode = useStore((state: any) => state.setMode);
 
   const handleDrawerChange = () => {
     setOpen();
@@ -86,7 +100,7 @@ export default function MiniDrawer() {
 
   return (
     <BrowserRouter>
-      <div className={`${classes.root} App`}>
+      <div className={classes.root}>
         <CustomNavBar
           className={clsx(classes.appBar, {
             [classes.appBarShift]: open,
@@ -106,7 +120,11 @@ export default function MiniDrawer() {
           }}
         >
           <List className={classes.buttonList}>
-            <Link to="/catalogs" className={classes.link}>
+            <Link
+              to="/catalogs"
+              className={classes.link}
+              onClick={() => queryClientConfig.clear()}
+            >
               <ListItem className={classes.drawerHeader}>
                 <ListItemIcon>
                   <img
@@ -146,6 +164,21 @@ export default function MiniDrawer() {
                   <FontAwesomeIcon icon={faBell} size="xl" />
                 </ListItemIcon>
                 <ListItemText primary={"Notifications"} />
+              </ListItem>
+              <ListItem
+                button
+                className={classes.buttonStyle}
+                onClick={setMode}
+              >
+                <ListItemIcon>
+                  <FontAwesomeIcon
+                    icon={mode === "dark" ? faSun : faMoon}
+                    size="xl"
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  primary={mode === "dark" ? "Light Mode" : "Dark Mode"}
+                />
               </ListItem>
               <ListItem
                 button

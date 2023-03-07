@@ -21,7 +21,7 @@ type Tprops = {
   onModalChange: () => void;
   isOpen: boolean;
   apiFunction: (...params: any) => any;
-  extraFn?: () => void;
+  extraFn?: (data?: any) => void;
   initialValues?: {
     name: string;
     id: string;
@@ -68,10 +68,10 @@ const FormCreator = ({
   const handleSubmit = async (values: any) => {
     if (!formik.errors.name) {
       mutate(values, {
-        onSuccess: () => {
+        onSuccess: (data) => {
           formik.resetForm();
           queryClientConfig.invalidateQueries(keysToInvalidate);
-          extraFn?.();
+          extraFn?.(data);
         },
       });
     }
