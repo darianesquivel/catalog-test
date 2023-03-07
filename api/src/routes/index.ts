@@ -1,5 +1,5 @@
 import { Model } from "sequelize";
-import { Request, Response, Router } from "express";
+import { query, Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
 import { Op } from "sequelize";
@@ -63,19 +63,43 @@ router.post(
 //GET CATALOGS
 router.get("/catalogs", async (req: Request, res: Response) => {
   // await insertData(product, catalogs);
-  try {
-    const allCatalogs = await catalogs.findAll({
-      include: {
-        model: product,
-      },
-    });
-    const fullData = allCatalogs.map((cat: any) => ({
-      ...cat.dataValues,
-      productCount: cat.dataValues.products.length,
-    }));
-    res.status(200).json(fullData);
-  } catch (err) {
-    res.status(404).send(err);
+  const { term } = req.query;
+  if (term) {
+    try {
+      const allCatalogs = await catalogs.findAll({
+        where: {
+          name: {
+            [Op.iLike]: `%${term}%`,
+          },
+        },
+        include: {
+          model: product,
+        },
+      });
+      const fullData = allCatalogs.map((cat: any) => ({
+        ...cat.dataValues,
+        productCount: cat.dataValues.products.length,
+      }));
+      // const data = fullData.length ? fullData : "Catalog not found";
+      res.status(200).send(fullData);
+    } catch (err) {
+      res.status(404).send(err);
+    }
+  } else {
+    try {
+      const allCatalogs = await catalogs.findAll({
+        include: {
+          model: product,
+        },
+      });
+      const fullData = allCatalogs.map((cat: any) => ({
+        ...cat.dataValues,
+        productCount: cat.dataValues.products.length,
+      }));
+      res.status(200).json(fullData);
+    } catch (err) {
+      res.status(404).send(err);
+    }
   }
 });
 
@@ -150,8 +174,6 @@ router.put("/catalogs/:id", async (req: Request, res: Response) => {
 router.delete("/catalogs/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  // Here we should also should remove all the products related to this catalot
-  // To do that y might need to make the relationship in sequelize
   try {
     const currentCatalog: any = await catalogs.findByPk(id);
     const catalogName = currentCatalog.name;

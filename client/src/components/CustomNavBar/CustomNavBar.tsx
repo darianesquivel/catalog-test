@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Toolbar,
   AppBar,
@@ -19,16 +19,33 @@ import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import queryClientConfig from "../../config/queryClientConfig";
+import SearchBar from "../SearchBar/SearchBar";
+import { useMutateHook } from "../../hooks";
+import getFilteredCatalogs from "../../api/getFilteredCatalogs";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
-  const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
-    (state: any) => state
+  const getUrlTerm = useCallback(
+    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
+    []
   );
+
+  const [open, setOpen] = useState(false);
+  const [term, setTerm] = useState("");
+
+  const { currentUrl, sectionInfo, setCurrentUrl, setSearchingData } =
+    useStore<any>((state: any) => state);
+
   const { id, name } = sectionInfo || {};
+
   const history = useHistory();
+
+  const { mutate, isLoading, error } = useMutateHook(() =>
+    getFilteredCatalogs(term)
+  );
+
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
+
   const isUpload = /\/upload$/gi.test(currentUrl);
   const isDetails = /\/details$/gi.test(currentUrl);
   const sectionTitle = isUpload
@@ -36,6 +53,8 @@ export default function CustomNavBar({ className }: any) {
     : name
     ? name
     : "Catalog Explorer";
+
+  const isMainSection = sectionTitle.includes("Catalog Explorer");
   // We cannot use params here because this component is outer react router
   const catalogId =
     currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
@@ -45,13 +64,38 @@ export default function CustomNavBar({ className }: any) {
     queryClientConfig.invalidateQueries(["catalogs"]);
   };
 
+  const handleSearchSubmit = () => {
+    if (!term) {
+      setTerm("");
+      history.push("/catalogs");
+    } else {
+      history.push({
+        pathname: "/catalogs",
+        search: `?term=${term}`,
+      });
+      mutate(undefined, {
+        onSuccess: (data: any) =>
+          queryClientConfig.setQueryData(["catalogs"], data),
+        onError: (err) => {
+          queryClientConfig.clear();
+        },
+      });
+    }
+  };
+  const handleSearchChange = (value: string) => {
+    setTerm(value);
+  };
+
   useEffect(() => {
-    const unlisten = history.listen((...props) => {
-      const { pathname } = props?.[0] || {};
-      setCurrentUrl(pathname);
+    setSearchingData({ isSearching: isLoading });
+    const searchValue: string = getUrlTerm(history.location.search) || "";
+    setTerm(searchValue);
+    history.listen((props) => {
+      const { pathname, search } = props || {};
+      setTerm(getUrlTerm(search) || "");
+      setCurrentUrl(pathname + search);
     });
-    return () => unlisten();
-  }, [history, setCurrentUrl]);
+  }, [history, setCurrentUrl, getUrlTerm, isLoading, setSearchingData]);
 
   return (
     <div>
@@ -87,24 +131,24 @@ export default function CustomNavBar({ className }: any) {
               <Typography variant="h6">{sectionTitle}</Typography>
             </div>
 
-            {sectionTitle.includes("Catalog Explorer") && !isDetails && (
+            {isMainSection && !isDetails ? (
               <IconButton className={classes.icons} onClick={handleRefresh}>
                 <FontAwesomeIcon icon={faRedoAlt} size="sm" />
               </IconButton>
-            )}
+            ) : null}
 
-            {isProductListView && !isDetails && !isUpload && (
+            {isProductListView && !isDetails && !isUpload ? (
               <IconButton
                 className={classes.icons}
                 onClick={() => setOpen(true)}
               >
                 <FontAwesomeIcon icon={faPen} size="xs" />
               </IconButton>
-            )}
+            ) : null}
           </div>
 
           <div className={classes.endSection}>
-            {isProductListView && !isDetails && !isUpload && (
+            {isProductListView && !isDetails && !isUpload ? (
               <Button
                 variant="outlined"
                 color="primary"
@@ -113,8 +157,14 @@ export default function CustomNavBar({ className }: any) {
               >
                 Add products
               </Button>
-            )}
-            {/* {searchBar && <SearchBar />} */}
+            ) : isMainSection ? (
+              <SearchBar
+                onSubmit={handleSearchSubmit}
+                initialTerm={term}
+                onChange={handleSearchChange}
+                searching={!!isLoading}
+              />
+            ) : null}
           </div>
         </Toolbar>
       </AppBar>

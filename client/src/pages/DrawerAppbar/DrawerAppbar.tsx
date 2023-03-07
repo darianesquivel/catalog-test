@@ -26,6 +26,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
 import { useStyles } from "./Styles";
+import queryClientConfig from "../../config/queryClientConfig";
 const drawerButtons = [
   {
     text: "Data Explorer",
@@ -67,6 +68,9 @@ export const useStore = create(
           ...state,
           mode: state.mode === "light" ? "dark" : "light",
         })),
+      searchingData: { isSearching: false },
+      setSearchingData: (data: any) =>
+        set((state: any) => ({ ...state, searchingData: { ...data } })),
     }),
     {
       name: "drawer-storage",
@@ -74,7 +78,8 @@ export const useStore = create(
       partialize: (state) => {
         return Object.fromEntries(
           Object.entries(state).filter(
-            ([key]) => !["currentUrl", "sectionInfo"].includes(key)
+            ([key]) =>
+              !["currentUrl", "sectionInfo", "searchingData"].includes(key)
           )
         );
       },
@@ -115,7 +120,11 @@ export default function MiniDrawer() {
           }}
         >
           <List className={classes.buttonList}>
-            <Link to="/catalogs" className={classes.link}>
+            <Link
+              to="/catalogs"
+              className={classes.link}
+              onClick={() => queryClientConfig.clear()}
+            >
               <ListItem className={classes.drawerHeader}>
                 <ListItemIcon>
                   <img
