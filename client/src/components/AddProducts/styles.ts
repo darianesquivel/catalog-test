@@ -36,10 +36,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     transition: "0.3s",
     "&:hover": {
-      backgroundColor: theme.palette.grey[200],
+      backgroundColor: theme.palette.background.default,
       border: `1px dashed ${theme.palette.primary.main}`,
     },
     cursor: "pointer",
