@@ -1,10 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-
 import { useStyles } from "./styles";
-import { useMutateHook } from "../../hooks";
-import queryClientConfig from "../../config/queryClientConfig";
-import getFilteredCatalogs from "../../api/getFilteredCatalogs";
-import { useHistory } from "react-router";
 import {
   FormControl,
   IconButton,
@@ -14,49 +8,24 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
-
-export default function SearchBar() {
+interface Tprops {
+  initialTerm: string | undefined;
+  onSubmit: () => void;
+  onChange: (value: string) => void;
+}
+export default function SearchBar({ initialTerm, onSubmit, onChange }: Tprops) {
   const classes = useStyles();
-  const history = useHistory();
-  const getUrlTerm = useCallback(
-    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
-    []
-  );
 
-  const [term, setTerm] = useState<string>("");
-  const { mutate } = useMutateHook(() => getFilteredCatalogs(term));
   const handleChange = (event: any) => {
     const { value } = event.target;
-    setTerm(value);
+    onChange(value);
   };
 
-  useEffect(() => {
-    const searchValue: string = getUrlTerm(history.location.search) || "";
-    setTerm(searchValue);
-
-    return history.listen(({ search }) => {
-      setTerm(getUrlTerm(search) || "");
-    });
-  }, [getUrlTerm, history]);
-
-  // Add a loading component
   const handleSubmit = (event: any) => {
     event.preventDefault();
-
-    if (!term) {
-      setTerm("");
-      history.push("/catalogs");
-    } else {
-      history.push({
-        pathname: "/catalogs",
-        search: term ? `?term=${term}` : "",
-      });
-      mutate(undefined, {
-        onSuccess: (data: any) =>
-          queryClientConfig.setQueryData(["catalogs"], data),
-      });
-    }
+    onSubmit();
   };
+
   return (
     <form className={classes.searchBar} onSubmit={handleSubmit}>
       <FormControl fullWidth margin="dense" variant="outlined">
@@ -65,7 +34,7 @@ export default function SearchBar() {
         </InputLabel>
         <OutlinedInput
           id="search"
-          value={term}
+          value={initialTerm}
           onChange={handleChange}
           endAdornment={
             <InputAdornment onClick={handleSubmit} position="end">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Toolbar,
   AppBar,
@@ -20,15 +20,25 @@ import FormCreator from "../FormCreator/FormCreator";
 import updateCatalog from "../../api/updateCatalog";
 import queryClientConfig from "../../config/queryClientConfig";
 import SearchBar from "../SearchBar/SearchBar";
+import { useMutateHook } from "../../hooks";
+import getFilteredCatalogs from "../../api/getFilteredCatalogs";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
+  const getUrlTerm = useCallback(
+    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
+    []
+  );
+
   const [open, setOpen] = useState(false);
+  const [term, setTerm] = useState("");
   const { currentUrl, sectionInfo, setCurrentUrl } = useStore<any>(
     (state: any) => state
   );
   const { id, name } = sectionInfo || {};
   const history = useHistory();
+  const { mutate } = useMutateHook(() => getFilteredCatalogs(term));
+
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
 
   const isUpload = /\/upload$/gi.test(currentUrl);
@@ -48,12 +58,33 @@ export default function CustomNavBar({ className }: any) {
     queryClientConfig.invalidateQueries(["catalogs"]);
   };
 
+  const handleSearchSubmit = () => {
+    if (!term) {
+      setTerm("");
+      history.push("/catalogs");
+    } else {
+      history.push({
+        pathname: "/catalogs",
+        search: `?term=${term}`,
+      });
+      mutate(undefined, {
+        onSuccess: (data: any) =>
+          queryClientConfig.setQueryData(["catalogs"], data),
+      });
+    }
+  };
+  const handleSearchChange = (value: string) => {
+    setTerm(value);
+  };
   useEffect(() => {
-    history.listen((...props) => {
-      const { pathname, search } = props?.[0] || {};
+    const searchValue: string = getUrlTerm(history.location.search) || "";
+    setTerm(searchValue);
+    history.listen((props) => {
+      const { pathname, search } = props || {};
+      setTerm(getUrlTerm(search) || "");
       setCurrentUrl(pathname + search);
     });
-  }, [history, setCurrentUrl]);
+  }, [history, setCurrentUrl, getUrlTerm]);
 
   return (
     <div>
@@ -116,7 +147,11 @@ export default function CustomNavBar({ className }: any) {
                 Add products
               </Button>
             ) : isMainSection ? (
-              <SearchBar />
+              <SearchBar
+                onSubmit={handleSearchSubmit}
+                initialTerm={term}
+                onChange={handleSearchChange}
+              />
             ) : null}
           </div>
         </Toolbar>
