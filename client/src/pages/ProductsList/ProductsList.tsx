@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import getCatalogById from "../../api/getCatalogById";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
-import { Button, Typography } from "@material-ui/core";
+import { Button, CircularProgress, Typography } from "@material-ui/core";
 import {
   faTags,
   faPenNib,
@@ -63,13 +63,16 @@ const ProductsList = (props: any) => {
   const [open, setOpen] = useState<boolean>(false);
 
   const { setSectionInfo } = useStore();
-  const { data: catalog = {} } = useQuery(
-    [`catalogs/:${catalogId}`, catalogId],
-    () => getCatalogById(catalogId)
+  const {
+    data: catalog = {},
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  } = useQuery([`catalogs/:${catalogId}`, catalogId], () =>
+    getCatalogById(catalogId)
   );
-  // const { mutate, isLoading, isError, data } = useMutateHook(() =>
-  //   removeProducts({ id: catalogId, productsId: selected })
-  // );
+
   const { currentUrl } = useStore((state) => state);
 
   const products = useMemo(
@@ -88,7 +91,7 @@ const ProductsList = (props: any) => {
     );
     setInfo(initialValues);
     return () => setSectionInfo("");
-  }, [catalog, setSectionInfo, currentUrl, params.productId, products]);
+  }, [setSectionInfo, currentUrl, params.productId]);
 
   const handleCheckBoxes = useCallback((values: any) => {
     setSelected(values);
@@ -151,24 +154,41 @@ const ProductsList = (props: any) => {
             </CustomDialog>
           )}
         </div>
-        <DataGrid
-          className={classes.datagrid}
-          rows={rows}
-          columns={columns}
-          pageSize={100}
-          rowsPerPageOptions={[100]}
-          checkboxSelection
-          disableSelectionOnClick
-          onSelectionModelChange={handleCheckBoxes}
-          onCellClick={(cell: any) => {
-            if (cell.field === "image")
-              return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
-            if (cell.field === "info") {
-              setInfo(cell.row);
-              return history.push(`/catalogs/${catalogId}/${cell.id}/`);
-            }
-          }}
-        />
+        {isLoading ? (
+          <div className={classes.loading}>
+            <CircularProgress />
+          </div>
+        ) : null}
+        {isError ? (
+          <div>
+            <CustomAlert
+              alertType="error"
+              message={`An error occurred while loading the catalogs: ${error}`}
+            />
+          </div>
+        ) : null}
+        {isSuccess ? (
+          <DataGrid
+            className={classes.datagrid}
+            rows={rows}
+            columns={columns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+            checkboxSelection
+            disableSelectionOnClick
+            onSelectionModelChange={handleCheckBoxes}
+            onCellClick={(cell: any) => {
+              if (cell.field === "image")
+                return history.push(
+                  `/catalogs/${catalogId}/${cell.id}/details`
+                );
+              if (cell.field === "info") {
+                setInfo(cell.row);
+                return history.push(`/catalogs/${catalogId}/${cell.id}/`);
+              }
+            }}
+          />
+        ) : null}
       </div>
       {info && <SummaryDetails {...info} closeModal={setInfo} />}
     </div>

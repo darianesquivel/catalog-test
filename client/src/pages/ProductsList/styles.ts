@@ -36,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
   datagrid: {
     width: "100",
   },
+  loading: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
 }));
 
 export default useStyles;
