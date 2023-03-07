@@ -59,8 +59,7 @@ export default function CatalogCard({
     setOption(eventName);
   };
   const date = createdAt ? new Date(createdAt).toLocaleString() : "no date";
-  const defaultImage =
-    products?.[Math.ceil(Math.random() * productCount)]?.image;
+  const defaultImage = products?.[0]?.image;
 
   const menuOpen = Boolean(anchorEl);
   const targetId = menuOpen ? "simple-popover" : undefined;
