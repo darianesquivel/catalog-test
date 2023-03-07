@@ -1,4 +1,5 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+
 const drawerWidth = 240;
 const drawerWidthMin = 70;
 
@@ -9,7 +10,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     appBar: {
       boxShadow: "none",
-      borderBottom: `1px solid ${theme.palette.grey[300]}`,
+      borderBottom: `${theme.spacing(1) / 8}px solid ${
+        theme.palette.action.focus
+      }`,
       zIndex: theme.zIndex.drawer - 1,
       width: `calc(100% - ${drawerWidthMin}px)`,
       transition: theme.transitions.create(["width", "margin"], {
@@ -63,7 +66,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     content: {
       flexGrow: 1,
-      padding: theme.spacing(1),
+      padding: theme.spacing(2),
+      minHeight: "100vh",
     },
     buttonList: {
       height: "100vh",
