@@ -2,6 +2,7 @@ import { Model } from "sequelize";
 import { Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
+import { Op } from "sequelize";
 const router = Router();
 
 const { catalogs, product, images } = database.models;
@@ -109,7 +110,26 @@ router.get(
     }
   }
 );
+// DELETE PRODUCTS
+router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
+  const { id } = req.params;
 
+  const productsId = req.body;
+
+  try {
+    const removedProducts: any = await product.destroy({
+      where: {
+        id: {
+          [Op.in]: productsId,
+        },
+        catalogId: id,
+      },
+    });
+    res.status(200).send({ removedProducts });
+  } catch (err) {
+    res.sendStatus(503);
+  }
+});
 // Update Catalog
 router.put("/catalogs/:id", async (req: Request, res: Response) => {
   const { id } = req.params;

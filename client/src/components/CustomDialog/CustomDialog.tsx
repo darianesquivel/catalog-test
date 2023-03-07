@@ -50,6 +50,7 @@ type Tprops = {
   onAccept: (values?: any) => any;
   children?: any;
   queryKey?: string[];
+  customMessage?: (data: any) => string;
 };
 
 const CustomDialog = ({
@@ -58,6 +59,7 @@ const CustomDialog = ({
   onAccept,
   children,
   queryKey,
+  customMessage,
 }: Tprops) => {
   const classes = useStyles();
 
@@ -86,7 +88,7 @@ const CustomDialog = ({
       {isSuccess ? (
         <CustomAlert
           alertType="success"
-          message={`${data}`}
+          message={`${customMessage ? customMessage(data) : data}`}
           closeIcon={true}
           onClose={() => handleClose()}
         />

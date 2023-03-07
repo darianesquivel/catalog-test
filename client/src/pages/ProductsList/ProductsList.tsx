@@ -11,12 +11,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SummaryDetails from "../Details/SummaryDetails/SummaryDetails";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useStore } from "../DrawerAppbar/DrawerAppbar";
 import { useHistory, useParams } from "react-router";
 
 // STYLES
 import useStyles from "./styles";
+import removeProducts from "../../api/removeProducts";
+import CustomDialog from "../../components/CustomDialog/CustomDialog";
+import CustomAlert from "../../components/Alert/CustomAlert";
 
 const columns: GridColDef[] = [
   {
@@ -56,15 +59,23 @@ const ProductsList = (props: any) => {
   const classes = useStyles();
   const catalogId = props.match.params.id;
   const [info, setInfo] = useState<object>();
+  const [selected, setSelected] = useState<any>([]);
+  const [open, setOpen] = useState<boolean>(false);
+
   const { setSectionInfo } = useStore();
   const { data: catalog = {} } = useQuery(
     [`catalogs/:${catalogId}`, catalogId],
     () => getCatalogById(catalogId)
   );
-
+  // const { mutate, isLoading, isError, data } = useMutateHook(() =>
+  //   removeProducts({ id: catalogId, productsId: selected })
+  // );
   const { currentUrl } = useStore((state) => state);
 
-  const products = catalog.products ? catalog.products : [];
+  const products = useMemo(
+    () => (catalog.products ? catalog.products : []),
+    [catalog]
+  );
 
   const rows: GridRowsProp = products;
   const params: any = useParams();
@@ -76,9 +87,12 @@ const ProductsList = (props: any) => {
       (data: any) => data.id === params.productId
     );
     setInfo(initialValues);
-
     return () => setSectionInfo("");
-  }, [catalog, setSectionInfo, currentUrl, params.productId]);
+  }, [catalog, setSectionInfo, currentUrl, params.productId, products]);
+
+  const handleCheckBoxes = useCallback((values: any) => {
+    setSelected(values);
+  }, []);
 
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>
@@ -102,9 +116,40 @@ const ProductsList = (props: any) => {
               Assistant
             </Typography>
           </Button>
-          <Button className={classes.button} variant="contained" disabled>
+          <Button
+            className={classes.button}
+            variant="contained"
+            onClick={() => setOpen(true)}
+            disabled={!selected.length}
+          >
             <FontAwesomeIcon size="lg" icon={faTrash} />
           </Button>
+          {open && (
+            <CustomDialog
+              isOpen={open}
+              onModalChange={() => setOpen(false)}
+              onAccept={() =>
+                removeProducts({ id: catalogId, productsId: selected })
+              }
+              queryKey={[`catalogs/:${catalogId}`, catalogId]}
+              customMessage={(data: any) => {
+                const isNotSingular = Number(data.removedProducts) >= 2;
+                const msg = isNotSingular
+                  ? "products have been deleted successfully"
+                  : "product has been deleted successfully";
+                return `${data.removedProducts} ${msg}`;
+              }}
+            >
+              <Typography variant="h6">
+                You are about to delete the selected products. Are you sure?
+              </Typography>
+              <CustomAlert
+                message="This action can't be undone."
+                alertType="error"
+                variant="filled"
+              />
+            </CustomDialog>
+          )}
         </div>
         <DataGrid
           className={classes.datagrid}
@@ -114,6 +159,7 @@ const ProductsList = (props: any) => {
           rowsPerPageOptions={[100]}
           checkboxSelection
           disableSelectionOnClick
+          onSelectionModelChange={handleCheckBoxes}
           onCellClick={(cell: any) => {
             if (cell.field === "image")
               return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
