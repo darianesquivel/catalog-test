@@ -32,11 +32,17 @@ export default function CustomNavBar({ className }: any) {
 
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
-  const { currentUrl, sectionInfo, setCurrentUrl, setIsSearching } =
+
+  const { currentUrl, sectionInfo, setCurrentUrl, setSearchingData } =
     useStore<any>((state: any) => state);
+
   const { id, name } = sectionInfo || {};
+
   const history = useHistory();
-  const { mutate, isLoading } = useMutateHook(() => getFilteredCatalogs(term));
+
+  const { mutate, isLoading, error } = useMutateHook(() =>
+    getFilteredCatalogs(term)
+  );
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
 
@@ -47,6 +53,7 @@ export default function CustomNavBar({ className }: any) {
     : name
     ? name
     : "Catalog Explorer";
+
   const isMainSection = sectionTitle.includes("Catalog Explorer");
   // We cannot use params here because this component is outer react router
   const catalogId =
@@ -69,14 +76,18 @@ export default function CustomNavBar({ className }: any) {
       mutate(undefined, {
         onSuccess: (data: any) =>
           queryClientConfig.setQueryData(["catalogs"], data),
+        onError: (err) => {
+          queryClientConfig.clear();
+        },
       });
     }
   };
   const handleSearchChange = (value: string) => {
     setTerm(value);
   };
+
   useEffect(() => {
-    setIsSearching(isLoading);
+    setSearchingData({ isSearching: isLoading });
     const searchValue: string = getUrlTerm(history.location.search) || "";
     setTerm(searchValue);
     history.listen((props) => {
@@ -84,7 +95,7 @@ export default function CustomNavBar({ className }: any) {
       setTerm(getUrlTerm(search) || "");
       setCurrentUrl(pathname + search);
     });
-  }, [history, setCurrentUrl, getUrlTerm, isLoading, setIsSearching]);
+  }, [history, setCurrentUrl, getUrlTerm, isLoading, setSearchingData]);
 
   return (
     <div>
@@ -151,6 +162,7 @@ export default function CustomNavBar({ className }: any) {
                 onSubmit={handleSearchSubmit}
                 initialTerm={term}
                 onChange={handleSearchChange}
+                searching={!!isLoading}
               />
             ) : null}
           </div>

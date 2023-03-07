@@ -12,8 +12,14 @@ interface Tprops {
   initialTerm: string | undefined;
   onSubmit: () => void;
   onChange: (value: string) => void;
+  searching: boolean;
 }
-export default function SearchBar({ initialTerm, onSubmit, onChange }: Tprops) {
+export default function SearchBar({
+  initialTerm,
+  onSubmit,
+  onChange,
+  searching,
+}: Tprops) {
   const classes = useStyles();
 
   const handleChange = (event: any) => {
@@ -28,7 +34,12 @@ export default function SearchBar({ initialTerm, onSubmit, onChange }: Tprops) {
 
   return (
     <form className={classes.searchBar} onSubmit={handleSubmit}>
-      <FormControl fullWidth margin="dense" variant="outlined">
+      <FormControl
+        fullWidth
+        margin="dense"
+        variant="outlined"
+        disabled={searching}
+      >
         <InputLabel htmlFor="search">
           <Typography variant="body2"> Search for Catalog </Typography>
         </InputLabel>
