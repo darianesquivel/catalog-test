@@ -25,8 +25,8 @@ import AddProducts from "../../components/AddProducts/AddProducts";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
-import { useStyles } from "./Styles";
 import queryClientConfig from "../../config/queryClientConfig";
+import { useStyles } from "./styles";
 const drawerButtons = [
   {
     text: "Data Explorer",
@@ -71,6 +71,11 @@ export const useStore = create(
       searchingData: { isSearching: false },
       setSearchingData: (data: any) =>
         set((state: any) => ({ ...state, searchingData: { ...data } })),
+      selectedIndex: null,
+      setSelectedIndex: (index: any) =>
+        set((state: any) => ({
+          selectedIndex: (state.selectedIndex = index),
+        })),
     }),
     {
       name: "drawer-storage",
@@ -93,9 +98,18 @@ export default function MiniDrawer() {
   const setOpen = useStore((state: any) => state.setOpen);
   const mode = useStore((state: any) => state.mode);
   const setMode = useStore((state: any) => state.setMode);
+  const selectedIndex = useStore((state: any) => state.selectedIndex);
+  const setSelectedIndex = useStore((state: any) => state.setSelectedIndex);
 
   const handleDrawerChange = () => {
     setOpen();
+  };
+
+  const handleListItemClick = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    index: number
+  ) => {
+    setSelectedIndex(index);
   };
 
   return (
@@ -143,12 +157,24 @@ export default function MiniDrawer() {
                   button
                   disabled={button.text === "Data Explorer" ? false : true}
                   key={index}
-                  className={classes.buttonStyle}
+                  className={
+                    index === selectedIndex
+                      ? classes.buttonStyleSelected
+                      : classes.buttonStyle
+                  }
+                  onClick={(e) => handleListItemClick(e, index)}
+                  selected={selectedIndex === index}
                   alignItems="flex-start"
                 >
                   <Link to={button.link}>
                     <ListItemIcon>
-                      <FontAwesomeIcon icon={button.icon} size="xl" />
+                      <FontAwesomeIcon
+                        className={
+                          index === selectedIndex ? classes.iconSelected : ""
+                        }
+                        icon={button.icon}
+                        size="xl"
+                      />
                     </ListItemIcon>
                   </Link>
                   <ListItemText

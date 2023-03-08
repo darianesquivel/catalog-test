@@ -6,13 +6,9 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import {
-  faAngleLeft,
-  faPen,
-  faRedoAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faPen, faRedo } from "@fortawesome/free-solid-svg-icons";
 
-import useStyles from "./Styles";
+import useStyles from "./styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
@@ -22,6 +18,7 @@ import queryClientConfig from "../../config/queryClientConfig";
 import SearchBar from "../SearchBar/SearchBar";
 import { useMutateHook } from "../../hooks";
 import getFilteredCatalogs from "../../api/getFilteredCatalogs";
+import { useIsFetching } from "@tanstack/react-query";
 
 export default function CustomNavBar({ className }: any) {
   const classes = useStyles();
@@ -29,20 +26,26 @@ export default function CustomNavBar({ className }: any) {
     (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
     []
   );
+  const history = useHistory();
 
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
 
-  const { currentUrl, sectionInfo, setCurrentUrl, setSearchingData } =
-    useStore<any>((state: any) => state);
+  const {
+    currentUrl,
+    sectionInfo,
+    setCurrentUrl,
+    setSearchingData,
+    setSectionInfo,
+  } = useStore<any>((state: any) => state);
 
   const { id, name } = sectionInfo || {};
 
-  const history = useHistory();
+  const { mutate, isLoading } = useMutateHook(() => getFilteredCatalogs(term));
 
-  const { mutate, isLoading, error } = useMutateHook(() =>
-    getFilteredCatalogs(term)
-  );
+  const isCatalogLoading = useIsFetching({
+    queryKey: ["catalogs"],
+  });
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
 
@@ -60,15 +63,12 @@ export default function CustomNavBar({ className }: any) {
     currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
     currentUrl.match(/(?<=catalogs\/).+/)?.[0];
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     queryClientConfig.invalidateQueries(["catalogs"]);
   };
 
   const handleSearchSubmit = () => {
-    if (!term) {
-      setTerm("");
-      history.push("/catalogs");
-    } else {
+    if (term) {
       history.push({
         pathname: "/catalogs",
         search: `?term=${term}`,
@@ -80,6 +80,10 @@ export default function CustomNavBar({ className }: any) {
           queryClientConfig.clear();
         },
       });
+    } else {
+      setTerm("");
+      history.push("/catalogs");
+      queryClientConfig.invalidateQueries(["catalogs"]);
     }
   };
   const handleSearchChange = (value: string) => {
@@ -107,6 +111,10 @@ export default function CustomNavBar({ className }: any) {
           initialValues={{ name, id }}
           keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
           acceptBtnName="Update"
+          extraFn={(data) => {
+            const { name, id } = data || {};
+            if (name) setSectionInfo(name, id);
+          }}
         />
       )}
       <AppBar
@@ -132,11 +140,16 @@ export default function CustomNavBar({ className }: any) {
             </div>
 
             {isMainSection && !isDetails ? (
-              <IconButton className={classes.icons} onClick={handleRefresh}>
-                <FontAwesomeIcon icon={faRedoAlt} size="sm" />
+              <IconButton
+                color={`${!isCatalogLoading ? "primary" : "default"}`}
+                className={`${classes.icons} ${
+                  isCatalogLoading ? classes.rotate : ""
+                }`}
+                onClick={handleRefresh}
+              >
+                <FontAwesomeIcon icon={faRedo} size="sm" />
               </IconButton>
             ) : null}
-
             {isProductListView && !isDetails && !isUpload ? (
               <IconButton
                 className={classes.icons}

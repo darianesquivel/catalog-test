@@ -20,22 +20,11 @@ module.exports = (sequelize: any) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      created_at: {
-        type: DataTypes.DATE,
-        timestamps: true,
-        defaulValue: DataTypes.NOW,
-        allowNull: true,
-      },
-      updated_at: {
-        type: DataTypes.DATE,
-        defaulValue: DataTypes.NOW,
-        allowNull: true,
-      },
       image: {
         type: DataTypes.STRING,
         allowNull: true,
       },
     },
-    { timestamps: false }
+    { timestamps: true }
   );
 };

@@ -19,7 +19,7 @@ type TcatalogCard = {
   id: string;
   name: string;
   products?: number;
-  created_at?: string;
+  createdAt: string;
   image?: string;
   productCount: number;
   className?: any;
@@ -100,7 +100,7 @@ const CatalogExplorer = (props: any) => {
                 key={catalog.id}
                 id={catalog.id}
                 name={catalog.name}
-                createdAt={catalog["created_at"]}
+                createdAt={catalog["createdAt"]}
                 productCount={catalog.productCount}
                 products={catalog.products}
               />
