@@ -3,11 +3,15 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 const drawerWidth = 240;
 const drawerWidthMin = 70;
 
-export const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: "flex",
+      "& .Mui-selected": {
+        backgroundColor: theme.palette.primary.light,
+      },
     },
+
     appBar: {
       boxShadow: "none",
       borderBottom: `${theme.spacing(1) / 8}px solid ${
@@ -80,6 +84,17 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       color: theme.palette.grey[600],
     },
+    buttonStyleSelected: {
+      color: theme.palette.primary.main,
+      borderRadius: theme.shape.borderRadius,
+      marginBottom: theme.spacing(1),
+      "&:hover": {
+        backgroundColor: `${theme.palette.primary.light} !important`,
+      },
+    },
+    iconSelected: {
+      color: theme.palette.primary.main,
+    },
     textButton: {
       letterSpacing: "0.04em",
     },
@@ -103,3 +118,5 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+
+export default useStyles;
