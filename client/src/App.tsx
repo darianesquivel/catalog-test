@@ -21,12 +21,13 @@ function App() {
             ? {
                 primary: {
                   main: "#6A5DF9",
-                  light: "#978efb",
+                  light: "#DAD7FD",
                 },
               }
             : {
                 primary: {
                   main: "#978efb",
+                  light: "#DAD7FD",
                 },
               }),
         },
