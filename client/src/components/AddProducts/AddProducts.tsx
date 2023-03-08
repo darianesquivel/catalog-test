@@ -11,6 +11,7 @@ import {
   Button,
   CircularProgress,
   Dialog,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -23,7 +24,10 @@ import {
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 //FA
-import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowUpFromBracket,
+  faClose,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //STYLES
@@ -104,11 +108,18 @@ export default function AddProducts() {
         <TableHead className={classes.tableHead}>
           <TableRow>
             <TableCell>
-              <FontAwesomeIcon
-                className={classes.icons}
-                icon={faArrowUpFromBracket}
-              />
-              Upload File
+              <div className={classes.header}>
+                <div>
+                  <FontAwesomeIcon
+                    className={classes.icons}
+                    icon={faArrowUpFromBracket}
+                  />
+                  Upload File
+                </div>
+                <IconButton onClick={() => history.goBack()}>
+                  <FontAwesomeIcon icon={faClose} size="sm" />
+                </IconButton>
+              </div>
             </TableCell>
           </TableRow>
         </TableHead>
