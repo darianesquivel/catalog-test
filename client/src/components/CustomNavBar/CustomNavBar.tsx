@@ -68,10 +68,8 @@ export default function CustomNavBar({ className }: any) {
   };
 
   const handleSearchSubmit = () => {
-    if (!term) {
-      setTerm("");
-      history.push("/catalogs");
-    } else {
+    console.log("term", term, !!term);
+    if (term) {
       history.push({
         pathname: "/catalogs",
         search: `?term=${term}`,
@@ -83,6 +81,10 @@ export default function CustomNavBar({ className }: any) {
           queryClientConfig.clear();
         },
       });
+    } else {
+      setTerm("");
+      history.push("/catalogs");
+      queryClientConfig.invalidateQueries(["catalogs"]);
     }
   };
   const handleSearchChange = (value: string) => {
