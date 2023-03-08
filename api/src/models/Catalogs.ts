@@ -1,6 +1,7 @@
 import { DataTypes, literal } from "sequelize";
 
 module.exports = (sequelize: any) => {
+  console.log(sequelize.literal("CURRENT_TIMESTAMP"));
   // defino el modelo
   sequelize.define(
     "catalogs",
@@ -20,12 +21,7 @@ module.exports = (sequelize: any) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-      created_at: {
-        type: DataTypes.DATE,
-        defaulValue: new Date(),
-        allowNull: true,
-      },
     },
-    { timestamps: false }
+    { timestamps: true }
   );
 };
