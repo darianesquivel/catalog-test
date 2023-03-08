@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
   headerTab: {
     textTransform: "none",
     letterSpacing: "0.05rem",
+    backgroundColor: `${theme.palette.background.paper} !important`,
   },
   contentTabs: {
     marginTop: theme.spacing(1),
