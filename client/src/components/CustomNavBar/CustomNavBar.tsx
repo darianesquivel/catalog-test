@@ -40,9 +40,7 @@ export default function CustomNavBar({ className }: any) {
 
   const history = useHistory();
 
-  const { mutate, isLoading, error } = useMutateHook(() =>
-    getFilteredCatalogs(term)
-  );
+  const { mutate, isLoading } = useMutateHook(() => getFilteredCatalogs(term));
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
 

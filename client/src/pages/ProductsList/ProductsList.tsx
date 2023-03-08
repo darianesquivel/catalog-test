@@ -62,7 +62,6 @@ const ProductsList = (props: any) => {
   const [selected, setSelected] = useState<any>([]);
   const [open, setOpen] = useState<boolean>(false);
 
-  const { setSectionInfo } = useStore();
   const {
     data: catalog = {},
     isLoading,
@@ -73,7 +72,7 @@ const ProductsList = (props: any) => {
     getCatalogById(catalogId)
   );
 
-  const { currentUrl } = useStore((state) => state);
+  const { currentUrl, setSectionInfo } = useStore((state) => state);
 
   const products = useMemo(
     () => (catalog.products ? catalog.products : []),
@@ -85,13 +84,15 @@ const ProductsList = (props: any) => {
   const history = useHistory();
 
   useEffect(() => {
-    setSectionInfo(catalog.name, catalog.id);
-    const initialValues = products.find(
-      (data: any) => data.id === params.productId
-    );
-    setInfo(initialValues);
+    if (catalog.name) {
+      setSectionInfo(catalog.name, catalog.id);
+      const initialValues = products.find(
+        (data: any) => data.id === params.productId
+      );
+      setInfo(initialValues);
+    }
     return () => setSectionInfo("");
-  }, [setSectionInfo, currentUrl, params.productId]);
+  }, [setSectionInfo, currentUrl, params.productId, products]);
 
   const handleCheckBoxes = useCallback((values: any) => {
     setSelected(values);
