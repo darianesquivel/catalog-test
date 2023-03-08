@@ -16,12 +16,7 @@ module.exports = (sequelize: any) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      created_at: {
-        type: DataTypes.DATE,
-        defaulValue: new Date(),
-        allowNull: true,
-      },
     },
-    { timestamps: false }
+    { timestamps: true }
   );
 };
