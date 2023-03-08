@@ -109,7 +109,9 @@ export default function ProductDetails() {
               <div className={classes.header}>
                 <Typography variant="subtitle1">Products Details</Typography>
                 <Typography variant="body2" className={classes.idBox}>
-                  <Typography variant="body2">Product ID</Typography>
+                  <Typography component={"span"} variant="body2">
+                    Product ID
+                  </Typography>
                   <Typography variant="caption">{product.id}</Typography>
                 </Typography>
                 <Divider className={classes.divider} />
