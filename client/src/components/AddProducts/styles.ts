@@ -71,6 +71,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     gap: theme.spacing(2),
   },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
 }));
 
 export default useStyles;
