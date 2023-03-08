@@ -6,11 +6,7 @@ import {
   IconButton,
   Button,
 } from "@material-ui/core";
-import {
-  faAngleLeft,
-  faPen,
-  faRedoAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faPen, faRedo } from "@fortawesome/free-solid-svg-icons";
 
 import useStyles from "./styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -150,7 +146,7 @@ export default function CustomNavBar({ className }: any) {
                 }`}
                 onClick={handleRefresh}
               >
-                <FontAwesomeIcon icon={faRedoAlt} size="sm" />
+                <FontAwesomeIcon icon={faRedo} size="sm" />
               </IconButton>
             ) : null}
             {isProductListView && !isDetails && !isUpload ? (
