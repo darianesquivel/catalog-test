@@ -4,17 +4,12 @@ import {
   faArrowUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { IconButton, Snackbar, Theme } from "@material-ui/core/";
+import { IconButton, Snackbar } from "@material-ui/core/";
 import CustomAlert from "../Alert/CustomAlert";
-import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles((theme: Theme) => {
-  return {
-    icon: {
-      fontSize: "16px",
-    },
-  };
-});
+// STYLES
+import useStyles from "./styles";
+
 // type Tsizes =
 //   | "1x"
 //   | "2x"
