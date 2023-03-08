@@ -10,15 +10,14 @@ const { catalogs, product, images } = database.models;
 router.post("/catalogs/catalog", async (req: Request, res: Response) => {
   const { name } = req.body;
   try {
-    const newCatalog = await catalogs.findOrCreate({
+    const newCatalog: any = await catalogs.findOrCreate({
       where: {
         name,
-        created_at: new Date(),
       },
     });
     res.status(200).json(newCatalog);
   } catch (err) {
-    res.send(err);
+    res.status(500).send(err);
   }
 });
 
@@ -75,6 +74,7 @@ router.get("/catalogs", async (req: Request, res: Response) => {
         include: {
           model: product,
         },
+        order: [["createdAt", "DESC"]],
       });
       const fullData = allCatalogs.map((cat: any) => ({
         ...cat.dataValues,
@@ -91,6 +91,7 @@ router.get("/catalogs", async (req: Request, res: Response) => {
         include: {
           model: product,
         },
+        order: [["createdAt", "DESC"]],
       });
       const fullData = allCatalogs.map((cat: any) => ({
         ...cat.dataValues,
@@ -98,6 +99,7 @@ router.get("/catalogs", async (req: Request, res: Response) => {
       }));
       res.status(200).json(fullData);
     } catch (err) {
+      console.log(err);
       res.status(404).send(err);
     }
   }
