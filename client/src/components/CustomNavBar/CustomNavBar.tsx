@@ -12,7 +12,7 @@ import {
   faRedoAlt,
 } from "@fortawesome/free-solid-svg-icons";
 
-import useStyles from "./Styles";
+import useStyles from "./styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";

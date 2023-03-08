@@ -25,7 +25,7 @@ import AddProducts from "../../components/AddProducts/AddProducts";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
-import { useStyles } from "./Styles";
+import useStyles from "./styles";
 import queryClientConfig from "../../config/queryClientConfig";
 
 const drawerButtons = [
