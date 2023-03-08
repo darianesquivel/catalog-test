@@ -68,7 +68,6 @@ export default function CustomNavBar({ className }: any) {
   };
 
   const handleSearchSubmit = () => {
-    console.log("term", term, !!term);
     if (term) {
       history.push({
         pathname: "/catalogs",
