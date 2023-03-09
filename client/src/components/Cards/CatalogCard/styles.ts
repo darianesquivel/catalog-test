@@ -2,6 +2,11 @@ import { makeStyles, createStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) =>
   createStyles({
+    root: {
+      "& .MuiCardContent-root": {
+        paddingBottom: theme.spacing(1.5),
+      },
+    },
     catalogCard: {
       height: 355,
       borderRadius: theme.shape.borderRadius,
@@ -40,6 +45,10 @@ const useStyles = makeStyles((theme) =>
       fontSize: "14px",
       gap: theme.spacing(1),
       letterSpacing: "0.04em",
+    },
+    alertStyle: {
+      backgroundColor: theme.palette.primary.light,
+      color: `${theme.palette.primary.main} !important`,
     },
   })
 );

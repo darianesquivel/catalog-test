@@ -16,8 +16,32 @@ const useStyles = makeStyles((theme) => ({
   tableFooter: {
     height: "8%",
   },
-  button: {
+  importButton: {
     borderRadius: "8px",
+    textTransform: "none",
+    fontSize: "14px",
+    padding: theme.spacing(0.5, 2),
+    backgroundColor: theme.palette.background.paper,
+    border: `0.5px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
+    boxShadow: "none",
+    "&:hover": {
+      boxShadow: `inset 0 0 0 0.5px ${theme.palette.primary.main}`,
+      backgroundColor: theme.palette.background.paper,
+    },
+  },
+  cancelButton: {
+    borderRadius: "8px",
+    textTransform: "none",
+    fontSize: "14px",
+    padding: theme.spacing(0.5, 2),
+    boxShadow: "none",
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.error.main,
+    "&:hover": {
+      boxShadow: "none",
+      backgroundColor: theme.palette.error.dark,
+    },
   },
   tableData: {
     height: "100%",

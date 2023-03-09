@@ -37,6 +37,10 @@ function App() {
         typography: {
           fontFamily: "Inter, -apple-system, Arial, Sans-Serif",
           fontSize: 14,
+          h6: {
+            fontFamily: "Inter, -apple-system, Arial, Sans-Serif",
+            letterSpacing: "0.0075em",
+          },
         },
       }),
     [prefersDarkMode, mode]
