@@ -94,7 +94,7 @@ const ProductsList = (props: any) => {
     return () => setSectionInfo("");
   }, [setSectionInfo, currentUrl, params.productId, products]);
 
-  const handleCheckBoxes = useCallback((values: any) => {
+  const handleCheckBoxes = useCallback((values: any[]) => {
     setSelected(values);
   }, []);
 

@@ -20,7 +20,7 @@ import useStyles from "./styles";
 type Tprops = {
   onModalChange: () => void;
   isOpen: boolean;
-  apiFunction: (...params: any) => any;
+  apiFunction: (...params: any) => void;
   extraFn?: (data?: any) => void;
   initialValues?: {
     name: string;
@@ -64,7 +64,6 @@ const FormCreator = ({
     validationSchema: onValidate,
     onSubmit: (values) => handleSubmit(values),
   });
-
   const handleSubmit = async (values: any) => {
     if (!formik.errors.name) {
       mutate(values, {

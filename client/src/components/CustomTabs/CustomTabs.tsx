@@ -5,7 +5,11 @@ import { Paper, Tabs, Tab } from "@material-ui/core";
 import useStyles from "./styles";
 
 interface TpropsArray {
-  tabValues: { columnName: string; content: any; disabled?: boolean }[];
+  tabValues: {
+    columnName: string;
+    content: React.ReactNode | null;
+    disabled?: boolean;
+  }[];
 }
 
 export default function CustomTabs({ tabValues }: TpropsArray) {
