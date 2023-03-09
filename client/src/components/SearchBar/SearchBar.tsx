@@ -10,7 +10,7 @@ import {
 import { Search } from "@material-ui/icons";
 interface Tprops {
   initialTerm: string | undefined;
-  onSubmit: () => void;
+  onSubmit: (term: string | undefined) => void;
   onChange: (value: string) => void;
   searching: boolean;
 }
@@ -26,10 +26,9 @@ export default function SearchBar({
     const { value } = event.target;
     onChange(value);
   };
-
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    onSubmit();
+    onSubmit(initialTerm);
   };
 
   return (

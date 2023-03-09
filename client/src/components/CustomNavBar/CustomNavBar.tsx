@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Toolbar,
   AppBar,
@@ -48,7 +48,6 @@ export default function CustomNavBar({ className }: any) {
   });
 
   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
-
   const isUpload = /\/upload$/gi.test(currentUrl);
   const isDetails = /\/details$/gi.test(currentUrl);
   const sectionTitle = isUpload
@@ -59,33 +58,40 @@ export default function CustomNavBar({ className }: any) {
 
   const isMainSection = sectionTitle.includes("Catalog Explorer");
   // We cannot use params here because this component is outer react router
-  const catalogId =
-    currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
-    currentUrl.match(/(?<=catalogs\/).+/)?.[0];
+  const catalogId = useMemo(
+    () =>
+      currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
+      currentUrl.match(/(?<=catalogs\/).+/)?.[0],
+    [currentUrl]
+  );
 
   const handleRefresh = async () => {
     queryClientConfig.invalidateQueries(["catalogs"]);
   };
 
-  const handleSearchSubmit = () => {
-    if (term) {
-      history.push({
-        pathname: "/catalogs",
-        search: `?term=${term}`,
-      });
-      mutate(undefined, {
-        onSuccess: (data: any) =>
-          queryClientConfig.setQueryData(["catalogs"], data),
-        onError: (err) => {
-          queryClientConfig.clear();
-        },
-      });
-    } else {
-      setTerm("");
-      history.push("/catalogs");
-      queryClientConfig.invalidateQueries(["catalogs"]);
-    }
-  };
+  const handleSearchSubmit = useCallback(
+    (updatedTerm: string | undefined) => {
+      if (updatedTerm) {
+        history.push({
+          pathname: "/catalogs",
+          search: `?term=${updatedTerm}`,
+        });
+        mutate(undefined, {
+          onSuccess: (data: any) =>
+            queryClientConfig.setQueryData(["catalogs"], data),
+          onError: (err) => {
+            queryClientConfig.clear();
+          },
+        });
+      } else {
+        setTerm("");
+        history.push("/catalogs");
+        queryClientConfig.invalidateQueries(["catalogs"]);
+      }
+    },
+    [history, mutate]
+  );
+
   const handleSearchChange = (value: string) => {
     setTerm(value);
   };
