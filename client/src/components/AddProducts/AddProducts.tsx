@@ -238,17 +238,17 @@ export default function AddProducts() {
                 <div className={classes.buttons}>
                   <Button
                     variant="contained"
-                    className={classes.button}
+                    className={classes.importButton}
                     disabled={data.length < 1}
                     onClick={handleSubmit}
                   >
-                    Import Products
+                    Upload file
                   </Button>
                   <Button
                     variant="contained"
                     color="secondary"
                     onClick={handleCancel}
-                    className={classes.button}
+                    className={classes.cancelButton}
                   >
                     Cancel
                   </Button>
