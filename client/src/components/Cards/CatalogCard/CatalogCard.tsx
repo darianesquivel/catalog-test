@@ -81,7 +81,7 @@ export default function CatalogCard({
         queryKey={["catalogs"]}
       >
         <Typography variant="h6">
-          You are about to delete the catalog <b>{name}</b>. Are you sure?
+          You are about to delete the catalog "<b>{name}</b>". Are you sure?
         </Typography>
         <CustomAlert
           message="This action can't be undone."
@@ -97,12 +97,13 @@ export default function CatalogCard({
         queryKey={["catalogs"]}
       >
         <Typography variant="h6">
-          You are about to duplicate the catalog <b>{name}</b>. Are you sure?
+          You are about to duplicate the catalog "<b>{name}</b>". Are you sure?
         </Typography>
         <CustomAlert
           message="The catalog and all its products will be duplicated"
-          alertType="warning"
+          alertType="info"
           variant="standard"
+          propClassName={classes.alertStyle}
         />
       </CustomDialog>
     ) : null;

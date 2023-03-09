@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) =>
       gap: theme.spacing(1),
       letterSpacing: "0.04em",
     },
+    alertStyle: {
+      backgroundColor: theme.palette.primary.light,
+      color: `${theme.palette.primary.main} !important`,
+    },
   })
 );
 
