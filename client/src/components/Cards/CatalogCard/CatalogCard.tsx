@@ -108,7 +108,7 @@ export default function CatalogCard({
     ) : null;
   return (
     <>
-      <Card className={classes.catalogCard}>
+      <Card className={`${classes.catalogCard} ${classes.root}`}>
         <CardContent className={classes.cardContainer}>
           <CardHeader
             action={
