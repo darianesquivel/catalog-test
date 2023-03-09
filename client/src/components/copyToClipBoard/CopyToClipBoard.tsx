@@ -10,24 +10,6 @@ import CustomAlert from "../Alert/CustomAlert";
 // STYLES
 import useStyles from "./styles";
 
-// type Tsizes =
-//   | "1x"
-//   | "2x"
-//   | "3x"
-//   | "4x"
-//   | "5x"
-//   | "6x"
-//   | "7x"
-//   | "8x"
-//   | "9x"
-//   | "10x"
-//   | "2xl"
-//   | "2xs"
-//   | "xl"
-//   | "xs"
-//   | "sm"
-//   | "lg";
-
 type Tprops = {
   value: string;
 };
@@ -78,7 +60,6 @@ export default function CopyToClipBoard({ value }: Tprops) {
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <CustomAlert
-          // onClose={handleClose}
           title="copied"
           alertType="success"
           message="Field copied successfully"
