@@ -112,9 +112,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     link: {
       color: theme.palette.text.primary,
       textDecoration: "none",
-      "&:hover": {
-        fontSize: "50px",
-      },
     },
   })
 );

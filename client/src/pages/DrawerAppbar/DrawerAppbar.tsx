@@ -100,15 +100,12 @@ export default function MiniDrawer() {
   const setMode = useStore((state: any) => state.setMode);
   const selectedIndex = useStore((state: any) => state.selectedIndex);
   const setSelectedIndex = useStore((state: any) => state.setSelectedIndex);
-
   const handleDrawerChange = () => {
     setOpen();
   };
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number
-  ) => {
+  const handleListItemClick = (index: number | null) => {
+    queryClientConfig.clear();
     setSelectedIndex(index);
   };
 
@@ -137,7 +134,7 @@ export default function MiniDrawer() {
             <Link
               to="/catalogs"
               className={classes.link}
-              onClick={() => queryClientConfig.clear()}
+              onClick={() => handleListItemClick(null)}
             >
               <ListItem className={classes.drawerHeader}>
                 <ListItemIcon>
@@ -153,20 +150,20 @@ export default function MiniDrawer() {
 
             <div className={classes.flexGrow}>
               {drawerButtons.map((button, index) => (
-                <ListItem
-                  button
-                  disabled={button.text === "Data Explorer" ? false : true}
-                  key={index}
-                  className={
-                    index === selectedIndex
-                      ? classes.buttonStyleSelected
-                      : classes.buttonStyle
-                  }
-                  onClick={(e) => handleListItemClick(e, index)}
-                  selected={selectedIndex === index}
-                  alignItems="flex-start"
-                >
-                  <Link to={button.link}>
+                <Link to={button.link} className={classes.link}>
+                  <ListItem
+                    button
+                    disabled={button.text === "Data Explorer" ? false : true}
+                    key={index}
+                    className={
+                      index === selectedIndex
+                        ? classes.buttonStyleSelected
+                        : classes.buttonStyle
+                    }
+                    onClick={(e) => handleListItemClick(index)}
+                    selected={selectedIndex === index}
+                    alignItems="flex-start"
+                  >
                     <ListItemIcon>
                       <FontAwesomeIcon
                         className={
@@ -176,12 +173,12 @@ export default function MiniDrawer() {
                         size="xl"
                       />
                     </ListItemIcon>
-                  </Link>
-                  <ListItemText
-                    primary={button.text}
-                    className={classes.textButton}
-                  />
-                </ListItem>
+                    <ListItemText
+                      primary={button.text}
+                      className={classes.textButton}
+                    />
+                  </ListItem>
+                </Link>
               ))}
             </div>
             <div>
