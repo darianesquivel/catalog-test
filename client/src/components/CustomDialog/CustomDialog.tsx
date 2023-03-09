@@ -12,12 +12,11 @@ import useStyles from "./styles";
 type Tprops = {
   onModalChange: () => void;
   isOpen: boolean;
-  onAccept: (values?: any) => any;
+  onAccept: () => void;
   children?: any;
   queryKey?: string[];
   customMessage?: (data: any) => string;
 };
-
 const CustomDialog = ({
   onModalChange,
   isOpen,
@@ -29,11 +28,10 @@ const CustomDialog = ({
   const classes = useStyles();
 
   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
-  const handleSubmit = async (event: any) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     mutate();
   };
-
   const handleClose = async () => {
     // we don't do the invalidation in onSuccess because of the rerender of all the cards
     // which makes the success alert visible only a few microseconds

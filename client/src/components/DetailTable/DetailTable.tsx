@@ -8,13 +8,12 @@ import useStyles from "./styles";
 type Trows = {
   rows: { key: string; value: string }[];
   boldKeys?: boolean;
-  extraStyles?: any;
+  extraStyles?: string;
 };
 
 export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
   const classes = useStyles();
-  const [showClipBoard, setShowClipboard] = useState<any>(null);
-
+  const [showClipBoard, setShowClipboard] = useState<number | null>(null);
   const textRef = useRef(null);
   return (
     <div className={`${classes.container} ${extraStyles}`}>

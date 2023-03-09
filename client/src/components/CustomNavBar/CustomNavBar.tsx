@@ -20,7 +20,10 @@ import { useMutateHook } from "../../hooks";
 import getFilteredCatalogs from "../../api/getFilteredCatalogs";
 import { useIsFetching } from "@tanstack/react-query";
 
-export default function CustomNavBar({ className }: any) {
+type Tprops = {
+  className: string;
+};
+export default function CustomNavBar({ className }: Tprops) {
   const classes = useStyles();
   const getUrlTerm = useCallback(
     (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
