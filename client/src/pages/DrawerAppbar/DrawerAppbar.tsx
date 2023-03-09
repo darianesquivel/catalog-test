@@ -150,11 +150,10 @@ export default function MiniDrawer() {
 
             <div className={classes.flexGrow}>
               {drawerButtons.map((button, index) => (
-                <Link to={button.link} className={classes.link}>
+                <Link to={button.link} className={classes.link} key={index}>
                   <ListItem
                     button
                     disabled={button.text === "Data Explorer" ? false : true}
-                    key={index}
                     className={
                       index === selectedIndex
                         ? classes.buttonStyleSelected
