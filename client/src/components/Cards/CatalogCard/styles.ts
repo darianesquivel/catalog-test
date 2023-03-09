@@ -49,6 +49,9 @@ const useStyles = makeStyles((theme) =>
     alertStyle: {
       backgroundColor: theme.palette.primary.light,
       color: `${theme.palette.primary.main} !important`,
+      "& .MuiAlert-icon": {
+        color: theme.palette.primary.main,
+      },
     },
   })
 );
