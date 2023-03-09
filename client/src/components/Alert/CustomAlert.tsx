@@ -32,6 +32,7 @@ export default function CustomAlert({
       severity={alertType}
       className={`${classes.root} ${propClassName}`}
       variant={variantValue}
+      color={propClassName}
       action={
         closeIcon && (
           <IconButton
