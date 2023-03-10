@@ -69,15 +69,21 @@ const ProductsList = (props: any) => {
     isError,
     isSuccess,
     error,
+    isFetching,
   } = useQuery([`catalogs/:${catalogId}`, catalogId], () =>
     getCatalogById(catalogId)
   );
   const { currentUrl, setSectionInfo } = useStore((state) => state);
-  const productColumns = catalog?.products?.length
-    ? columnsCreator(
-        catalog.products.map((product: any) => product.dinamicFields)
-      )
-    : [];
+
+  const productColumns = useMemo(
+    () =>
+      catalog?.products?.length
+        ? columnsCreator(
+            catalog.products.map((product: any) => product.dinamicFields)
+          )
+        : columns,
+    [catalog]
+  );
   const products: any[] = useMemo(
     () => (catalog?.products ? catalog.products : []),
     [catalog]
@@ -108,7 +114,6 @@ const ProductsList = (props: any) => {
   const handleCheckBoxes = useCallback((values: any[]) => {
     setSelected(values);
   }, []);
-
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>
       <div className={classes.mainBox}>
@@ -166,7 +171,7 @@ const ProductsList = (props: any) => {
             </CustomDialog>
           )}
         </div>
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <div className={classes.loading}>
             <CircularProgress />
           </div>
@@ -179,7 +184,7 @@ const ProductsList = (props: any) => {
             />
           </div>
         ) : null}
-        {isSuccess ? (
+        {isSuccess && !isFetching ? (
           <DataGrid
             className={classes.datagrid}
             rows={rows}
