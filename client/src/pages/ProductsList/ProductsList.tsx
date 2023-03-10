@@ -78,13 +78,10 @@ const ProductsList = (props: any) => {
         catalog.products.map((product: any) => product.dinamicFields)
       )
     : [];
-  const products: any[] = useMemo(() => {
-    if (!catalog?.products) return [];
-    return catalog.products.map((product: any) => {
-      const { dinamicFields, ...rest } = product;
-      return { ...rest, ...dinamicFields };
-    });
-  }, [catalog]);
+  const products: any[] = useMemo(
+    () => (catalog?.products ? catalog.products : []),
+    [catalog]
+  );
   const customColumns = [...columns, ...productColumns];
   const rows: GridRowsProp = products;
   const params: any = useParams();

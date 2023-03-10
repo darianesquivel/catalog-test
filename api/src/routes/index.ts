@@ -154,8 +154,14 @@ router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
         model: product,
       },
     });
+    const allProductsAttributes = fullCatalog.products.map((prod: any) => {
+      const { dinamicFields } = prod.dataValues;
+      return { ...prod.dataValues, ...dinamicFields };
+    });
 
-    res.status(200).json(fullCatalog);
+    res
+      .status(200)
+      .json({ ...fullCatalog.dataValues, products: allProductsAttributes });
   } catch (error) {
     console.log(error);
     res.status(503).send(error);

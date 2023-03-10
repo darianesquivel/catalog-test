@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+// utils
 import addProducts from "../../api/addProducts";
 import Papa from "papaparse";
-import _ from "lodash";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import { useMutateHook } from "../../hooks";
-import CustomAlert from "../Alert/CustomAlert";
+import { columnsCreator } from "../helpers";
 
-//MUI
+// Components
 import {
   Button,
   CircularProgress,
@@ -23,6 +23,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import CustomAlert from "../Alert/CustomAlert";
 
 //FA
 import {
@@ -33,7 +34,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //STYLES
 import useStyles from "./styles";
-import { columnsCreator } from "../helpers";
+import cleanJson from "../../api/cleanJson";
 
 const columns: GridColDef[] = [
   {
@@ -57,32 +58,19 @@ export default function AddProducts() {
   const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
     addProducts(catalogId, data)
   );
-
   const { setSectionInfo } = useStore();
+
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
-  const handleFile = (e: any) => {
+  const handleFile = async (e: any) => {
     const file = e.target.files[0];
+
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: function (result) {
+      complete: async (result) => {
         const csvData: any = result.data;
-
-        const sanitizedData = csvData
-          .map((obj: any) => {
-            return Object.fromEntries(
-              Object.entries(obj).filter(
-                ([key, value]: any) => !!key && !!value
-              )
-            );
-          })
-          .map((obj: any, index: number) => ({
-            catalog_id: catalogId,
-            allImages: obj.Images,
-            ...obj,
-          }))
-          .filter((obj: any) => obj.description && obj.title && obj.image);
+        const sanitizedData = await cleanJson(catalogId, csvData);
         setUpload(false);
         setData(sanitizedData);
         setPreview(true);
