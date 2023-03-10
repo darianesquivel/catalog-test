@@ -1,5 +1,7 @@
 import CustomAlert from "../Alert/CustomAlert";
 import * as yup from "yup";
+import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
+
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
 import {
@@ -88,11 +90,10 @@ const FormCreator = ({
       aria-describedby="simple-modal-description"
     >
       {isSuccess ? (
-        <CustomAlert
-          alertType="success"
+        <CustomSnackBar
           message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
-          closeIcon={true}
-          onClose={onModalChange}
+          onClose={handleClose}
+          open={isOpen}
         />
       ) : (
         isOpen && (

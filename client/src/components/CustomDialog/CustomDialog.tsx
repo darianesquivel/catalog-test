@@ -1,3 +1,4 @@
+import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
 import queryClientConfig from "../../config/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
 
@@ -28,6 +29,7 @@ const CustomDialog = ({
   const classes = useStyles();
 
   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
+
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     mutate();
@@ -48,11 +50,10 @@ const CustomDialog = ({
       className={classes.dialog}
     >
       {isSuccess ? (
-        <CustomAlert
-          alertType="success"
+        <CustomSnackBar
           message={`${customMessage ? customMessage(data) : data}`}
-          closeIcon={true}
-          onClose={() => handleClose()}
+          onClose={handleClose}
+          open={isOpen}
         />
       ) : error ? (
         <CustomAlert

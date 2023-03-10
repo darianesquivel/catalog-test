@@ -5,6 +5,10 @@ import addProducts from "../../api/addProducts";
 import Papa from "papaparse";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import { useMutateHook } from "../../hooks";
+
+import CustomAlert from "../Alert/CustomAlert";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
 import { columnsCreator } from "../helpers";
 
 // Components
@@ -22,8 +26,6 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import CustomAlert from "../Alert/CustomAlert";
 
 //FA
 import {
@@ -175,11 +177,10 @@ export default function AddProducts() {
                   aria-labelledby="simple-modal-title"
                   aria-describedby="simple-modal-description"
                 >
-                  <CustomAlert
-                    alertType="success"
+                  <CustomSnackBar
                     message={`Products were successfully loaded`}
-                    closeIcon={true}
                     onClose={handleIsSuccess}
+                    open={isSuccess}
                   />
                 </Dialog>
               ) : null}
