@@ -1,8 +1,9 @@
+import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
 import queryClientConfig from "../../config/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
 
 // MUI
-import { Button, CircularProgress, Snackbar } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import { Dialog, DialogActions, DialogContent } from "@material-ui/core";
 import { useMutateHook } from "../../hooks";
 
@@ -49,23 +50,10 @@ const CustomDialog = ({
       className={classes.dialog}
     >
       {isSuccess ? (
-        <Snackbar
-          className={classes.snackBar}
-          disableWindowBlurListener
-          autoHideDuration={2000}
-          onClose={() => handleClose()}
+        <CustomSnackBar
+          message={`${customMessage ? customMessage(data) : data}`}
+          onClose={handleClose}
           open={isOpen}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          message={
-            <CustomAlert
-              alertType="success"
-              message={`${customMessage ? customMessage(data) : data}`}
-              onClose={() => handleClose()}
-            />
-          }
         />
       ) : error ? (
         <CustomAlert
