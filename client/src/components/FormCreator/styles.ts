@@ -44,15 +44,6 @@ const useStyles = makeStyles((theme) => ({
   buttonProgress: {
     color: theme.palette.grey[500],
   },
-  snackBar: {
-    "& .MuiSnackbarContent-root": {
-      padding: "0px",
-    },
-    "& .MuiSnackbarContent-message": {
-      padding: "0px",
-      width: "100%",
-    },
-  },
 }));
 
 export default useStyles;

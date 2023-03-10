@@ -1,7 +1,9 @@
 import CustomAlert from "../Alert/CustomAlert";
 import * as yup from "yup";
+import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
+
 // MUI
-import { Button, CircularProgress, Snackbar } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import {
   TextField,
   Dialog,
@@ -88,23 +90,10 @@ const FormCreator = ({
       aria-describedby="simple-modal-description"
     >
       {isSuccess ? (
-        <Snackbar
-          className={classes.snackBar}
-          disableWindowBlurListener
-          autoHideDuration={2000}
+        <CustomSnackBar
+          message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
           onClose={handleClose}
           open={isOpen}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "center",
-          }}
-          message={
-            <CustomAlert
-              alertType="success"
-              message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
-              onClose={onModalChange}
-            />
-          }
         />
       ) : (
         isOpen && (
