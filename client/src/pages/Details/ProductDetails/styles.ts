@@ -72,7 +72,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     gridTemplateColumns: "1fr",
     padding: theme.spacing(1, 2, 2, 2),
   },
-  extraStyles: {},
+  extraStyles: {
+    "& [class*='row']": {
+      gap: theme.spacing(2),
+    },
+  },
   idBox: {
     display: "flex",
     justifyContent: "space-between",

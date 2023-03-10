@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflow: "hidden",
     alignItems: "center",
   },
-  keys: { minWidth: "120px" },
+  keys: { minWidth: "130px" },
   values: {},
 }));
 
