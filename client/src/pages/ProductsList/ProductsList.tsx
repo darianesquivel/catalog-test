@@ -20,6 +20,7 @@ import useStyles from "./styles";
 import removeProducts from "../../api/removeProducts";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import CustomAlert from "../../components/Alert/CustomAlert";
+import { columnsCreator } from "../../components/helpers";
 
 const columns: GridColDef[] = [
   {
@@ -71,14 +72,20 @@ const ProductsList = (props: any) => {
   } = useQuery([`catalogs/:${catalogId}`, catalogId], () =>
     getCatalogById(catalogId)
   );
-
   const { currentUrl, setSectionInfo } = useStore((state) => state);
-
-  const products = useMemo(
-    () => (catalog.products ? catalog.products : []),
-    [catalog]
-  );
-
+  const productColumns = catalog?.products?.length
+    ? columnsCreator(
+        catalog.products.map((product: any) => product.dinamicFields)
+      )
+    : [];
+  const products: any[] = useMemo(() => {
+    if (!catalog?.products) return [];
+    return catalog.products.map((product: any) => {
+      const { dinamicFields, ...rest } = product;
+      return { ...rest, ...dinamicFields };
+    });
+  }, [catalog]);
+  const customColumns = [...columns, ...productColumns];
   const rows: GridRowsProp = products;
   const params: any = useParams();
   const history = useHistory();
@@ -179,7 +186,7 @@ const ProductsList = (props: any) => {
           <DataGrid
             className={classes.datagrid}
             rows={rows}
-            columns={columns}
+            columns={customColumns}
             pageSize={100}
             rowsPerPageOptions={[100]}
             checkboxSelection

@@ -26,10 +26,20 @@ router.post(
   "/catalogs/:catalog_id/products",
   async (req: Request, res: Response) => {
     // catalog_id may be redundant but we could take it from params
+    // id, title, Title, description, catalog_id, image --> obligatory fields
     const products = req.body;
     try {
       for (const prod of products) {
-        const { id, title, description, catalog_id, image, allImages } = prod;
+        const {
+          id,
+          title,
+          Title,
+          description,
+          catalog_id,
+          image,
+          allImages,
+          ...extraAttributes
+        } = prod;
         const extraImages = allImages
           ? allImages.split(",").map((url: string) => url?.trim())
           : [];
@@ -39,6 +49,7 @@ router.post(
             description,
             image,
             catalogId: catalog_id,
+            dinamicFields: { ...extraAttributes },
           },
           include: {
             model: catalogs,
@@ -54,6 +65,7 @@ router.post(
 
       res.status(200).send("Products added successfuly");
     } catch (err: any) {
+      console.log(err);
       res.status(503).send(err.message);
     }
   }

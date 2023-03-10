@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import addProducts from "../../api/addProducts";
 import Papa from "papaparse";
+import _ from "lodash";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import { useMutateHook } from "../../hooks";
 import CustomAlert from "../Alert/CustomAlert";
@@ -32,6 +33,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //STYLES
 import useStyles from "./styles";
+import { columnsCreator } from "../helpers";
 
 const columns: GridColDef[] = [
   {
@@ -69,24 +71,25 @@ export default function AddProducts() {
 
         const sanitizedData = csvData
           .map((obj: any) => {
-            const { id, description, title, image, Images } = obj || {};
-            return {
-              id,
-              description,
-              title,
-              image,
-              catalog_id: catalogId,
-              allImages: Images,
-            };
+            return Object.fromEntries(
+              Object.entries(obj).filter(
+                ([key, value]: any) => !!key && !!value
+              )
+            );
           })
+          .map((obj: any, index: number) => ({
+            catalog_id: catalogId,
+            allImages: obj.Images,
+            ...obj,
+          }))
           .filter((obj: any) => obj.description && obj.title && obj.image);
-
         setUpload(false);
         setData(sanitizedData);
         setPreview(true);
       },
     });
   };
+  const customColumns = [...columns, ...columnsCreator(data)];
 
   const handleCancel = () => {
     setPreview(false);
@@ -200,7 +203,8 @@ export default function AddProducts() {
               data.length > 0 ? (
                 <DataGrid
                   rows={data}
-                  columns={columns}
+                  // @ts-ignore
+                  columns={customColumns}
                   pageSize={10}
                   rowsPerPageOptions={[10]}
                   checkboxSelection
@@ -219,7 +223,7 @@ export default function AddProducts() {
                 >
                   <CustomAlert
                     alertType="error"
-                    message={`Please check that the CSV has the following columns (id - title - description - image)`}
+                    message={`The columns: id , title , description , image are required to upload a csv`}
                     closeIcon={true}
                     onClose={handleCancel}
                   />
