@@ -100,6 +100,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  snackBar: {
+    "& .MuiSnackbarContent-root": {
+      padding: "0px",
+    },
+    "& .MuiSnackbarContent-message": {
+      width: "100%",
+      padding: "0px",
+    },
+  },
 }));
 
 export default useStyles;

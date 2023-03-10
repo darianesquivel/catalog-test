@@ -64,6 +64,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.primary.main,
   },
   dialogActions: {},
+  snackBar: {
+    "& .MuiSnackbarContent-root": {
+      padding: "0px",
+    },
+    "& .MuiSnackbarContent-message": {
+      padding: "0px",
+      width: "100%",
+    },
+  },
 }));
 
 export default useStyles;

@@ -13,6 +13,7 @@ import {
   Dialog,
   IconButton,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -184,11 +185,24 @@ export default function AddProducts() {
                   aria-labelledby="simple-modal-title"
                   aria-describedby="simple-modal-description"
                 >
-                  <CustomAlert
-                    alertType="success"
-                    message={`Products were successfully loaded`}
-                    closeIcon={true}
+                  <Snackbar
+                    className={classes.snackBar}
+                    disableWindowBlurListener
+                    autoHideDuration={2000}
                     onClose={handleIsSuccess}
+                    open={isSuccess}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "center",
+                    }}
+                    message={
+                      <CustomAlert
+                        alertType="success"
+                        message={`Products were successfully loaded`}
+                        closeIcon={true}
+                        onClose={handleIsSuccess}
+                      />
+                    }
                   />
                 </Dialog>
               ) : null}

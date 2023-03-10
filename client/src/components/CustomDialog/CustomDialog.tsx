@@ -2,7 +2,7 @@ import queryClientConfig from "../../config/queryClientConfig";
 import CustomAlert from "../Alert/CustomAlert";
 
 // MUI
-import { Button, CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress, Snackbar } from "@material-ui/core";
 import { Dialog, DialogActions, DialogContent } from "@material-ui/core";
 import { useMutateHook } from "../../hooks";
 
@@ -28,6 +28,7 @@ const CustomDialog = ({
   const classes = useStyles();
 
   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
+
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     mutate();
@@ -48,11 +49,23 @@ const CustomDialog = ({
       className={classes.dialog}
     >
       {isSuccess ? (
-        <CustomAlert
-          alertType="success"
-          message={`${customMessage ? customMessage(data) : data}`}
-          closeIcon={true}
+        <Snackbar
+          className={classes.snackBar}
+          disableWindowBlurListener
+          autoHideDuration={2000}
           onClose={() => handleClose()}
+          open={isOpen}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+          message={
+            <CustomAlert
+              alertType="success"
+              message={`${customMessage ? customMessage(data) : data}`}
+              onClose={() => handleClose()}
+            />
+          }
         />
       ) : error ? (
         <CustomAlert
