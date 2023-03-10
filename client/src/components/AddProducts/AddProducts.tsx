@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
+// utils
 import addProducts from "../../api/addProducts";
 import Papa from "papaparse";
 import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 import { useMutateHook } from "../../hooks";
+
 import CustomAlert from "../Alert/CustomAlert";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
+import { columnsCreator } from "../helpers";
 
-//MUI
+// Components
 import {
   Button,
   CircularProgress,
@@ -33,6 +36,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 //STYLES
 import useStyles from "./styles";
+import cleanJson from "../../api/cleanJson";
 
 const columns: GridColDef[] = [
   {
@@ -56,38 +60,26 @@ export default function AddProducts() {
   const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
     addProducts(catalogId, data)
   );
-
   const { setSectionInfo } = useStore();
+
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
-  const handleFile = (e: any) => {
+  const handleFile = async (e: any) => {
     const file = e.target.files[0];
+
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
-      complete: function (result) {
+      complete: async (result) => {
         const csvData: any = result.data;
-
-        const sanitizedData = csvData
-          .map((obj: any) => {
-            const { id, description, title, image, Images } = obj || {};
-            return {
-              id,
-              description,
-              title,
-              image,
-              catalog_id: catalogId,
-              allImages: Images,
-            };
-          })
-          .filter((obj: any) => obj.description && obj.title && obj.image);
-
+        const sanitizedData = await cleanJson(catalogId, csvData);
         setUpload(false);
         setData(sanitizedData);
         setPreview(true);
       },
     });
   };
+  const customColumns = [...columns, ...columnsCreator(data)];
 
   const handleCancel = () => {
     setPreview(false);
@@ -200,7 +192,8 @@ export default function AddProducts() {
               data.length > 0 ? (
                 <DataGrid
                   rows={data}
-                  columns={columns}
+                  // @ts-ignore
+                  columns={customColumns}
                   pageSize={10}
                   rowsPerPageOptions={[10]}
                   checkboxSelection
@@ -219,7 +212,7 @@ export default function AddProducts() {
                 >
                   <CustomAlert
                     alertType="error"
-                    message={`Please check that the CSV has the following columns (id - title - description - image)`}
+                    message={`The columns: id , title , description , image are required to upload a csv`}
                     closeIcon={true}
                     onClose={handleCancel}
                   />

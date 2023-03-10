@@ -20,6 +20,7 @@ import useStyles from "./styles";
 import removeProducts from "../../api/removeProducts";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import CustomAlert from "../../components/Alert/CustomAlert";
+import { columnsCreator } from "../../components/helpers";
 
 const columns: GridColDef[] = [
   {
@@ -68,17 +69,26 @@ const ProductsList = (props: any) => {
     isError,
     isSuccess,
     error,
+    isFetching,
   } = useQuery([`catalogs/:${catalogId}`, catalogId], () =>
     getCatalogById(catalogId)
   );
-
   const { currentUrl, setSectionInfo } = useStore((state) => state);
 
-  const products = useMemo(
-    () => (catalog.products ? catalog.products : []),
+  const productColumns = useMemo(
+    () =>
+      catalog?.products?.length
+        ? columnsCreator(
+            catalog.products.map((product: any) => product.dinamicFields)
+          )
+        : columns,
     [catalog]
   );
-
+  const products: any[] = useMemo(
+    () => (catalog?.products ? catalog.products : []),
+    [catalog]
+  );
+  const customColumns = [...columns, ...productColumns];
   const rows: GridRowsProp = products;
   const params: any = useParams();
   const history = useHistory();
@@ -104,7 +114,6 @@ const ProductsList = (props: any) => {
   const handleCheckBoxes = useCallback((values: any[]) => {
     setSelected(values);
   }, []);
-
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>
       <div className={classes.mainBox}>
@@ -162,7 +171,7 @@ const ProductsList = (props: any) => {
             </CustomDialog>
           )}
         </div>
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <div className={classes.loading}>
             <CircularProgress />
           </div>
@@ -175,11 +184,11 @@ const ProductsList = (props: any) => {
             />
           </div>
         ) : null}
-        {isSuccess ? (
+        {isSuccess && !isFetching ? (
           <DataGrid
             className={classes.datagrid}
             rows={rows}
-            columns={columns}
+            columns={customColumns}
             pageSize={100}
             rowsPerPageOptions={[100]}
             checkboxSelection

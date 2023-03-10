@@ -1,4 +1,4 @@
-import { Model } from "sequelize";
+import Papa from "papaparse";
 import { query, Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
@@ -20,16 +20,54 @@ router.post("/catalogs/catalog", async (req: Request, res: Response) => {
     res.status(500).send(err);
   }
 });
+// PROCESS CSV
+router.post(
+  "/catalogs/:catalog_id/csv",
+  async (req: Request, res: Response) => {
+    const { catalog_id: catalogId } = req.params;
+    const jsonData = req.body;
 
+    try {
+      const processedData = jsonData
+        .map((obj: any) => {
+          return Object.fromEntries(
+            Object.entries(obj).filter(([key, value]: any) => !!key && !!value)
+          );
+        })
+        .map((obj: any, index: number) => ({
+          catalog_id: catalogId,
+          allImages: obj.Images,
+          ...obj,
+        }))
+        .filter((obj: any) => obj.description && obj.title && obj.image);
+
+      res.status(200).json(processedData);
+    } catch (err: any) {
+      res
+        .status(503)
+        .send(`Could not process the csv because of: ${err.message}`);
+    }
+  }
+);
 //ADD PRODUCTS
 router.post(
   "/catalogs/:catalog_id/products",
   async (req: Request, res: Response) => {
     // catalog_id may be redundant but we could take it from params
+    // id, title, Title, description, catalog_id, image --> obligatory fields
     const products = req.body;
     try {
       for (const prod of products) {
-        const { id, title, description, catalog_id, image, allImages } = prod;
+        const {
+          id,
+          title,
+          Title,
+          description,
+          catalog_id,
+          image,
+          allImages,
+          ...extraAttributes
+        } = prod;
         const extraImages = allImages
           ? allImages.split(",").map((url: string) => url?.trim())
           : [];
@@ -39,6 +77,7 @@ router.post(
             description,
             image,
             catalogId: catalog_id,
+            dinamicFields: { ...extraAttributes },
           },
           include: {
             model: catalogs,
@@ -54,6 +93,7 @@ router.post(
 
       res.status(200).send("Products added successfuly");
     } catch (err: any) {
+      console.log(err);
       res.status(503).send(err.message);
     }
   }
@@ -109,13 +149,21 @@ router.get("/catalogs", async (req: Request, res: Response) => {
 router.get("/catalogs/:catalogId", async (req: Request, res: Response) => {
   const { catalogId } = req.params;
   try {
-    const catalogProducts: any = await catalogs.findByPk(catalogId, {
+    const fullCatalog: any = await catalogs.findByPk(catalogId, {
       include: {
         model: product,
       },
     });
-    res.status(200).json(catalogProducts);
+    const allProductsAttributes = fullCatalog.products.map((prod: any) => {
+      const { dinamicFields } = prod.dataValues;
+      return { ...prod.dataValues, ...dinamicFields };
+    });
+
+    res
+      .status(200)
+      .json({ ...fullCatalog.dataValues, products: allProductsAttributes });
   } catch (error) {
+    console.log(error);
     res.status(503).send(error);
   }
 });

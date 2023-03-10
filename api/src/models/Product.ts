@@ -24,6 +24,10 @@ module.exports = (sequelize: any) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      dinamicFields: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
     },
     { timestamps: true }
   );
