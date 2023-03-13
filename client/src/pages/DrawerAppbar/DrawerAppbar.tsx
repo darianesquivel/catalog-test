@@ -27,6 +27,7 @@ import { persist } from "zustand/middleware";
 import CustomNavBar from "../../components/CustomNavBar/CustomNavBar";
 import queryClientConfig from "../../config/queryClientConfig";
 import { useStyles } from "./styles";
+import NotificationPanel from "../NotificationPanel/NotificationPanel";
 const drawerButtons = [
   {
     text: "Data Explorer",
@@ -67,6 +68,15 @@ export const useStore = create(
         set((state: any) => ({
           ...state,
           mode: state.mode === "light" ? "dark" : "light",
+        })),
+      notifications: { pending: [], previous: [] },
+      setNotifications: (newPending: any) =>
+        set((state: any) => ({
+          ...state,
+          notifications: {
+            ...state.notifications,
+            pending: [...state.notifications.pending, newPending],
+          },
         })),
       searchingData: { isSearching: false },
       setSearchingData: (data: any) =>
@@ -111,6 +121,8 @@ export default function MiniDrawer() {
 
   return (
     <BrowserRouter>
+      <NotificationPanel />
+
       <div className={classes.root}>
         <CustomNavBar
           className={clsx(classes.appBar, {
@@ -186,6 +198,7 @@ export default function MiniDrawer() {
                   <FontAwesomeIcon icon={faBell} size="xl" />
                 </ListItemIcon>
                 <ListItemText primary={"Notifications"} />
+                Notificatcion 1
               </ListItem>
               <ListItem
                 button

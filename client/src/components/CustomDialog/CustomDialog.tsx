@@ -9,6 +9,7 @@ import { useMutateHook } from "../../hooks";
 
 // STYLES
 import useStyles from "./styles";
+import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
 
 type Tprops = {
   onModalChange: () => void;
@@ -27,12 +28,16 @@ const CustomDialog = ({
   customMessage,
 }: Tprops) => {
   const classes = useStyles();
-
+  const { setNotifications } = useStore();
   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
 
   const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    mutate();
+    mutate(undefined, {
+      onSuccess: (responseMessage: any) => {
+        setNotifications(responseMessage);
+      },
+    });
   };
   const handleClose = async () => {
     // we don't do the invalidation in onSuccess because of the rerender of all the cards

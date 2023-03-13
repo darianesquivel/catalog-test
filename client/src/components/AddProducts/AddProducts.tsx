@@ -60,7 +60,7 @@ export default function AddProducts() {
   const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
     addProducts(catalogId, data)
   );
-  const { setSectionInfo } = useStore();
+  const { setSectionInfo, setNotifications } = useStore();
 
   useEffect(() => () => setSectionInfo(""), [setSectionInfo]);
 
@@ -88,7 +88,11 @@ export default function AddProducts() {
   };
 
   const handleSubmit = async () => {
-    mutate();
+    mutate(undefined, {
+      onSuccess: (responseMessage: any) => {
+        setNotifications(responseMessage);
+      },
+    });
   };
 
   const handleIsSuccess = () => {
