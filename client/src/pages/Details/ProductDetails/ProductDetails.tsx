@@ -1,5 +1,5 @@
 import { Divider, Grid, CircularProgress } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -11,6 +11,7 @@ import getProductInfo from "../../../api/getProductInfo";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "../../DrawerAppbar/DrawerAppbar";
 import CustomAlert from "../../../components/Alert/CustomAlert";
+import _ from "lodash";
 
 // STYLES
 import useStyles from "./styles";
@@ -24,6 +25,7 @@ type Tproduct = {
   image: string;
   catalog_id: string;
   images?: string[];
+  dinamicFields?: any;
 };
 
 export default function ProductDetails() {
@@ -38,19 +40,32 @@ export default function ProductDetails() {
     () => getProductInfo({ catalogId, productId })
   );
   const product: Tproduct = data || {};
+  const extraBullets = useMemo(() => {
+    if (product?.dinamicFields) {
+      return Object.entries(product.dinamicFields).map(([key, value]: any) => ({
+        key,
+        value,
+      }));
+    } else return [];
+  }, [product]);
+
   const { setSectionInfo } = useStore((state) => state);
 
   const [imagesState, setImagesState] = useState<any>([]);
   const [selected, setSelected] = useState<any>(imagesState?.[0]);
-  const keyValues = [
-    { key: "title", value: product.name },
-    {
-      key: "images",
-      value: imagesState?.join(", ") || "-",
-    },
-    { key: "mainImageUrl", value: product.image },
-    { key: "description", value: product.description },
-  ];
+  const keyValues = _.uniqBy(
+    [
+      { key: "title", value: product.name },
+      {
+        key: "images",
+        value: imagesState?.join(", ") || "-",
+      },
+      { key: "mainImageUrl", value: product.image },
+      { key: "description", value: product.description },
+      ...extraBullets,
+    ],
+    "key"
+  );
 
   useEffect(() => {
     setSectionInfo(product.name);

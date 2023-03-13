@@ -28,7 +28,9 @@ export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
             <Tooltip title={value}>
               <Typography
                 variant="body2"
-                className={`${classes.keys} ${boldKeys ? classes.bold : ""}`}
+                className={`${classes.keys} ${classes.ellipsis} ${
+                  boldKeys ? classes.bold : ""
+                }`}
               >
                 {key}
               </Typography>
