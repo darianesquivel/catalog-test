@@ -17,12 +17,13 @@ server.use((req, res, next) => {
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
   next();
 });
+const PORT = process.env.PORT || 3001;
 
 server.use("/", routes);
 require("dotenv").config();
 
-database.sync({ force: false }).then(() => {
-  server.listen(3001, () => {
-    console.log("%s listening at " + 3001);
+database.sync({ force: true }).then(() => {
+  server.listen(PORT, () => {
+    console.log("%s listening at " + PORT);
   });
 });
