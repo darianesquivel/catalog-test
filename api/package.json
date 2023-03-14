@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start:build": "tsc -w",
-    "start:run": "nodemon build/index.js",
+    "start:run": "nodemon build/",
     "start": "concurrently yarn:start:*"
   },
   "dependencies": {

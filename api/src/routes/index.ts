@@ -1,4 +1,4 @@
-import Papa from "papaparse";
+
 import { query, Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
@@ -275,8 +275,8 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
           // parsing the images so that we are able to clone them
           const currentImages = extraImages?.length
             ? extraImages.map(({ dataValues }: any) => ({
-                url: dataValues.url,
-              }))
+              url: dataValues.url,
+            }))
             : [];
 
           // cloning the images
