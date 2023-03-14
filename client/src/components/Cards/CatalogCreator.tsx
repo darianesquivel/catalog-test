@@ -1,6 +1,7 @@
 import { useState } from "react";
-import FormCreator from "../../FormCreator/FormCreator";
-import createCatalog from "../../../api/createCatalog";
+import FormCreator from "../FormCreator";
+import createCatalog from "../../api/createCatalog";
+import { useHistory } from "react-router";
 
 // MUI
 import { CardActionArea, Typography, Card } from "@material-ui/core/";
@@ -10,8 +11,21 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // STYLES
-import useStyles from "./styles";
-import { useHistory } from "react-router";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  creatorContainer: {
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(2),
+  },
+  cardContent: {
+    height: 325,
+    borderRadius: theme.shape.borderRadius / 2,
+    border: `1px dashed ${theme.palette.primary.main}`,
+    textAlign: "center",
+    color: theme.palette.primary.main,
+  },
+}));
 
 export default function CatalogCreator() {
   const classes = useStyles();

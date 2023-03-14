@@ -1,10 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import getAllCatalogs from "../../api/getAllCatalogs";
-import getFilteredCatalogs from "../../api/getFilteredCatalogs";
-import CatalogCard from "../../components/Cards/CatalogCard/CatalogCard";
-import CustomAlert from "../../components/Alert/CustomAlert";
+import getAllCatalogs from "../api/getAllCatalogs";
+import getFilteredCatalogs from "../api/getFilteredCatalogs";
+import CatalogCard from "../components/Cards/CatalogCard";
+import CustomAlert from "../components/CustomAlert";
+import { useStore } from "./DrawerAppbar";
 //Component
-import CatalogCreator from "../../components/Cards/CatalogCreator/CatalogCreator";
+import CatalogCreator from "../components/Cards/CatalogCreator";
 // MUI
 import { CircularProgress, Snackbar } from "@material-ui/core";
 // REACT
@@ -12,8 +13,25 @@ import { useHistory } from "react-router";
 import { useCallback, useState } from "react";
 
 // STYLES
-import useStyles from "./styles";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  gridContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax( 290px, 1fr))",
+    gap: theme.spacing(2),
+  },
+  containerNoData: {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)",
+    gap: theme.spacing(2),
+  },
+  loading: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
+}));
 
 type TcatalogCard = {
   id: string;

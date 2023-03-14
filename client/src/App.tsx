@@ -1,10 +1,10 @@
 import axios from "axios";
 //component
-import DrawerAppbar from "./pages/DrawerAppbar/DrawerAppbar";
+import DrawerAppbar from "./pages/DrawerAppbar";
 import React from "react";
 import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useStore } from "./pages/DrawerAppbar/DrawerAppbar";
+import { useStore } from "./pages/DrawerAppbar";
 
 axios.defaults.baseURL = "http://localhost:3001/";
 

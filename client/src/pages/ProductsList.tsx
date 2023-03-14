@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import getCatalogById from "../../api/getCatalogById";
+import getCatalogById from "../api/getCatalogById";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { Button, CircularProgress, Typography } from "@material-ui/core";
 import {
@@ -10,17 +10,61 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import SummaryDetails from "../Details/SummaryDetails/SummaryDetails";
+import SummaryDetails from "./Details/SummaryDetails";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useStore } from "../DrawerAppbar/DrawerAppbar";
+import { useStore } from "./DrawerAppbar";
 import { useHistory, useParams } from "react-router";
 
+import removeProducts from "../api/removeProducts";
+import CustomDialog from "../components/CustomDialog";
+import CustomAlert from "../components/CustomAlert";
+import { columnsCreator } from "../components/helpers";
+
 // STYLES
-import useStyles from "./styles";
-import removeProducts from "../../api/removeProducts";
-import CustomDialog from "../../components/CustomDialog/CustomDialog";
-import CustomAlert from "../../components/Alert/CustomAlert";
-import { columnsCreator } from "../../components/helpers";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: "calc(100vh - 145px)",
+    width: "100%",
+    display: "grid",
+    gridTemplateColumns: "1fr",
+  },
+
+  details: {
+    display: "grid",
+    gridTemplateColumns: "3fr 1fr",
+  },
+  mainBox: {
+    height: "calc(100vh - 145px)",
+  },
+  buttonsContainer: {
+    display: "flex",
+    gap: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  button: {
+    display: "flex",
+    borderRadius: theme.shape.borderRadius,
+  },
+  typographyButtons: {
+    fontSize: "15px",
+    textTransform: "capitalize",
+    marginLeft: theme.spacing(2),
+  },
+  thumbnails: {
+    width: "60px",
+    margin: theme.spacing(0, "auto"),
+  },
+  datagrid: {
+    width: "100",
+  },
+  loading: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+  },
+}));
 
 const columns: GridColDef[] = [
   {

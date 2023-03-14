@@ -1,4 +1,3 @@
-import { useStyles } from "./styles";
 import {
   FormControl,
   IconButton,
@@ -8,6 +7,16 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
+
+import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    searchBar: {
+      width: "100%",
+    },
+  })
+);
 interface Tprops {
   initialTerm: string | undefined;
   onSubmit: (term: string | undefined) => void;
