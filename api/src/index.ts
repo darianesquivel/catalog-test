@@ -9,7 +9,7 @@ server.use(express.json({ limit: "50mb" }));
 server.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Origin",
-    "https://test-catalog-explorer-darianesquivel.vercel.app/"
+    "https://test-catalog-explorer.vercel.app"
   ); // update to match the domain you will make the request from. * -> autoriza los requests de cualquier puerto
 
   res.header("Access-Control-Allow-Credentials", "*");
