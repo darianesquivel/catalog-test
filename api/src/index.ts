@@ -1,6 +1,6 @@
-import database from "./src/db";
+import database from "./db";
 import express from "express";
-import routes from "./src/routes";
+import routes from "./routes";
 
 const server = express();
 
