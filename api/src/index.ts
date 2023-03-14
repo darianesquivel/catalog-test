@@ -7,7 +7,10 @@ const server = express();
 server.use(express.urlencoded({ extended: true, limit: "50mb" }));
 server.use(express.json({ limit: "50mb" }));
 server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from. * -> autoriza los requests de cualquier puerto
+  res.header(
+    "Access-Control-Allow-Origin",
+    "https://test-catalog-explorer-darianesquivel.vercel.app/"
+  ); // update to match the domain you will make the request from. * -> autoriza los requests de cualquier puerto
 
   res.header("Access-Control-Allow-Credentials", "*");
   res.header(
