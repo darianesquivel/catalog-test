@@ -1,6 +1,6 @@
-import CustomAlert from "../Alert/CustomAlert";
+import CustomAlert from "./CustomAlert";
 import * as yup from "yup";
-import CustomSnackBar from "../CustomSnackbar/CustomSnackbar";
+import CustomSnackBar from "./CustomSnackbar";
 
 // MUI
 import { Button, CircularProgress } from "@material-ui/core";
@@ -13,11 +13,57 @@ import {
 // FORMIK
 import { useFormik } from "formik";
 // HOOK
-import { useMutateHook } from "../../hooks";
-import queryClientConfig from "../../config/queryClientConfig";
+import { useMutateHook } from "../hooks";
+import queryClientConfig from "../config/queryClientConfig";
 
 // STYLES
-import useStyles from "./styles";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    minWidth: "500px",
+    display: "flex",
+    margin: theme.spacing(0, "auto"),
+    padding: theme.spacing(3),
+    flexFlow: "column",
+    gap: "20px",
+  },
+  createButton: {
+    borderRadius: "8px",
+    textTransform: "none",
+    fontSize: "14px",
+    padding: theme.spacing(0.5, 2),
+    boxShadow: "none",
+    "&:hover": {
+      boxShadow: "none",
+      backgroundColor: theme.palette.primary.light,
+    },
+  },
+  cancelButton: {
+    borderRadius: "8px",
+    textTransform: "none",
+    fontSize: "14px",
+    padding: theme.spacing(0.5, 2),
+    backgroundColor: theme.palette.background.paper,
+    border: `0.5px solid ${theme.palette.primary.main}`,
+    color: theme.palette.primary.main,
+    boxShadow: "none",
+    "&:hover": {
+      boxShadow: `inset 0 0 0 0.5px ${theme.palette.primary.main}`,
+      backgroundColor: theme.palette.background.paper,
+    },
+  },
+  buttonWrapper: {
+    minWidth: "70px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  buttonProgress: {
+    color: theme.palette.grey[500],
+  },
+}));
 
 type Tprops = {
   onModalChange: () => void;

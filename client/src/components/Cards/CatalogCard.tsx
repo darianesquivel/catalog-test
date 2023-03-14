@@ -15,13 +15,70 @@ import { faCartPlus, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { useState } from "react";
-import CustomAlert from "../../Alert/CustomAlert";
-import CustomDialog from "../../CustomDialog/CustomDialog";
-import FormCreator from "../../FormCreator/FormCreator";
-import updateCatalog from "../../../api/updateCatalog";
-import removeCatalog from "../../../api/removeCatalog";
-import useStyles from "./styles";
-import clonedCatalog from "../../../api/cloneCatalog";
+import CustomAlert from "../CustomAlert";
+import CustomDialog from "../CustomDialog";
+import FormCreator from "../FormCreator";
+import updateCatalog from "../../api/updateCatalog";
+import removeCatalog from "../../api/removeCatalog";
+import clonedCatalog from "../../api/cloneCatalog";
+
+import { makeStyles, createStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    root: {
+      "& .MuiCardContent-root": {
+        paddingBottom: theme.spacing(1.5),
+      },
+    },
+    catalogCard: {
+      height: 355,
+      borderRadius: theme.shape.borderRadius,
+    },
+    cardContainer: {
+      width: "100%",
+      height: "100%",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      padding: theme.spacing(0),
+    },
+    media: {
+      height: 300,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      color: theme.palette.primary.main,
+      gap: theme.spacing(1),
+      cursor: "pointer",
+    },
+    typography: {
+      fontWeight: 200,
+    },
+    products: {
+      color: theme.palette.primary.main,
+      fontSize: "15px",
+      marginBottom: theme.spacing(1),
+      cursor: "pointer",
+    },
+    createdAt: {
+      display: "flex",
+      alignItems: "center",
+      color: theme.palette.grey[500],
+      fontSize: "14px",
+      gap: theme.spacing(1),
+      letterSpacing: "0.04em",
+    },
+    alertStyle: {
+      backgroundColor: theme.palette.primary.light,
+      color: `${theme.palette.primary.main} !important`,
+      "& .MuiAlert-icon": {
+        color: theme.palette.primary.main,
+      },
+    },
+  })
+);
 
 // the below type we should reuse in Catalog Explorer
 type TcatalogCard = {

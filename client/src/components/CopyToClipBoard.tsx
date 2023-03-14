@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconButton, Snackbar } from "@material-ui/core/";
-import CustomAlert from "../Alert/CustomAlert";
+import CustomAlert from "./CustomAlert";
 
 type Tprops = {
   value: string;

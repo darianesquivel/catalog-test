@@ -1,5 +1,5 @@
 import { Snackbar } from "@material-ui/core";
-import CustomAlert from "../Alert/CustomAlert";
+import CustomAlert from "./CustomAlert";
 
 type Tprops = {
   onClose: () => void;

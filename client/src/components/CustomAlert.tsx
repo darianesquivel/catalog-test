@@ -1,7 +1,17 @@
 import { Alert, AlertTitle } from "@material-ui/lab";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import useStyles from "./styles";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(() => {
+  return {
+    root: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  };
+});
 
 type Tseverity = "error" | "warning" | "info" | "success";
 type Tvariant = "filled" | "outlined" | "standard";

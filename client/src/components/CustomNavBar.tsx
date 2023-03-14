@@ -8,17 +8,63 @@ import {
 } from "@material-ui/core";
 import { faAngleLeft, faPen, faRedo } from "@fortawesome/free-solid-svg-icons";
 
-import useStyles from "./styles";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
-import { useStore } from "../../pages/DrawerAppbar/DrawerAppbar";
-import FormCreator from "../FormCreator/FormCreator";
-import updateCatalog from "../../api/updateCatalog";
-import queryClientConfig from "../../config/queryClientConfig";
-import SearchBar from "../SearchBar/SearchBar";
-import { useMutateHook } from "../../hooks";
-import getFilteredCatalogs from "../../api/getFilteredCatalogs";
+import { useStore } from "../pages/DrawerAppbar";
+import FormCreator from "./FormCreator";
+import updateCatalog from "../api/updateCatalog";
+import queryClientConfig from "../config/queryClientConfig";
+import SearchBar from "./SearchBar";
+import { useMutateHook } from "../hooks";
+import getFilteredCatalogs from "../api/getFilteredCatalogs";
 import { useIsFetching } from "@tanstack/react-query";
+import { makeStyles, Theme } from "@material-ui/core";
+
+const useStyles = makeStyles((theme: Theme) => ({
+  mainContainer: { height: "65px" },
+  toolbar: {
+    width: "100%",
+    display: "grid",
+    justifyContent: "space-between",
+    gridTemplateColumns: "1fr 1fr",
+  },
+  mainContent: {
+    display: "flex",
+    justifyContent: "start",
+    padding: theme.spacing(1),
+    gap: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+  },
+  addProductBtn: {
+    borderRadius: theme.shape.borderRadius,
+    textTransform: "none",
+    padding: theme.spacing(0.3, 2),
+  },
+  icons: {
+    width: "45px",
+  },
+  sectionName: {
+    minWidth: "45px",
+    display: "flex",
+    alignItems: "center",
+  },
+  endSection: {
+    display: "flex",
+    justifyContent: "end",
+    paddingRight: theme.spacing(2),
+  },
+  rotate: {
+    animation: "$spin 1s linear infinite",
+  },
+  "@keyframes spin": {
+    "0%": {
+      transform: "rotate(0deg)",
+    },
+    "100%": {
+      transform: "rotate(360deg)",
+    },
+  },
+}));
 
 type Tprops = {
   className: string;
