@@ -7,10 +7,10 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useStore } from "./pages/DrawerAppbar";
 
 axios.defaults.baseURL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/"
-    : "https://catalog-test-server.onrender.com/";
-
+  process.env.NODE_ENV === "production"
+    ? "https://catalog-test-server.onrender.com/"
+    : "http://localhost:3001/";
+console.log("node env", console.log(process.env.NODE_ENV));
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const mode = useStore((state: any) => state.mode);
