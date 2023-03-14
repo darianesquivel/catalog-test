@@ -6,7 +6,10 @@ import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useStore } from "./pages/DrawerAppbar";
 
-axios.defaults.baseURL = "http://localhost:3001/";
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/"
+    : "https://catalog-test-server.onrender.com/";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
