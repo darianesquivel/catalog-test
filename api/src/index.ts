@@ -2,8 +2,10 @@ import database from "./db";
 import express from "express";
 import cors from "cors";
 import routes from "./routes";
+import morgan from "morgan";
 
 const server = express();
+server.use(morgan("dev"));
 
 const allowedOrigins = [
   "https://catalogtest.vercel.app",
