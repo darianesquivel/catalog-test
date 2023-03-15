@@ -18,18 +18,6 @@ server.use(cors(options));
 server.use(express.urlencoded({ extended: true, limit: "50mb" }));
 server.use(express.json({ limit: "50mb" }));
 
-server.use((req, res, next) => {
-  console.log("server use luego de los cors-------> ");
-  // res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from. * -> autoriza los requests de cualquier puerto
-
-  // res.header("Access-Control-Allow-Credentials", "*");
-  // res.header(
-  //   "Access-Control-Allow-Headers",
-  //   "Origin, X-Requested-With, Content-Type, Accept, *"
-  // );
-  // res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-  next();
-});
 const PORT = process.env.PORT || 3001;
 
 server.use("/", routes);
