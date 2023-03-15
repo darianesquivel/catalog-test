@@ -1,10 +1,13 @@
 import clsx from "clsx";
-import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import {
+  Drawer,
+  List,
+  Typography,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@material-ui/core";
+
 import {
   faDatabase,
   faTags,
@@ -17,6 +20,7 @@ import {
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import CatalogExplorer from "./CatalogExplorer";
 import ProductsList from "./ProductsList";
@@ -24,6 +28,7 @@ import ProductDetails from "./Details/ProductDetails";
 import AddProducts from "../components/AddProducts";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { shallow } from "zustand/shallow";
 import CustomNavBar from "../components/CustomNavBar";
 import queryClientConfig from "../config/queryClientConfig";
 
@@ -167,7 +172,7 @@ const drawerButtons = [
     link: "",
   },
 ];
-
+const partialValues = ["currentUrl", "sectionInfo", "searchingData"];
 // zustand global state
 export const useStore = create(
   persist(
@@ -181,7 +186,7 @@ export const useStore = create(
       setSectionInfo: (name: string, id?: string) =>
         set((state: any) => ({ ...state, sectionInfo: { name, id } })),
       mode: "light",
-      setMode: () =>
+      toggleMode: () =>
         set((state: any) => ({
           ...state,
           mode: state.mode === "light" ? "dark" : "light",
@@ -200,10 +205,7 @@ export const useStore = create(
       getStorage: () => localStorage,
       partialize: (state) => {
         return Object.fromEntries(
-          Object.entries(state).filter(
-            ([key]) =>
-              !["currentUrl", "sectionInfo", "searchingData"].includes(key)
-          )
+          Object.entries(state).filter(([key]) => !partialValues.includes(key))
         );
       },
     }
@@ -212,12 +214,16 @@ export const useStore = create(
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const open = useStore((state: any) => state.open);
-  const setOpen = useStore((state: any) => state.setOpen);
-  const mode = useStore((state: any) => state.mode);
-  const setMode = useStore((state: any) => state.setMode);
-  const selectedIndex = useStore((state: any) => state.selectedIndex);
-  const setSelectedIndex = useStore((state: any) => state.setSelectedIndex);
+  const { open, mode, selectedIndex } = useStore(
+    (state: any) => ({
+      open: state.open,
+      mode: state.mode,
+      selectedIndex: state.selectedIndex,
+    }),
+    shallow
+  );
+  const { setOpen, toggleMode, setSelectedIndex } = useStore();
+
   const handleDrawerChange = () => {
     setOpen();
   };
@@ -308,7 +314,7 @@ export default function MiniDrawer() {
               <ListItem
                 button
                 className={classes.buttonStyle}
-                onClick={setMode}
+                onClick={toggleMode}
               >
                 <ListItemIcon>
                   <FontAwesomeIcon
