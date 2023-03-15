@@ -5,7 +5,10 @@ import routes from "./routes";
 
 const server = express();
 
-const allowedOrigins = ["https://catalogtest.vercel.app"];
+const allowedOrigins = [
+  "https://catalogtest.vercel.app",
+  "http://localhost:3000",
+];
 const options: cors.CorsOptions = {
   origin: allowedOrigins,
 };
