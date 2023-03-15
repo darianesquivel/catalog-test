@@ -19,6 +19,7 @@ import { useMutateHook } from "../hooks";
 import getFilteredCatalogs from "../api/getFilteredCatalogs";
 import { useIsFetching } from "@tanstack/react-query";
 import { makeStyles, Theme } from "@material-ui/core";
+import { shallow } from "zustand/shallow";
 
 const useStyles = makeStyles((theme: Theme) => ({
   mainContainer: { height: "65px" },
@@ -80,13 +81,14 @@ export default function CustomNavBar({ className }: Tprops) {
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
 
-  const {
-    currentUrl,
-    sectionInfo,
-    setCurrentUrl,
-    setSearchingData,
-    setSectionInfo,
-  } = useStore<any>((state: any) => state);
+  const { currentUrl, sectionInfo } = useStore(
+    (state: any) => ({
+      currentUrl: state.currentUrl,
+      sectionInfo: state.sectionInfo,
+    }),
+    shallow
+  );
+  const { setCurrentUrl, setSearchingData, setSectionInfo } = useStore();
 
   const { id, name } = sectionInfo || {};
 
