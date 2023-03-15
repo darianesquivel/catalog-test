@@ -117,7 +117,9 @@ const ProductsList = (props: any) => {
   } = useQuery([`catalogs/:${catalogId}`, catalogId], () =>
     getCatalogById(catalogId)
   );
-  const { currentUrl, setSectionInfo } = useStore((state) => state);
+  const currentUrl = useStore((state) => state.currentUrl);
+
+  const { setSectionInfo } = useStore();
 
   const productColumns = useMemo(
     () =>

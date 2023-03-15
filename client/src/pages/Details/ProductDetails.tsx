@@ -158,7 +158,7 @@ export default function ProductDetails() {
     } else return [];
   }, [product]);
 
-  const { setSectionInfo } = useStore((state) => state);
+  const { setSectionInfo } = useStore();
 
   const [imagesState, setImagesState] = useState<any>([]);
   const [selected, setSelected] = useState<any>(imagesState?.[0]);

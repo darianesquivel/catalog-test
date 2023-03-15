@@ -14,6 +14,7 @@ import { useCallback, useState } from "react";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
+import { shallow } from "zustand/shallow";
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
@@ -51,7 +52,11 @@ const CatalogExplorer = (props: any) => {
     (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
     []
   );
-  const { searchingData } = useStore((state) => state);
+  const { searchingData } = useStore(
+    (state) => ({ searchingData: state.searchingData }),
+    shallow
+  );
+
   const query = getUrlTerm(history.location.search);
   const [open, setOpen] = useState(true);
   const {
