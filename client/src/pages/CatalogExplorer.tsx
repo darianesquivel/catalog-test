@@ -1,6 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import getAllCatalogs from "../api/getAllCatalogs";
-import getFilteredCatalogs from "../api/getFilteredCatalogs";
 import CatalogCard from "../components/Cards/CatalogCard";
 import CustomAlert from "../components/CustomAlert";
 import { useStore } from "./DrawerAppbar";
@@ -15,6 +12,7 @@ import { useCallback, useState } from "react";
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
 import { shallow } from "zustand/shallow";
+import { useCatalogsQuery } from "../config/queries";
 
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
@@ -43,21 +41,18 @@ type TcatalogCard = {
   productCount: number;
   className?: any;
 };
+const getUrlTerm = (url: string) => url?.match(/(?<=term=).+/gi)?.[0];
 
 const CatalogExplorer = (props: any) => {
   const classes = useStyles();
   const history = useHistory();
-  // could not use useSearchQueryParams
-  const getUrlTerm = useCallback(
-    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
-    []
-  );
+
   const { searchingData } = useStore(
     (state) => ({ searchingData: state.searchingData }),
     shallow
   );
 
-  const query = getUrlTerm(history.location.search);
+  const term = getUrlTerm(history.location.search);
   const [open, setOpen] = useState(true);
   const {
     data: catalogs,
@@ -65,20 +60,12 @@ const CatalogExplorer = (props: any) => {
     isLoading,
     isSuccess,
     error,
-  } = useQuery<any>(["catalogs"], () => {
-    // we declare term here to get the last url data
-    const term = getUrlTerm(history.location.search);
-    if (term) {
-      return getFilteredCatalogs(term);
-    } else {
-      return getAllCatalogs();
-    }
-  });
+  } = useCatalogsQuery(term);
   const handleSnackBar = () => setOpen(false);
 
   return (
     <div>
-      {catalogs && !catalogs.length && !isLoading && query ? (
+      {catalogs && !catalogs.length && !isLoading && term ? (
         <div>
           <Snackbar
             open={open}
@@ -91,7 +78,7 @@ const CatalogExplorer = (props: any) => {
               // onClose={handleClose}
               title="Not found"
               alertType="info"
-              message={`Catalogs not found with the name: ${query}`}
+              message={`Catalogs not found with the name: ${term}`}
             />
           </Snackbar>
         </div>
