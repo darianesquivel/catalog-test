@@ -7,14 +7,13 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DetailTable from "../../components/DetailTable";
 import { useParams } from "react-router";
-import getProductInfo from "../../api/getProductInfo";
-import { useQuery } from "@tanstack/react-query";
 import { useStore } from "../DrawerAppbar";
 import CustomAlert from "../../components/CustomAlert";
 import _ from "lodash";
 
 // STYLES
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import { useProductInfoQuery } from "../../config/queries";
 
 const useStyles = makeStyles((theme: Theme) => ({
   gridContainer: {
@@ -144,10 +143,12 @@ export default function ProductDetails() {
     productId: string;
   }>();
 
-  const { data, isLoading, error, isSuccess } = useQuery(
-    [`productInfo/${productId}`],
-    () => getProductInfo({ catalogId, productId })
+  const { data, isLoading, error, isSuccess } = useProductInfoQuery(
+    catalogId,
+    productId,
+    [`productInfo/${productId}`]
   );
+
   const product: Tproduct = data || {};
   const extraBullets = useMemo(() => {
     if (product?.dinamicFields) {

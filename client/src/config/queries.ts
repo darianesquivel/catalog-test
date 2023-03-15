@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import getAllCatalogs from "../api/getAllCatalogs";
 import getCatalogById from "../api/getCatalogById";
 import getFilteredCatalogs from "../api/getFilteredCatalogs";
+import getProductInfo from "../api/getProductInfo";
 
 export const useCatalogsQuery = (term?: string) => {
   return useQuery<any>(["catalogs"], () => {
@@ -18,4 +19,12 @@ export const useSingleCatalogQuery = (
   catalogId: string
 ) => {
   return useQuery(queryKeys, () => getCatalogById(catalogId));
+};
+
+export const useProductInfoQuery = (
+  catalogId: string,
+  productId: string,
+  queryKeys: string[]
+) => {
+  return useQuery(queryKeys, () => getProductInfo({ catalogId, productId }));
 };
