@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawerOpen: {
       width: drawerWidth,
+      overflow: "hidden",
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -78,10 +79,7 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.leavingScreen,
       }),
       overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9) + 1,
-      },
+      width: drawerWidthMin + 1,
     },
     toolbar: {
       display: "flex",
