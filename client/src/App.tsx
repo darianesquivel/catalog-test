@@ -1,19 +1,46 @@
 import axios from "axios";
 //component
-import DrawerAppbar from "./pages/DrawerAppbar";
 import React from "react";
-import { createTheme, CssBaseline, ThemeProvider } from "@material-ui/core";
+import {
+  createTheme,
+  CssBaseline,
+  makeStyles,
+  ThemeProvider,
+} from "@material-ui/core";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useStore } from "./pages/DrawerAppbar";
+import DrawerAppbar, { useStore } from "./pages/DrawerAppbar";
+import Routes from "./pages/Routes";
+import clsx from "clsx";
 
 axios.defaults.baseURL =
   process.env.NODE_ENV === "production"
     ? "https://catalog-test-server.onrender.com/"
     : "http://localhost:3001/";
 
+const useStyles = makeStyles((theme) => ({
+  containerCloseDrawer: {
+    marginLeft: theme.spacing(9),
+    marginTop: theme.spacing(8),
+    padding: theme.spacing(2),
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  containerOpenDrawer: {
+    marginLeft: theme.spacing(30),
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+}));
+
 function App() {
+  const classes = useStyles();
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const mode = useStore((state: any) => state.mode);
+  const drawerOpen = useStore((state: any) => state.open);
 
   const theme = React.useMemo(
     () =>
@@ -53,6 +80,13 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <DrawerAppbar />
+      <div
+        className={clsx(classes.containerCloseDrawer, {
+          [classes.containerOpenDrawer]: drawerOpen,
+        })}
+      >
+        <Routes />
+      </div>
     </ThemeProvider>
   );
 }
