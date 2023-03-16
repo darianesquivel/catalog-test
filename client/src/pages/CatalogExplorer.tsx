@@ -15,6 +15,8 @@ import { useCallback, useState } from "react";
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
 
+import CustomNavBar from "../components/CustomNavBar";
+
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
     display: "grid",
@@ -54,6 +56,7 @@ const CatalogExplorer = (props: any) => {
   const { searchingData } = useStore((state) => state);
   const query = getUrlTerm(history.location.search);
   const [open, setOpen] = useState(true);
+
   const {
     data: catalogs,
     isError,
@@ -73,6 +76,7 @@ const CatalogExplorer = (props: any) => {
 
   return (
     <div>
+      <CustomNavBar />
       {catalogs && !catalogs.length && !isLoading && query ? (
         <div>
           <Snackbar
