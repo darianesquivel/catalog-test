@@ -23,6 +23,7 @@ import clsx from "clsx";
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
+import { shallow } from "zustand/shallow";
 
 const useStyles = makeStyles((theme: Theme) => ({
   mainContainer: { height: "65px" },
@@ -104,13 +105,14 @@ export default function CustomNavBar() {
   const [term, setTerm] = useState("");
   const drawerOpen = useStore((state: any) => state.open);
 
-  const {
-    currentUrl,
-    sectionInfo,
-    setCurrentUrl,
-    setSearchingData,
-    setSectionInfo,
-  } = useStore<any>((state: any) => state);
+  const { currentUrl, sectionInfo } = useStore(
+    (state: any) => ({
+      currentUrl: state.currentUrl,
+      sectionInfo: state.sectionInfo,
+    }),
+    shallow
+  );
+  const { setCurrentUrl, setSearchingData, setSectionInfo } = useStore();
 
   const { id, name } = sectionInfo || {};
 

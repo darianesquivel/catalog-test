@@ -1,6 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import getAllCatalogs from "../api/getAllCatalogs";
-import getFilteredCatalogs from "../api/getFilteredCatalogs";
 import CatalogCard from "../components/Cards/CatalogCard";
 import CustomAlert from "../components/CustomAlert";
 import { useStore } from "./DrawerAppbar";
@@ -10,10 +7,12 @@ import CatalogCreator from "../components/Cards/CatalogCreator";
 import { CircularProgress, Snackbar } from "@material-ui/core";
 // REACT
 import { useHistory } from "react-router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
+import { shallow } from "zustand/shallow";
+import { useCatalogsQuery } from "../config/queries";
 
 import CustomNavBar from "../components/CustomNavBar";
 
@@ -26,8 +25,12 @@ const useStyles = makeStyles((theme) => ({
   containerNoData: {
     display: "grid",
     gridTemplateColumns: "repeat(5, 1fr)",
+    [theme.breakpoints.down(1000)]: {
+      gridTemplateColumns: "repeat(auto-fit, minmax( 290px, 1fr))",
+    },
     gap: theme.spacing(2),
   },
+
   loading: {
     width: "100%",
     display: "flex",
@@ -44,17 +47,18 @@ type TcatalogCard = {
   productCount: number;
   className?: any;
 };
+const getUrlTerm = (url: string) => url?.match(/(?<=term=).+/gi)?.[0];
 
 const CatalogExplorer = (props: any) => {
   const classes = useStyles();
   const history = useHistory();
-  // could not use useSearchQueryParams
-  const getUrlTerm = useCallback(
-    (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
-    []
+
+  const { searchingData } = useStore(
+    (state) => ({ searchingData: state.searchingData }),
+    shallow
   );
-  const { searchingData } = useStore((state) => state);
-  const query = getUrlTerm(history.location.search);
+
+  const term = getUrlTerm(history.location.search);
   const [open, setOpen] = useState(true);
 
   const {
@@ -63,21 +67,13 @@ const CatalogExplorer = (props: any) => {
     isLoading,
     isSuccess,
     error,
-  } = useQuery<any>(["catalogs"], () => {
-    // we declare term here to get the last url data
-    const term = getUrlTerm(history.location.search);
-    if (term) {
-      return getFilteredCatalogs(term);
-    } else {
-      return getAllCatalogs();
-    }
-  });
+  } = useCatalogsQuery(term);
   const handleSnackBar = () => setOpen(false);
 
   return (
     <div>
       <CustomNavBar />
-      {catalogs && !catalogs.length && !isLoading && query ? (
+      {catalogs && !catalogs.length && !isLoading && term ? (
         <div>
           <Snackbar
             open={open}
@@ -90,7 +86,7 @@ const CatalogExplorer = (props: any) => {
               // onClose={handleClose}
               title="Not found"
               alertType="info"
-              message={`Catalogs not found with the name: ${query}`}
+              message={`Catalogs not found with the name: ${term}`}
             />
           </Snackbar>
         </div>

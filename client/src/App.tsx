@@ -7,7 +7,6 @@ import {
   makeStyles,
   ThemeProvider,
 } from "@material-ui/core";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import DrawerAppbar, { useStore } from "./pages/DrawerAppbar";
 import Routes from "./pages/Routes";
 import clsx from "clsx";
@@ -38,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const mode = useStore((state: any) => state.mode);
   const drawerOpen = useStore((state: any) => state.open);
 
@@ -73,7 +71,7 @@ function App() {
           },
         },
       }),
-    [prefersDarkMode, mode]
+    [mode]
   );
 
   return (

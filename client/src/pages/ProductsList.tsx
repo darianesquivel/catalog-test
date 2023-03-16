@@ -1,5 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
-import getCatalogById from "../api/getCatalogById";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
 import { Button, CircularProgress, Typography } from "@material-ui/core";
 import {
@@ -23,6 +21,7 @@ import { columnsCreator } from "../components/helpers";
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
 import CustomNavBar from "../components/CustomNavBar";
+import { useSingleCatalogQuery } from "../config/queries";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -107,6 +106,7 @@ const ProductsList = (props: any) => {
   const [info, setInfo] = useState<object>();
   const [selected, setSelected] = useState<any>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const currentUrl = useStore((state) => state.currentUrl);
 
   const {
     data: catalog = {},
@@ -115,10 +115,9 @@ const ProductsList = (props: any) => {
     isSuccess,
     error,
     isFetching,
-  } = useQuery([`catalogs/:${catalogId}`, catalogId], () =>
-    getCatalogById(catalogId)
-  );
-  const { currentUrl, setSectionInfo } = useStore((state) => state);
+  } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
+
+  const { setSectionInfo } = useStore();
 
   const productColumns = useMemo(
     () =>

@@ -4,6 +4,7 @@ import CopyToClipBoard from "./CopyToClipBoard";
 
 // STYLES
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -52,11 +53,11 @@ export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
         return (
           <div
             className={classes.row}
-            key={`${value}-${index}`}
+            key={`${key}`}
             onMouseEnter={() => setShowClipboard(index)}
             onMouseLeave={() => setShowClipboard(null)}
           >
-            <Tooltip title={value}>
+            <Tooltip title={key}>
               <Typography
                 variant="body2"
                 className={`${classes.keys} ${classes.ellipsis} ${
