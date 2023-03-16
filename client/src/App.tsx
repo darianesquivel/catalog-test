@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
+  console.log("APP EXECUTED");
   const mode = useStore((state: any) => state.mode);
   const drawerOpen = useStore((state: any) => state.open);
 
