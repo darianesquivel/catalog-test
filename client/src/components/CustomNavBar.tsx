@@ -21,6 +21,9 @@ import { useIsFetching } from "@tanstack/react-query";
 import { makeStyles, Theme } from "@material-ui/core";
 import clsx from "clsx";
 
+const drawerWidth = 240;
+const drawerWidthMin = 70;
+
 const useStyles = makeStyles((theme: Theme) => ({
   mainContainer: { height: "65px" },
   toolbar: {
@@ -71,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       theme.palette.action.focus
     }`,
     zIndex: theme.zIndex.drawer - 1,
-    width: `calc(100% - ${theme.spacing(8)}px)`,
+    width: `calc(100% - ${drawerWidthMin}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -80,8 +83,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: theme.palette.getContrastText(theme.palette.background.paper),
   },
   appBarShift: {
-    marginLeft: theme.spacing(30),
-    width: `calc(100% - ${theme.spacing(30)}px)`,
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
