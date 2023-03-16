@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     overflow: "hidden",
     alignItems: "center",
   },
-  keys: { minWidth: "130px" },
+  keys: { minWidth: "130px", maxWidth: "130px" },
   values: {},
 }));
 
