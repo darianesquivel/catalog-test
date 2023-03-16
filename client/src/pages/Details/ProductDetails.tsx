@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(1, 2, 2, 2),
   },
   extraStyles: {
-    "& [class*='row']": {
+    "& > div": {
       gap: theme.spacing(2),
     },
   },
