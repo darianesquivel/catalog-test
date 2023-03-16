@@ -7,7 +7,7 @@ import CatalogCreator from "../components/Cards/CatalogCreator";
 import { CircularProgress, Snackbar } from "@material-ui/core";
 // REACT
 import { useHistory } from "react-router";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";

@@ -12,7 +12,6 @@ axios.defaults.baseURL =
     : "http://localhost:3001/";
 
 function App() {
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const mode = useStore((state: any) => state.mode);
 
   const theme = React.useMemo(
@@ -46,7 +45,7 @@ function App() {
           },
         },
       }),
-    [prefersDarkMode, mode]
+    [mode]
   );
 
   return (
