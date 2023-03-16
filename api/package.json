@@ -9,7 +9,6 @@
     "start": "concurrently yarn:start:*"
   },
   "dependencies": {
-    "@tanstack/react-query": "4.19.1",
     "@types/axios": "^0.14.0",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
