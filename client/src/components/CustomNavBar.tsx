@@ -7,6 +7,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { faAngleLeft, faPen, faRedo } from "@fortawesome/free-solid-svg-icons";
+import { shallow } from "zustand/shallow";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
@@ -19,7 +20,10 @@ import { useMutateHook } from "../hooks";
 import getFilteredCatalogs from "../api/getFilteredCatalogs";
 import { useIsFetching } from "@tanstack/react-query";
 import { makeStyles, Theme } from "@material-ui/core";
-import { shallow } from "zustand/shallow";
+import clsx from "clsx";
+
+const drawerWidth = 240;
+const drawerWidthMin = 70;
 
 const useStyles = makeStyles((theme: Theme) => ({
   mainContainer: { height: "65px" },
@@ -65,12 +69,31 @@ const useStyles = makeStyles((theme: Theme) => ({
       transform: "rotate(360deg)",
     },
   },
+  appBar: {
+    boxShadow: "none",
+    borderBottom: `${theme.spacing(1) / 8}px solid ${
+      theme.palette.action.focus
+    }`,
+    zIndex: theme.zIndex.drawer - 1,
+    width: `calc(100% - ${drawerWidthMin}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.getContrastText(theme.palette.background.paper),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(["width", "margin"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
 }));
 
-type Tprops = {
-  className: string;
-};
-export default function CustomNavBar({ className }: Tprops) {
+export default function CustomNavBar() {
   const classes = useStyles();
   const getUrlTerm = useCallback(
     (url: string) => url?.match(/(?<=term=).+/gi)?.[0],
@@ -80,6 +103,7 @@ export default function CustomNavBar({ className }: Tprops) {
 
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
+  const drawerOpen = useStore((state: any) => state.open);
 
   const { currentUrl, sectionInfo } = useStore(
     (state: any) => ({
@@ -176,7 +200,9 @@ export default function CustomNavBar({ className }: Tprops) {
       )}
       <AppBar
         position="fixed"
-        className={`${classes.mainContainer} ${className}`}
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: drawerOpen,
+        })}
       >
         <Toolbar className={classes.toolbar} disableGutters={true}>
           <div className={classes.mainContent}>

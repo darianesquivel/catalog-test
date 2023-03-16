@@ -38,6 +38,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { makeStyles } from "@material-ui/core";
 
 import cleanJson from "../api/cleanJson";
+import CustomNavBar from "./CustomNavBar";
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -200,6 +201,7 @@ export default function AddProducts() {
 
   return (
     <TableContainer className={classes.tableContainer} component={Paper}>
+      <CustomNavBar />
       <Table className={classes.table} aria-label="simple table">
         <TableHead className={classes.tableHead}>
           <TableRow>

@@ -14,6 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import { shallow } from "zustand/shallow";
 import { useCatalogsQuery } from "../config/queries";
 
+import CustomNavBar from "../components/CustomNavBar";
+
 const useStyles = makeStyles((theme) => ({
   gridContainer: {
     display: "grid",
@@ -58,6 +60,7 @@ const CatalogExplorer = (props: any) => {
 
   const term = getUrlTerm(history.location.search);
   const [open, setOpen] = useState(true);
+
   const {
     data: catalogs,
     isError,
@@ -69,6 +72,7 @@ const CatalogExplorer = (props: any) => {
 
   return (
     <div>
+      <CustomNavBar />
       {catalogs && !catalogs.length && !isLoading && term ? (
         <div>
           <Snackbar

@@ -15,6 +15,7 @@ import _ from "lodash";
 
 // STYLES
 import { makeStyles, Theme } from "@material-ui/core/styles";
+import CustomNavBar from "../../components/CustomNavBar";
 import { useProductInfoQuery } from "../../config/queries";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -187,6 +188,7 @@ export default function ProductDetails() {
 
   return (
     <>
+      <CustomNavBar />
       <Grid container className={classes.gridContainer}>
         <Grid item xs={9} className={classes.leftBox}>
           {isLoading ? (

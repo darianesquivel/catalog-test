@@ -20,19 +20,12 @@ import {
   faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
-import CatalogExplorer from "./CatalogExplorer";
-import ProductsList from "./ProductsList";
-import ProductDetails from "./Details/ProductDetails";
-import AddProducts from "../components/AddProducts";
+import { Link } from "react-router-dom";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { shallow } from "zustand/shallow";
-import CustomNavBar from "../components/CustomNavBar";
 import queryClientConfig from "../config/queryClientConfig";
-
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { shallow } from "zustand/shallow";
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -45,7 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.primary.light,
       },
     },
-
     appBar: {
       boxShadow: "none",
       borderBottom: `${theme.spacing(1) / 8}px solid ${
@@ -78,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     drawerOpen: {
       width: drawerWidth,
+      overflow: "hidden",
       transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
@@ -89,10 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.leavingScreen,
       }),
       overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9) + 1,
-      },
+      width: drawerWidthMin + 1,
     },
     toolbar: {
       display: "flex",
@@ -122,9 +112,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.main,
       borderRadius: theme.shape.borderRadius,
       marginBottom: theme.spacing(1),
-      "&:hover": {
-        backgroundColor: `${theme.palette.primary.light} !important`,
-      },
+      backgroundColor: `${theme.palette.primary.light} !important`,
     },
     iconSelected: {
       color: theme.palette.primary.main,
@@ -214,7 +202,7 @@ export const useStore = create(
 
 export default function MiniDrawer() {
   const classes = useStyles();
-  const { open, mode, selectedIndex } = useStore(
+  const { open, selectedIndex, mode } = useStore(
     (state: any) => ({
       open: state.open,
       mode: state.mode,
@@ -234,135 +222,109 @@ export default function MiniDrawer() {
   };
 
   return (
-    <BrowserRouter>
-      <div className={classes.root}>
-        <CustomNavBar
-          className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}
-        />
-        <Drawer
-          variant="permanent"
-          className={clsx(classes.drawer, {
+    <div>
+      <Drawer
+        variant="permanent"
+        className={clsx(classes.drawer, {
+          [classes.drawerOpen]: open,
+          [classes.drawerClose]: !open,
+        })}
+        classes={{
+          paper: clsx({
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
-        >
-          <List className={classes.buttonList}>
-            <Link
-              to="/catalogs"
-              className={classes.link}
-              onClick={() => handleListItemClick(null)}
-            >
-              <ListItem className={classes.drawerHeader}>
-                <ListItemIcon>
-                  <img
-                    width="24px"
-                    src="https://static.remotasks.com/uploads/catalog_logo.png"
-                    alt=""
-                  />
-                </ListItemIcon>
-                <Typography className={classes.drawerTitle}>Catalog</Typography>
-              </ListItem>
-            </Link>
-
-            <div className={classes.flexGrow}>
-              {drawerButtons.map((button, index) => (
-                <Link to={button.link} className={classes.link} key={index}>
-                  <ListItem
-                    button
-                    disabled={button.text === "Data Explorer" ? false : true}
-                    className={
-                      index === selectedIndex
-                        ? classes.buttonStyleSelected
-                        : classes.buttonStyle
-                    }
-                    onClick={(e) => handleListItemClick(index)}
-                    selected={selectedIndex === index}
-                    alignItems="flex-start"
-                  >
-                    <ListItemIcon>
-                      <FontAwesomeIcon
-                        className={
-                          index === selectedIndex ? classes.iconSelected : ""
-                        }
-                        icon={button.icon}
-                        size="xl"
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={button.text}
-                      className={classes.textButton}
-                    />
-                  </ListItem>
-                </Link>
-              ))}
-            </div>
-            <div>
-              <ListItem button disabled className={classes.buttonStyle}>
-                <ListItemIcon>
-                  <FontAwesomeIcon icon={faBell} size="xl" />
-                </ListItemIcon>
-                <ListItemText primary={"Notifications"} />
-              </ListItem>
-              <ListItem
-                button
-                className={classes.buttonStyle}
-                onClick={toggleMode}
-              >
-                <ListItemIcon>
-                  <FontAwesomeIcon
-                    icon={mode === "dark" ? faSun : faMoon}
-                    size="xl"
-                  />
-                </ListItemIcon>
-                <ListItemText
-                  primary={mode === "dark" ? "Light Mode" : "Dark Mode"}
+          }),
+        }}
+      >
+        <List className={classes.buttonList}>
+          <Link
+            to="/catalogs"
+            className={classes.link}
+            onClick={() => handleListItemClick(null)}
+          >
+            <ListItem className={classes.drawerHeader}>
+              <ListItemIcon>
+                <img
+                  width="24px"
+                  src="https://static.remotasks.com/uploads/catalog_logo.png"
+                  alt=""
                 />
-              </ListItem>
-              <ListItem
-                button
-                className={classes.buttonStyle}
-                onClick={handleDrawerChange}
-              >
-                <ListItemIcon>
-                  {open ? (
-                    <FontAwesomeIcon icon={faChevronLeft} size="xl" />
-                  ) : (
-                    <FontAwesomeIcon icon={faChevronRight} size="xl" />
-                  )}
-                </ListItemIcon>
-                <ListItemText primary={"Close"} />
-              </ListItem>
-            </div>
-          </List>
-        </Drawer>
-        <div className={classes.content}>
-          <div className={classes.toolbar} />
+              </ListItemIcon>
+              <Typography className={classes.drawerTitle}>Catalog</Typography>
+            </ListItem>
+          </Link>
 
-          <Switch>
-            <Route exact path="/" component={CatalogExplorer} />
-            <Route exact path="/catalogs" component={CatalogExplorer} />
-            <Route exact path="/catalogs/:id/upload" component={AddProducts} />
-            <Route
-              exact
-              path="/catalogs/:id/:productId?"
-              component={ProductsList}
-            />
-            <Route
-              exact
-              path="/catalogs/:id/:productId/details"
-              component={ProductDetails}
-            />
-          </Switch>
-        </div>
-      </div>
-    </BrowserRouter>
+          <div className={classes.flexGrow}>
+            {drawerButtons.map((button, index) => (
+              <Link to={button.link} className={classes.link} key={index}>
+                <ListItem
+                  button
+                  disabled={button.text === "Data Explorer" ? false : true}
+                  className={
+                    index === selectedIndex
+                      ? classes.buttonStyleSelected
+                      : classes.buttonStyle
+                  }
+                  onClick={(e) => handleListItemClick(index)}
+                  selected={selectedIndex === index}
+                  alignItems="flex-start"
+                >
+                  <ListItemIcon>
+                    <FontAwesomeIcon
+                      className={
+                        index === selectedIndex ? classes.iconSelected : ""
+                      }
+                      icon={button.icon}
+                      size="xl"
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={button.text}
+                    className={classes.textButton}
+                  />
+                </ListItem>
+              </Link>
+            ))}
+          </div>
+          <div>
+            <ListItem button disabled className={classes.buttonStyle}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBell} size="xl" />
+              </ListItemIcon>
+              <ListItemText primary={"Notifications"} />
+            </ListItem>
+            <ListItem
+              button
+              className={classes.buttonStyle}
+              onClick={toggleMode}
+            >
+              <ListItemIcon>
+                <FontAwesomeIcon
+                  icon={mode === "dark" ? faSun : faMoon}
+                  size="xl"
+                />
+              </ListItemIcon>
+              <ListItemText
+                primary={mode === "dark" ? "Light Mode" : "Dark Mode"}
+              />
+            </ListItem>
+            <ListItem
+              button
+              className={classes.buttonStyle}
+              onClick={handleDrawerChange}
+            >
+              <ListItemIcon>
+                {open ? (
+                  <FontAwesomeIcon icon={faChevronLeft} size="xl" />
+                ) : (
+                  <FontAwesomeIcon icon={faChevronRight} size="xl" />
+                )}
+              </ListItemIcon>
+              <ListItemText primary={"Close"} />
+            </ListItem>
+          </div>
+        </List>
+      </Drawer>
+    </div>
   );
 }
