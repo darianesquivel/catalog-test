@@ -23,8 +23,12 @@ const useStyles = makeStyles((theme) => ({
   containerNoData: {
     display: "grid",
     gridTemplateColumns: "repeat(5, 1fr)",
+    [theme.breakpoints.down(1000)]: {
+      gridTemplateColumns: "repeat(auto-fit, minmax( 290px, 1fr))",
+    },
     gap: theme.spacing(2),
   },
+
   loading: {
     width: "100%",
     display: "flex",

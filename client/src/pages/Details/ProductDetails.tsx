@@ -1,9 +1,11 @@
 import { Divider, Grid, CircularProgress } from "@material-ui/core";
 import { useEffect, useMemo, useState } from "react";
 import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
+import {
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+} from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DetailTable from "../../components/DetailTable";
 import { useParams } from "react-router";
