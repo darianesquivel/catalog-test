@@ -7,6 +7,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { faAngleLeft, faPen, faRedo } from "@fortawesome/free-solid-svg-icons";
+import { shallow } from "zustand/shallow";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
@@ -23,7 +24,6 @@ import clsx from "clsx";
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
-import { shallow } from "zustand/shallow";
 
 const useStyles = makeStyles((theme: Theme) => ({
   mainContainer: { height: "65px" },
