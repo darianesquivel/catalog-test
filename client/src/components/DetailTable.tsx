@@ -56,7 +56,7 @@ export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
             onMouseEnter={() => setShowClipboard(index)}
             onMouseLeave={() => setShowClipboard(null)}
           >
-            <Tooltip title={value}>
+            <Tooltip title={key}>
               <Typography
                 variant="body2"
                 className={`${classes.keys} ${classes.ellipsis} ${
