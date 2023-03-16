@@ -22,6 +22,7 @@ import { columnsCreator } from "../components/helpers";
 
 // STYLES
 import { makeStyles } from "@material-ui/core/styles";
+import CustomNavBar from "../components/CustomNavBar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -161,6 +162,7 @@ const ProductsList = (props: any) => {
   return (
     <div className={`${classes.container} ${info ? classes.details : ""}`}>
       <div className={classes.mainBox}>
+        <CustomNavBar />
         <div className={classes.buttonsContainer}>
           <Button className={classes.button} variant="contained" disabled>
             <FontAwesomeIcon size="lg" icon={faTags} />
