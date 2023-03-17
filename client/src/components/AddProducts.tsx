@@ -36,7 +36,6 @@ import { makeStyles } from '@material-ui/core';
 
 import cleanJson from '../api/cleanJson';
 import CustomNavBar from './CustomNavBar';
-import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
    tableContainer: {
@@ -315,12 +314,12 @@ export default function AddProducts() {
 
                <TableRow className={classes.tableFooter}>
                   <TableCell>
-                     {preview && !isLoading && data.length > 0 ? (
+                     {preview && data.length > 0 ? (
                         <div className={classes.buttons}>
                            <Button
                               variant="contained"
                               className={classes.importButton}
-                              disabled={data.length < 1}
+                              disabled={data.length < 1 || isLoading}
                               onClick={handleSubmit}
                            >
                               Upload file
@@ -330,6 +329,7 @@ export default function AddProducts() {
                               color="secondary"
                               onClick={handleCancel}
                               className={classes.cancelButton}
+                              disabled={isLoading}
                            >
                               Cancel
                            </Button>
