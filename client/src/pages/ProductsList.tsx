@@ -131,7 +131,7 @@ const ProductsList = (props: any) => {
 
    useEffect(() => {
       if (catalog.name) {
-         setSectionInfo(catalog.name, catalog.id);
+         // setSectionInfo(catalog.name, catalog.id);
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
          return () => setSectionInfo('');
