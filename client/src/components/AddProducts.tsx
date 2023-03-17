@@ -156,6 +156,7 @@ export default function AddProducts() {
    const [data, setData] = useState([]);
    const [preview, setPreview] = useState(false);
    const [upload, setUpload] = useState(true);
+   const [isloadingFile, setIsLoadingFile] = useState(false);
    const history = useHistory();
    const classes = useStyles();
    const { id: catalogId } = useParams<{ id: string }>();
@@ -167,6 +168,9 @@ export default function AddProducts() {
    useEffect(() => () => setSectionInfo(''), [setSectionInfo]);
 
    const handleFile = async (e: any) => {
+      setUpload(false);
+      setIsLoadingFile(true);
+
       const file = e.target.files[0];
 
       Papa.parse(file, {
@@ -175,9 +179,10 @@ export default function AddProducts() {
          complete: async (result) => {
             const csvData: any = result.data;
             const sanitizedData = await cleanJson(catalogId, csvData);
-            setUpload(false);
+            // setUpload(false);
             setData(sanitizedData);
             setPreview(true);
+            setIsLoadingFile(false);
          },
       });
    };
@@ -254,7 +259,7 @@ export default function AddProducts() {
                         </div>
                      ) : null}
 
-                     {isLoading ? (
+                     {isLoading || isloadingFile ? (
                         <div className={classes.loading}>
                            <Typography> Loading </Typography>
                            <CircularProgress />
@@ -276,7 +281,7 @@ export default function AddProducts() {
                         </Dialog>
                      ) : null}
 
-                     {preview && !isError && !isLoading && !isSuccess && data.length > 0 ? (
+                     {preview && !isLoading && data.length > 0 ? (
                         <DataGrid
                            rows={data}
                            // @ts-ignore
@@ -310,7 +315,7 @@ export default function AddProducts() {
 
                <TableRow className={classes.tableFooter}>
                   <TableCell>
-                     {preview && !isError && !isLoading && !isSuccess && data.length > 0 ? (
+                     {preview && !isLoading && data.length > 0 ? (
                         <div className={classes.buttons}>
                            <Button
                               variant="contained"
