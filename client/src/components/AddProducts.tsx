@@ -33,6 +33,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 //STYLES
 import { makeStyles } from '@material-ui/core';
+import ClassNames from 'classnames';
 
 import cleanJson from '../api/cleanJson';
 import CustomNavBar from './CustomNavBar';
@@ -53,26 +54,26 @@ const useStyles = makeStyles((theme) => ({
    tableFooter: {
       height: '8%',
    },
-   importButton: {
+   button: {
       borderRadius: '8px',
       textTransform: 'none',
       fontSize: '14px',
       padding: theme.spacing(0.5, 2),
+      boxShadow: 'none',
+   },
+   importButton: {
       backgroundColor: theme.palette.background.paper,
       border: `0.5px solid ${theme.palette.primary.main}`,
       color: theme.palette.primary.main,
-      boxShadow: 'none',
+      '&:disabled': {
+         border: 'none',
+      },
       '&:hover': {
-         boxShadow: `inset 0 0 0 0.5px ${theme.palette.primary.main}`,
+         boxShadow: `inset 0 0 0 0.2px ${theme.palette.primary.main}`,
          backgroundColor: theme.palette.background.paper,
       },
    },
    cancelButton: {
-      borderRadius: '8px',
-      textTransform: 'none',
-      fontSize: '14px',
-      padding: theme.spacing(0.5, 2),
-      boxShadow: 'none',
       color: theme.palette.common.white,
       backgroundColor: theme.palette.error.main,
       '&:hover': {
@@ -178,7 +179,6 @@ export default function AddProducts() {
          complete: async (result) => {
             const csvData: any = result.data;
             const sanitizedData = await cleanJson(catalogId, csvData);
-            // setUpload(false);
             setData(sanitizedData);
             setIsLoadingFile(false);
             setPreview(true);
@@ -194,6 +194,7 @@ export default function AddProducts() {
    };
 
    const handleSubmit = async () => {
+      setPreview(false);
       mutate();
    };
 
@@ -317,7 +318,7 @@ export default function AddProducts() {
                         <div className={classes.buttons}>
                            <Button
                               variant="contained"
-                              className={classes.importButton}
+                              className={ClassNames(classes.importButton, classes.button)}
                               disabled={data.length < 1 || isLoading}
                               onClick={handleSubmit}
                            >
@@ -327,7 +328,7 @@ export default function AddProducts() {
                               variant="contained"
                               color="secondary"
                               onClick={handleCancel}
-                              className={classes.cancelButton}
+                              className={ClassNames(classes.cancelButton, classes.button)}
                               disabled={isLoading}
                            >
                               Cancel
