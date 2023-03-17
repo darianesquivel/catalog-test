@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
 import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
 
@@ -94,6 +94,7 @@ type NavBarProps = {
    isUploadSection?: boolean;
    isProductDetails?: boolean;
 };
+
 export default function CustomNavBar({
    catalogId,
    title,
@@ -103,7 +104,6 @@ export default function CustomNavBar({
    isProductDetails = false,
 }: NavBarProps) {
    const classes = useStyles();
-
    const history = useHistory();
 
    const [open, setOpen] = useState(false);
@@ -151,19 +151,77 @@ export default function CustomNavBar({
    const handleSearchChange = (value: string) => {
       setTerm(value);
    };
+   const RenderTitle = useMemo(
+      () => (
+         <div className={classes.sectionName}>
+            <Typography variant="h6">{sectionTitle}</Typography>
+         </div>
+      ),
+      [classes.sectionName, sectionTitle]
+   );
+
+   const UpdateForm = open && catalogId && title && (
+      <FormCreator
+         isOpen={open}
+         onModalChange={() => setOpen(false)}
+         apiFunction={updateCatalog}
+         initialValues={{ name: title, id: catalogId }}
+         keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
+         acceptBtnName="Update"
+      />
+   );
+   const ArrowIcon = !isMainSection ? (
+      <IconButton
+         className={classes.icons}
+         onClick={() => {
+            if (isProductDetails || isUploadSection) {
+               history.goBack();
+            } else {
+               history.push('/catalogs');
+            }
+         }}
+      >
+         <FontAwesomeIcon icon={faAngleLeft} size="sm" />
+      </IconButton>
+   ) : null;
+
+   const RefreshIcon = isMainSection ? (
+      <IconButton
+         color={`${!isCatalogLoading ? 'primary' : 'default'}`}
+         className={`${classes.icons} ${isCatalogLoading ? classes.rotate : ''}`}
+         onClick={handleRefresh}
+      >
+         <FontAwesomeIcon icon={faRedo} size="sm" />
+      </IconButton>
+   ) : null;
+
+   const EditIcon = isProductListSection ? (
+      <IconButton className={classes.icons} onClick={() => setOpen(true)}>
+         <FontAwesomeIcon icon={faPen} size="xs" />
+      </IconButton>
+   ) : null;
+
+   const FinalIcons = isProductListSection ? (
+      <Button
+         variant="outlined"
+         color="primary"
+         onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+         className={classes.addProductBtn}
+      >
+         Add products
+      </Button>
+   ) : isMainSection ? (
+      <SearchBar
+         onSubmit={handleSearchSubmit}
+         initialTerm={term}
+         onChange={handleSearchChange}
+         searching={!!isLoading}
+      />
+   ) : null;
 
    return (
       <div>
-         {open && catalogId && title && (
-            <FormCreator
-               isOpen={open}
-               onModalChange={() => setOpen(false)}
-               apiFunction={updateCatalog}
-               initialValues={{ name: title, id: catalogId }}
-               keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
-               acceptBtnName="Update"
-            />
-         )}
+         {UpdateForm}
          <AppBar
             position="fixed"
             className={clsx(classes.appBar, {
@@ -172,60 +230,12 @@ export default function CustomNavBar({
          >
             <Toolbar className={classes.toolbar} disableGutters={true}>
                <div className={classes.mainContent}>
-                  {!isMainSection ? (
-                     <IconButton
-                        className={classes.icons}
-                        onClick={() => {
-                           if (isProductDetails || isUploadSection) {
-                              history.goBack();
-                           } else {
-                              history.push('/catalogs');
-                           }
-                        }}
-                     >
-                        <FontAwesomeIcon icon={faAngleLeft} size="sm" />
-                     </IconButton>
-                  ) : null}
-
-                  <div className={classes.sectionName}>
-                     <Typography variant="h6">{sectionTitle}</Typography>
-                  </div>
-
-                  {isMainSection ? (
-                     <IconButton
-                        color={`${!isCatalogLoading ? 'primary' : 'default'}`}
-                        className={`${classes.icons} ${isCatalogLoading ? classes.rotate : ''}`}
-                        onClick={handleRefresh}
-                     >
-                        <FontAwesomeIcon icon={faRedo} size="sm" />
-                     </IconButton>
-                  ) : null}
-                  {isProductListSection && !isProductDetails && !isUploadSection ? (
-                     <IconButton className={classes.icons} onClick={() => setOpen(true)}>
-                        <FontAwesomeIcon icon={faPen} size="xs" />
-                     </IconButton>
-                  ) : null}
+                  {ArrowIcon}
+                  {RenderTitle}
+                  {RefreshIcon}
+                  {EditIcon}
                </div>
-
-               <div className={classes.endSection}>
-                  {isProductListSection && !isProductDetails && !isUploadSection ? (
-                     <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
-                        className={classes.addProductBtn}
-                     >
-                        Add products
-                     </Button>
-                  ) : isMainSection ? (
-                     <SearchBar
-                        onSubmit={handleSearchSubmit}
-                        initialTerm={term}
-                        onChange={handleSearchChange}
-                        searching={!!isLoading}
-                     />
-                  ) : null}
-               </div>
+               <div className={classes.endSection}>{FinalIcons}</div>
             </Toolbar>
          </AppBar>
       </div>
