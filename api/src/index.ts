@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3001;
 server.use("/", routes);
 require("dotenv").config();
 
-database.sync({ force: true }).then(() => {
+database.sync({ force: false }).then(() => {
   server.listen(PORT, () => {
     console.log("%s listening at " + PORT);
   });
