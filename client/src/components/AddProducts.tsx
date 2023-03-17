@@ -180,8 +180,8 @@ export default function AddProducts() {
             const sanitizedData = await cleanJson(catalogId, csvData);
             // setUpload(false);
             setData(sanitizedData);
-            setPreview(true);
             setIsLoadingFile(false);
+            setPreview(true);
          },
       });
    };
@@ -287,7 +287,6 @@ export default function AddProducts() {
                            columns={customColumns}
                            pageSize={10}
                            rowsPerPageOptions={[10]}
-                           checkboxSelection
                            disableSelectionOnClick
                            className={classes.tableData}
                            getRowId={(row: any) => row.title}
