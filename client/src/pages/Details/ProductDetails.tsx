@@ -8,11 +8,12 @@ import DetailTable from '../../components/DetailTable';
 import { useStore } from '../DrawerAppbar';
 import CustomAlert from '../../components/CustomAlert';
 import _ from 'lodash';
-import { useProductInfoQuery } from '../../config/queries';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CustomNavBar from '../../components/CustomNavBar';
+import { useProductInfoQuery } from '../../config/queries';
+import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
    gridContainer: {
@@ -182,7 +183,12 @@ export default function ProductDetails() {
 
    return (
       <>
-         <CustomNavBar />
+         <CustomNavBar
+            isProductDetails
+            title={product.name}
+            catalogId={product.catalog_id}
+            productId={product.id}
+         />
          <Grid container className={classes.gridContainer}>
             <Grid item xs={9} className={classes.leftBox}>
                {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}

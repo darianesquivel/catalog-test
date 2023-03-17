@@ -17,12 +17,13 @@ import removeProducts from '../api/removeProducts';
 import CustomDialog from '../components/CustomDialog';
 import CustomAlert from '../components/CustomAlert';
 import { columnsCreator } from '../components/helpers';
-import CustomNavBar from '../components/CustomNavBar';
-import { useSingleCatalogQuery } from '../config/queries';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import CustomNavBar from '../components/CustomNavBar';
+import { useSingleCatalogQuery } from '../config/queries';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -130,12 +131,17 @@ const ProductsList = (props: any) => {
 
    useEffect(() => {
       if (catalog.name) {
-         setSectionInfo(catalog.name, catalog.id);
+         // setSectionInfo(catalog.name, catalog.id);
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
          return () => setSectionInfo('');
       }
    }, [setSectionInfo, currentUrl, params.productId, products, catalog.name, catalog.id]);
+
+   const NavBar = useMemo(
+      () => <CustomNavBar title={catalog.name} catalogId={catalog.id} isProductListSection />,
+      [catalog.name, catalog.id]
+   );
 
    const handleCheckBoxes = useCallback((values: any[]) => {
       setSelected(values);
@@ -143,7 +149,7 @@ const ProductsList = (props: any) => {
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
-            <CustomNavBar />
+            {NavBar}
             <div className={classes.buttonsContainer}>
                <Button className={classes.button} variant="contained" disabled>
                   <FontAwesomeIcon size="lg" icon={faTags} />

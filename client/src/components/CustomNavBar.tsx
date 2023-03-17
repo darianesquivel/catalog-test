@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
 import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
 import SearchBar from './SearchBar';
 import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { shallow } from 'zustand/shallow';
 import FormCreator from './FormCreator';
 import updateCatalog from '../api/updateCatalog';
 import queryClientConfig from '../config/queryClientConfig';
@@ -17,6 +16,7 @@ import { useIsFetching } from '@tanstack/react-query';
 import { makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
 import clsx from 'clsx';
+import React from 'react';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -86,26 +86,32 @@ const useStyles = makeStyles((theme: Theme) => ({
       }),
    },
 }));
+const getUrlTerm = (url: string) => url?.match(/(?<=term=).+/gi)?.[0];
 
-export default function CustomNavBar() {
+type NavBarProps = {
+   catalogId?: string;
+   productId?: string;
+   title?: string;
+   isProductListSection?: boolean;
+   isUploadSection?: boolean;
+   isProductDetails?: boolean;
+};
+
+export default function CustomNavBar({
+   catalogId,
+   title,
+   productId,
+   isProductListSection = false,
+   isUploadSection = false,
+   isProductDetails = false,
+}: NavBarProps) {
    const classes = useStyles();
-   const getUrlTerm = useCallback((url: string) => url?.match(/(?<=term=).+/gi)?.[0], []);
    const history = useHistory();
 
    const [open, setOpen] = useState(false);
-   const [term, setTerm] = useState('');
+   const [term, setTerm] = useState(getUrlTerm(history.location.search));
+
    const drawerOpen = useStore((state: any) => state.open);
-
-   const { currentUrl, sectionInfo } = useStore(
-      (state: any) => ({
-         currentUrl: state.currentUrl,
-         sectionInfo: state.sectionInfo,
-      }),
-      shallow
-   );
-   const { setCurrentUrl, setSearchingData, setSectionInfo } = useStore();
-
-   const { id, name } = sectionInfo || {};
 
    const { mutate, isLoading } = useMutateHook(() => getFilteredCatalogs(term));
 
@@ -113,22 +119,13 @@ export default function CustomNavBar() {
       queryKey: ['catalogs'],
    });
 
-   const isProductListView = /catalogs\/.+/gi.test(currentUrl);
-   const isUpload = /\/upload$/gi.test(currentUrl);
-   const isDetails = /\/details$/gi.test(currentUrl);
-   const sectionTitle = isUpload ? 'Catalog upload' : name ? name : 'Catalog Explorer';
+   const sectionTitle = title ? title : 'Catalog Explorer';
 
    const isMainSection = sectionTitle.includes('Catalog Explorer');
-   // We cannot use params here because this component is outer react router
-   const catalogId = useMemo(
-      () =>
-         currentUrl.match(/(?<=catalogs\/)(.+?)(?=\/)/)?.[0] ||
-         currentUrl.match(/(?<=catalogs\/).+/)?.[0],
-      [currentUrl]
-   );
 
    const handleRefresh = async () => {
       queryClientConfig.invalidateQueries(['catalogs']);
+      setTerm('');
    };
 
    const handleSearchSubmit = useCallback(
@@ -146,8 +143,8 @@ export default function CustomNavBar() {
             });
          } else {
             setTerm('');
-            history.push('/catalogs');
             queryClientConfig.invalidateQueries(['catalogs']);
+            history.push('/catalogs');
          }
       },
       [history, mutate]
@@ -156,34 +153,79 @@ export default function CustomNavBar() {
    const handleSearchChange = (value: string) => {
       setTerm(value);
    };
+   const RenderTitle = useMemo(
+      () => (
+         <div className={classes.sectionName}>
+            <Typography variant="h6">{sectionTitle}</Typography>
+         </div>
+      ),
+      [classes.sectionName, sectionTitle]
+   );
 
-   useEffect(() => {
-      setSearchingData({ isSearching: isLoading });
-      const searchValue: string = getUrlTerm(history.location.search) || '';
-      setTerm(searchValue);
-      history.listen((props) => {
-         const { pathname, search } = props || {};
-         setTerm(getUrlTerm(search) || '');
-         setCurrentUrl(pathname + search);
-      });
-   }, [history, setCurrentUrl, getUrlTerm, isLoading, setSearchingData]);
+   const UpdateForm = open && catalogId && title && (
+      <FormCreator
+         isOpen={open}
+         onModalChange={() => setOpen(false)}
+         apiFunction={updateCatalog}
+         initialValues={{ name: title, id: catalogId }}
+         keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
+         acceptBtnName="Update"
+      />
+   );
+   const ArrowIcon = !isMainSection ? (
+      <IconButton
+         className={classes.icons}
+         onClick={() => {
+            if (isProductDetails || isUploadSection) {
+               history.goBack();
+            } else {
+               history.push('/catalogs');
+            }
+         }}
+      >
+         <FontAwesomeIcon icon={faAngleLeft} size="sm" />
+      </IconButton>
+   ) : null;
+
+   const RefreshIcon = isMainSection ? (
+      <IconButton
+         color={`${!isCatalogLoading ? 'primary' : 'default'}`}
+         className={classNames(classes.icons, {
+            [classes.rotate]: isCatalogLoading,
+         })}
+         onClick={handleRefresh}
+      >
+         <FontAwesomeIcon icon={faRedo} size="sm" />
+      </IconButton>
+   ) : null;
+
+   const EditIcon = isProductListSection ? (
+      <IconButton className={classes.icons} onClick={() => setOpen(true)}>
+         <FontAwesomeIcon icon={faPen} size="xs" />
+      </IconButton>
+   ) : null;
+
+   const FinalIcons = isProductListSection ? (
+      <Button
+         variant="outlined"
+         color="primary"
+         onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+         className={classes.addProductBtn}
+      >
+         Add products
+      </Button>
+   ) : isMainSection && !isProductListSection && !isProductDetails ? (
+      <SearchBar
+         onSubmit={handleSearchSubmit}
+         initialTerm={term}
+         onChange={handleSearchChange}
+         searching={!!isLoading}
+      />
+   ) : null;
 
    return (
       <div>
-         {open && (
-            <FormCreator
-               isOpen={open}
-               onModalChange={() => setOpen(false)}
-               apiFunction={updateCatalog}
-               initialValues={{ name, id }}
-               keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
-               acceptBtnName="Update"
-               extraFn={(data) => {
-                  const { name, id } = data || {};
-                  if (name) setSectionInfo(name, id);
-               }}
-            />
-         )}
+         {UpdateForm}
          <AppBar
             position="fixed"
             className={clsx(classes.appBar, {
@@ -192,59 +234,12 @@ export default function CustomNavBar() {
          >
             <Toolbar className={classes.toolbar} disableGutters={true}>
                <div className={classes.mainContent}>
-                  {isProductListView || isUpload ? (
-                     <IconButton
-                        className={classes.icons}
-                        onClick={() => {
-                           if (isDetails || isUpload) history.goBack();
-                           else history.push('/catalogs');
-                        }}
-                     >
-                        <FontAwesomeIcon icon={faAngleLeft} size="sm" />
-                     </IconButton>
-                  ) : null}
-
-                  <div className={classes.sectionName}>
-                     <Typography variant="h6">{sectionTitle}</Typography>
-                  </div>
-
-                  {isMainSection && !isDetails ? (
-                     <IconButton
-                        color={`${!isCatalogLoading ? 'primary' : 'default'}`}
-                        className={classNames(classes.icons, {
-                           [classes.rotate]: isCatalogLoading,
-                        })}
-                        onClick={handleRefresh}
-                     >
-                        <FontAwesomeIcon icon={faRedo} size="sm" />
-                     </IconButton>
-                  ) : null}
-                  {isProductListView && !isDetails && !isUpload ? (
-                     <IconButton className={classes.icons} onClick={() => setOpen(true)}>
-                        <FontAwesomeIcon icon={faPen} size="xs" />
-                     </IconButton>
-                  ) : null}
+                  {ArrowIcon}
+                  {RenderTitle}
+                  {RefreshIcon}
+                  {EditIcon}
                </div>
-
-               <div className={classes.endSection}>
-                  {isProductListView && !isDetails && !isUpload ? (
-                     <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
-                        className={classes.addProductBtn}
-                     >
-                        Add products
-                     </Button>
-                  ) : isMainSection ? (
-                     <SearchBar
-                        onSubmit={handleSearchSubmit}
-                        initialTerm={term}
-                        onChange={handleSearchChange}
-                        searching={!!isLoading}
-                     />
-                  ) : null}
-               </div>
+               <div className={classes.endSection}>{FinalIcons}</div>
             </Toolbar>
          </AppBar>
       </div>
