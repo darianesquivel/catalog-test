@@ -20,6 +20,7 @@ import { columnsCreator } from '../components/helpers';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
 import CustomNavBar from '../components/CustomNavBar';
 import { useSingleCatalogQuery } from '../config/queries';
 import React from 'react';
@@ -146,7 +147,7 @@ const ProductsList = (props: any) => {
       setSelected(values);
    }, []);
    return (
-      <div className={`${classes.container} ${info ? classes.details : ''}`}>
+      <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
             {NavBar}
             <div className={classes.buttonsContainer}>

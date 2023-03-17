@@ -1,10 +1,10 @@
-import { Divider, Grid, CircularProgress } from '@material-ui/core';
 import { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router';
+import { Divider, Grid, CircularProgress } from '@material-ui/core';
 import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import { useParams } from 'react-router';
 import { useStore } from '../DrawerAppbar';
 import CustomAlert from '../../components/CustomAlert';
 import _ from 'lodash';
@@ -201,7 +201,7 @@ export default function ProductDetails() {
                                  src={url}
                                  key={url}
                                  alt={`${product.name}`}
-                                 className={`${classes.img}`}
+                                 className={classes.img}
                                  onClick={() => setSelected(url)}
                               />
                            ) : (
@@ -252,7 +252,7 @@ export default function ProductDetails() {
                                  Product information
                               </Typography>
                            </AccordionSummary>
-                           <AccordionDetails className={`${classes.details}`}>
+                           <AccordionDetails className={classes.details}>
                               <div className={classes.productTitle}>
                                  <Typography variant="h6">{product.name}</Typography>
                               </div>

@@ -1,18 +1,20 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
-import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
+import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
+import SearchBar from './SearchBar';
+import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FormCreator from './FormCreator';
 import updateCatalog from '../api/updateCatalog';
 import queryClientConfig from '../config/queryClientConfig';
-import SearchBar from './SearchBar';
 import { useMutateHook } from '../hooks';
 import getFilteredCatalogs from '../api/getFilteredCatalogs';
 import { useIsFetching } from '@tanstack/react-query';
+
+// STYLES
 import { makeStyles, Theme } from '@material-ui/core';
+import classNames from 'classnames';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -188,7 +190,9 @@ export default function CustomNavBar({
    const RefreshIcon = isMainSection ? (
       <IconButton
          color={`${!isCatalogLoading ? 'primary' : 'default'}`}
-         className={`${classes.icons} ${isCatalogLoading ? classes.rotate : ''}`}
+         className={classNames(classes.icons, {
+            [classes.rotate]: isCatalogLoading,
+         })}
          onClick={handleRefresh}
       >
          <FontAwesomeIcon icon={faRedo} size="sm" />
@@ -210,7 +214,7 @@ export default function CustomNavBar({
       >
          Add products
       </Button>
-   ) : isMainSection ? (
+   ) : isMainSection && !isProductListSection && !isProductDetails ? (
       <SearchBar
          onSubmit={handleSearchSubmit}
          initialTerm={term}
