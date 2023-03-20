@@ -184,6 +184,7 @@ const ProductsList = (props: any) => {
                            : 'product has been deleted successfully';
                         return `${data.removedProducts} ${msg}`;
                      }}
+                     action="Delete"
                   >
                      <Typography variant="h6">
                         You are about to delete the selected products. Are you sure?

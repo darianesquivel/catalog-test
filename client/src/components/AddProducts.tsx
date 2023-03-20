@@ -162,7 +162,7 @@ export default function AddProducts() {
    const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
       addProducts(catalogId, data)
    );
-   const { setSectionInfo } = useStore();
+   const { setSectionInfo, setNotifications } = useStore();
 
    useEffect(() => () => setSectionInfo(''), [setSectionInfo]);
 
@@ -190,7 +190,16 @@ export default function AddProducts() {
    };
 
    const handleSubmit = async () => {
-      mutate();
+      mutate(undefined, {
+         onSuccess: (data: any) => {
+            setNotifications({
+               type: 'Upload',
+               content: data,
+               timestamp: new Date().toLocaleString(),
+               pending: true,
+            });
+         },
+      });
    };
 
    const handleIsSuccess = () => {

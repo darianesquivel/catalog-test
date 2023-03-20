@@ -25,6 +25,7 @@ import clonedCatalog from '../../api/cloneCatalog';
 // STYLES
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import React from 'react';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -132,6 +133,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             onModalChange={handleClose}
             onAccept={() => removeCatalog({ id })}
             queryKey={['catalogs']}
+            action="Remove"
          >
             <Typography variant="h6">
                You are about to delete the catalog "<b>{name}</b>". Are you sure?
@@ -148,6 +150,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             onModalChange={handleClose}
             onAccept={() => clonedCatalog(id)}
             queryKey={['catalogs']}
+            action="Duplicate"
          >
             <Typography variant="h6">
                You are about to duplicate the catalog "<b>{name}</b>". Are you sure?
