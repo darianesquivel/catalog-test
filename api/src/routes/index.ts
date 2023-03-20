@@ -1,4 +1,3 @@
-
 import { query, Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
@@ -53,9 +52,9 @@ router.post(
 router.post(
   "/catalogs/:catalog_id/products",
   async (req: Request, res: Response) => {
-    // catalog_id may be redundant but we could take it from params
-    // id, title, Title, description, catalog_id, image --> obligatory fields
+    const catalogId = req.params.catalog_id;
     const products = req.body;
+    let productsAmount = 0;
     try {
       for (const prod of products) {
         const {
@@ -89,9 +88,17 @@ router.post(
         // product hasMany images, the following set the productId to all the images
         await newProduct[0].setImages(createdImages);
         await newProduct[0].setCatalog(catalog_id);
+        productsAmount += 1;
       }
+      const catalog = await catalogs.findByPk(catalogId);
 
-      res.status(200).send("Products added successfuly");
+      res
+        .status(200)
+        .send(
+          `${productsAmount} ${
+            productsAmount > 1 ? "products were" : "product was"
+          } added successfuly in catalog "${catalog?.dataValues.name}"`
+        );
     } catch (err: any) {
       console.log(err);
       res.status(503).send(err.message);
@@ -187,9 +194,8 @@ router.get(
 // DELETE PRODUCTS
 router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
   const { id } = req.params;
-
   const productsId = req.body;
-
+  const currentCatalog = await catalogs.findByPk(id);
   try {
     const removedProducts: any = await product.destroy({
       where: {
@@ -199,7 +205,15 @@ router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
         catalogId: id,
       },
     });
-    res.status(200).send({ removedProducts });
+    res
+      .status(200)
+      .send(
+        `${removedProducts} ${
+          removedProducts > 1 ? "have" : "has"
+        } been deleted from the catalog called "${
+          currentCatalog?.dataValues.name
+        }"`
+      );
   } catch (err) {
     res.sendStatus(503);
   }
@@ -209,13 +223,17 @@ router.put("/catalogs/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name } = req.body;
 
+  const currentCatalog: any = await catalogs.findByPk(id);
   try {
-    const currentCatalog: any = await catalogs.findByPk(id);
     const updatedCatalog = await currentCatalog.update({
       ...currentCatalog,
       name,
     });
-    res.status(200).send(updatedCatalog);
+    res
+      .status(200)
+      .send(
+        `Catalog "${currentCatalog.name}" was updated to ${updatedCatalog.name} successfully`
+      );
   } catch (err) {
     res.status(503).send(err);
   }
@@ -228,7 +246,7 @@ router.delete("/catalogs/:id", async (req: Request, res: Response) => {
     const currentCatalog: any = await catalogs.findByPk(id);
     const catalogName = currentCatalog.name;
     await currentCatalog.destroy();
-    res.status(200).send(`${catalogName} deleted successfully `);
+    res.status(200).send(`Catalog "${catalogName}" was removed successfully`);
   } catch (err) {
     res.status(503).send(err);
   }
@@ -275,8 +293,8 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
           // parsing the images so that we are able to clone them
           const currentImages = extraImages?.length
             ? extraImages.map(({ dataValues }: any) => ({
-              url: dataValues.url,
-            }))
+                url: dataValues.url,
+              }))
             : [];
 
           // cloning the images
@@ -294,7 +312,7 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      message: `${catalogName} duplicated successfully`,
+      message: `The catalog "${catalogName}" was duplicated successfully`,
       ...clonedCatalog.dataValues,
     });
   } catch (err) {
