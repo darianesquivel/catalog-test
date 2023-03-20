@@ -201,7 +201,7 @@ export default function AddProducts() {
             setNotifications({
                type: 'Upload',
                content: data,
-               timestamp: new Date().toLocaleString(),
+               timestamp: new Date().toISOString(),
                pending: true,
             });
          },

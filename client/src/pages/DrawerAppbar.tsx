@@ -11,6 +11,7 @@ import {
    faBell,
    faMoon,
    faSun,
+   faCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
@@ -20,7 +21,8 @@ import queryClientConfig from '../config/queryClientConfig';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { shallow } from 'zustand/shallow';
 import React, { useMemo, useState } from 'react';
-import NotificationBar from './NotificationBar';
+import NotificationBar from './Notifications/NotificationBar';
+import CircularIcon from '../components/CircularIcon';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -128,6 +130,17 @@ const useStyles = makeStyles((theme: Theme) =>
          color: theme.palette.text.primary,
          textDecoration: 'none',
       },
+      bellContainer: {
+         display: 'flex',
+         justifyContent: 'center',
+         alignItems: 'center',
+         position: 'relative',
+      },
+      circularIcon: {
+         position: 'absolute',
+         top: 0,
+         right: 0,
+      },
    })
 );
 
@@ -159,6 +172,7 @@ const drawerButtons = [
       link: '',
    },
 ];
+
 const partialValues = ['currentUrl', 'sectionInfo', 'searchingData', 'notifications'];
 // zustand global state
 export const useStore = create(
@@ -180,35 +194,22 @@ export const useStore = create(
             })),
          // { title, content, pending: boolean, timestamp}
          notifications: [] as NotificationType[],
-         setNotifications: ({ type, content, timestamp, pending }: NotificationType) => {
-            let title = '';
-            switch (type) {
-               case 'Upload':
-                  title = `Upload products - Completead `;
-                  break;
-               case 'Delete':
-                  title = `Delete products - Completed`;
-                  break;
-               case 'Duplicate':
-                  title = `Duplicate catalog - Completed`;
-                  break;
-               case 'Update':
-                  title = `Duplicate catalog - Completed`;
-                  break;
-               case 'Remove':
-                  title = 'Remove catalog - Completed';
-                  break;
-               default:
-                  break;
+         setNotifications: ({ type, content, timestamp, pending = true }: NotificationType) => {
+            let modelName: string;
+
+            if (['Upload', 'Delete'].includes(type)) {
+               modelName = 'products';
+            } else {
+               modelName = 'catalogs';
             }
+            let title = `${type} ${modelName} - Completed`;
             set((state: any) => ({
                ...state,
-               notifications: [...state.notifications, { title, content, timestamp, pending }],
+               notifications: [{ title, content, timestamp, pending }, ...state.notifications],
             }));
          },
 
          clearPendingNotifications: () => {
-            console.log('se ejecuto clear pending notifications');
             set((state: any) => {
                return {
                   ...state,
@@ -267,7 +268,7 @@ export default function MiniDrawer() {
    );
    const { setOpen, toggleMode, setSelectedIndex } = useStore();
 
-   const pendingNotAmpunt = useMemo(
+   const pendingNotAmount = useMemo(
       () => notifications.filter(({ pending }: any) => pending).length,
       [notifications]
    );
@@ -352,10 +353,17 @@ export default function MiniDrawer() {
                      onClick={() => toggleNotifications(true)}
                   >
                      <ListItemIcon>
-                        <FontAwesomeIcon icon={faBell} size="xl" />
+                        <div className={classes.bellContainer}>
+                           <FontAwesomeIcon icon={faBell} size="xl" />
+                           {!!pendingNotAmount && (
+                              <CircularIcon
+                                 content={pendingNotAmount}
+                                 extraStyles={classes.circularIcon}
+                              />
+                           )}
+                        </div>
                      </ListItemIcon>
                      <ListItemText primary={'Notifications'} />
-                     {!!pendingNotAmpunt && pendingNotAmpunt}
                   </ListItem>
                   <ListItem button className={classes.buttonStyle} onClick={toggleMode}>
                      <ListItemIcon>

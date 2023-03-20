@@ -26,6 +26,7 @@ import clonedCatalog from '../../api/cloneCatalog';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import React from 'react';
+import { useStore } from '../../pages/DrawerAppbar';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -98,6 +99,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
    const [option, setOption] = useState<string>('');
    const history = useHistory();
+   const { setNotifications } = useStore();
 
    const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
@@ -126,6 +128,13 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             initialValues={{ id, name }}
             keysToInvalidate={['catalogs']}
             acceptBtnName="Update"
+            extraFn={(data) => {
+               setNotifications({
+                  type: 'Update',
+                  content: data,
+                  timestamp: new Date().toISOString(),
+               });
+            }}
          />
       ) : option === 'remove' ? (
          <CustomDialog

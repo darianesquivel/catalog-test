@@ -113,9 +113,8 @@ const CustomDialog = ({
                type: action,
                content,
                pending: true,
-               timestamp: new Date().toLocaleString(),
+               timestamp: new Date().toISOString(),
             });
-
             queryClientConfig.invalidateQueries(queryKey);
          },
       });
@@ -178,7 +177,7 @@ const CustomDialog = ({
                                  : classes.button
                            }
                         >
-                           {children[1]?.props?.alertType === 'error' ? 'Delete' : 'Duplicate'}
+                           {action}
                         </Button>
                      )}
                   </div>

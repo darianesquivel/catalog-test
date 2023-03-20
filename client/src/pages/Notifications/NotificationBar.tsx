@@ -1,21 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import CustomTabs from '../components/CustomTabs';
-import { useStore } from './DrawerAppbar';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {
-   Accordion,
-   AccordionDetails,
-   AccordionSummary,
-   AppBar,
-   IconButton,
-   Toolbar,
-   Typography,
-} from '@material-ui/core';
+import CustomTabs from '../../components/CustomTabs';
+import { useStore } from '../DrawerAppbar';
+import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { uniq } from 'lodash';
+
+import NotificationsAccordion from './NotificationsAccordion';
 
 const useStyles = makeStyles((theme: Theme) => ({
    mainBox: {
@@ -24,7 +16,11 @@ const useStyles = makeStyles((theme: Theme) => ({
    tabContainer: {
       height: '99vh',
       width: '400px',
-      overflow: 'hidden',
+      overflowY: 'auto',
+      '& [role="tablist"]': {
+         display: 'flex',
+         justifyContent: 'space-evenly',
+      },
    },
    header: {
       position: 'relative',
@@ -37,43 +33,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       padding: theme.spacing(0, 2),
    },
 }));
-type FilterParam = 'pending' | 'previous';
-
-const getNotificationsAccordion = (
-   filter: FilterParam,
-   notifications: any[],
-   viewTracker?: (value: any) => void
-) => {
-   if (!notifications?.length) return null;
-   let finalNotifications: any;
-
-   if (filter === 'previous') {
-      finalNotifications = notifications.filter(({ pending }: any) => !pending);
-   } else {
-      finalNotifications = notifications.filter(({ pending }: any) => pending);
-   }
-   const handleClick = (timestamp: string) => {
-      if (viewTracker) {
-         viewTracker((prev: any) => {
-            return uniq([...prev, timestamp]);
-         });
-      }
-   };
-
-   const accordions = finalNotifications.map(({ title, content, timestamp }: any) => (
-      <Accordion>
-         <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-         >
-            {title}
-         </AccordionSummary>
-         <AccordionDetails onClick={() => handleClick(timestamp)}>{content}</AccordionDetails>
-      </Accordion>
-   ));
-   return accordions;
-};
 
 export default function NotificationBar({ isOpen, onToggle }: any) {
    const classes = useStyles();
@@ -88,11 +47,17 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
       () => [
          {
             columnName: 'Pending',
-            content: getNotificationsAccordion('pending', notifications, setWiewedNotifications),
+            content: (
+               <NotificationsAccordion
+                  filter="pending"
+                  notifications={notifications}
+                  viewTracker={setWiewedNotifications}
+               />
+            ),
          },
          {
             columnName: 'Previous',
-            content: getNotificationsAccordion('previous', notifications),
+            content: <NotificationsAccordion filter="previous" notifications={notifications} />,
          },
       ],
       [notifications]
@@ -113,6 +78,7 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
       updateNotificationsStatus(viewedNotifications);
       setWiewedNotifications([]);
    }, [isOpen]);
+
    console.log({ notifications });
    return (
       <div className={classes.mainBox}>

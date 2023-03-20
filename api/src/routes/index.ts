@@ -209,7 +209,7 @@ router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
       .status(200)
       .send(
         `${removedProducts} ${
-          removedProducts > 1 ? "have" : "has"
+          removedProducts > 1 ? "products have" : "product has"
         } been deleted from the catalog called "${
           currentCatalog?.dataValues.name
         }"`
@@ -224,6 +224,7 @@ router.put("/catalogs/:id", async (req: Request, res: Response) => {
   const { name } = req.body;
 
   const currentCatalog: any = await catalogs.findByPk(id);
+  const catalogName = currentCatalog?.name;
   try {
     const updatedCatalog = await currentCatalog.update({
       ...currentCatalog,
@@ -232,7 +233,7 @@ router.put("/catalogs/:id", async (req: Request, res: Response) => {
     res
       .status(200)
       .send(
-        `Catalog "${currentCatalog.name}" was updated to ${updatedCatalog.name} successfully`
+        `Catalog "${catalogName}" has been updated to "${updatedCatalog.name}" `
       );
   } catch (err) {
     res.status(503).send(err);
