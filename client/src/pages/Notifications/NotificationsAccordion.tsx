@@ -70,7 +70,7 @@ export default function NotificationsAccordion({
          });
       }
    };
-   console.log({ beforeAccordion: 'eeee' });
+
    const accordions = finalNotifications.map(({ title, content, timestamp }: any) => (
       <Accordion key={timestamp}>
          <AccordionSummary

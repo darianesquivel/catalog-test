@@ -41,6 +41,11 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
    const { notifications } = useStore((state: any) => ({
       notifications: state.notifications,
    }));
+   const hasPending = useMemo(
+      () => notifications.some(({ pending }: any) => !!pending),
+      [notifications]
+   );
+
    const { clearPendingNotifications, updateNotificationsStatus } = useStore();
 
    const tabs = useMemo(
@@ -79,14 +84,13 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
       setWiewedNotifications([]);
    }, [isOpen]);
 
-   console.log({ notifications });
    return (
       <div className={classes.mainBox}>
          <Drawer anchor={'left'} open={isOpen} onClose={toggleBar(false)}>
             <AppBar className={classes.header} position="relative">
                <Toolbar disableGutters={true} className={classes.toolbar}>
                   <Typography variant="h6">Notifications</Typography>
-                  <IconButton onClick={clearPendingNotifications}>
+                  <IconButton onClick={clearPendingNotifications} disabled={!hasPending}>
                      <FontAwesomeIcon icon={faTrash} color="gray" size="sm" />
                   </IconButton>
                </Toolbar>
