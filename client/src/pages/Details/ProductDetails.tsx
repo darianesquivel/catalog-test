@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { Divider, Grid, CircularProgress } from '@material-ui/core';
+import { Divider, Grid, CircularProgress, Checkbox } from '@material-ui/core';
 import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -13,7 +13,6 @@ import _ from 'lodash';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CustomNavBar from '../../components/CustomNavBar';
 import { useProductInfoQuery } from '../../config/queries';
-import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
    gridContainer: {
@@ -122,6 +121,38 @@ const useStyles = makeStyles((theme: Theme) => ({
    accordion: {
       boxShadow: 'none',
    },
+   color: {
+      width: '40px',
+      heigth: '24px',
+      boxShadow: '0 0 0 2px #cccccc',
+      border: '2px solid #F8F8F8',
+      backgroundColor: 'black',
+      cursor: 'pointer',
+   },
+   size: {
+      // width: '40px',
+      // height: '24px',
+      // boxShadow: '0 0 0 2px #cccccc',
+      display: 'inline-block',
+      width: 'auto',
+      padding: '4px',
+      borderRadius: `8px`,
+      border: `2px solid ${theme.palette.primary.main}`,
+      cursor: 'pointer',
+   },
+   stock: {
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+   },
+   hideBorder: {
+      '&.MuiExpansionPanel-root:before': {
+         display: 'none',
+      },
+   },
+   outOfStock: {
+      color: 'red',
+   },
 }));
 
 type Tproduct = {
@@ -228,7 +259,7 @@ export default function ProductDetails() {
 
             <Grid item className={classes.rightBox} xs={3}>
                {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
-
+               {console.log({ product })}
                {isSuccess ? (
                   <>
                      <div className={classes.header}>
@@ -257,8 +288,47 @@ export default function ProductDetails() {
                                  <Typography variant="h6">{product.name}</Typography>
                               </div>
                               <div className={classes.productDesc}>
-                                 <Typography variant="body1"> Description</Typography>
-                                 <Typography variant="body2">{product.description}</Typography>
+                                 {/* STOCK */}
+                                 <div className={classes.stock}>
+                                    <Typography>{product.dinamicFields.Availability}</Typography>
+                                    <Checkbox
+                                       checked={
+                                          product.dinamicFields.Availability === 'in stock'
+                                             ? true
+                                             : false
+                                       }
+                                       color="primary"
+                                    />
+                                 </div>
+                                 {/* COLOR */}
+                                 <div>
+                                    <Typography variant="body2">Colors</Typography>
+                                    <div className={classes.color}>
+                                       <Typography>{product.dinamicFields.Color}</Typography>
+                                    </div>
+                                 </div>
+                                 {/* SIZE */}
+                                 <div>
+                                    <Typography variant="body2">Size</Typography>
+                                    <div className={classes.size}>
+                                       <Typography>{product.dinamicFields.Size}</Typography>
+                                    </div>
+                                 </div>
+                                 {/* DESCRIPTION */}
+                                 <Accordion className={classes.accordion}>
+                                    <AccordionSummary
+                                       expandIcon={<ExpandMoreIcon className={classes.icon} />}
+                                       aria-controls="panel1a-content"
+                                       id="panel1a-header"
+                                    >
+                                       <Typography variant="body2">Description </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                       <Typography variant="body2">
+                                          {product.description}
+                                       </Typography>
+                                    </AccordionDetails>
+                                 </Accordion>
                               </div>
                            </AccordionDetails>
                            <Divider className={classes.divider} />
@@ -278,7 +348,6 @@ export default function ProductDetails() {
                            </AccordionDetails>
                            <Divider className={classes.divider} />
                         </Accordion>
-
                         <Accordion className={classes.accordion}>
                            <AccordionSummary
                               expandIcon={<ExpandMoreIcon className={classes.icon} />}
