@@ -5,7 +5,6 @@ import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import { useStore } from '../DrawerAppbar';
 import CustomAlert from '../../components/CustomAlert';
 import _ from 'lodash';
 
@@ -147,7 +146,7 @@ export default function ProductDetails() {
       `productInfo/${productId}`,
    ]);
 
-   const product: Tproduct = data || {};
+   const product: Tproduct = useMemo(() => data || {}, [data]);
    const extraBullets = useMemo(() => {
       if (product?.dinamicFields) {
          return Object.entries(product.dinamicFields).map(([key, value]: any) => ({
@@ -156,8 +155,6 @@ export default function ProductDetails() {
          }));
       } else return [];
    }, [product]);
-
-   const { setSectionInfo } = useStore();
 
    const [imagesState, setImagesState] = useState<any>([]);
    const [selected, setSelected] = useState<any>(imagesState?.[0]);
@@ -176,10 +173,8 @@ export default function ProductDetails() {
    );
 
    useEffect(() => {
-      setSectionInfo(product.name);
       setImagesState(product.images?.map((obj: any) => obj?.url));
-      return () => setSectionInfo('');
-   }, [product?.name, setSectionInfo, product?.images]);
+   }, [product?.name, product?.images]);
 
    return (
       <>

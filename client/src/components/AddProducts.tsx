@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 // utils
 import addProducts from '../api/addProducts';
@@ -37,6 +37,7 @@ import ClassNames from 'classnames';
 
 import cleanJson from '../api/cleanJson';
 import CustomNavBar from './CustomNavBar';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
    tableContainer: {
@@ -163,9 +164,7 @@ export default function AddProducts() {
    const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
       addProducts(catalogId, data)
    );
-   const { setSectionInfo } = useStore();
-
-   useEffect(() => () => setSectionInfo(''), [setSectionInfo]);
+   const { setNotifications } = useStore();
 
    const handleFile = async (e: any) => {
       setUpload(false);
@@ -195,7 +194,16 @@ export default function AddProducts() {
 
    const handleSubmit = async () => {
       setPreview(false);
-      mutate();
+      mutate(undefined, {
+         onSuccess: (data: any) => {
+            setNotifications({
+               type: 'Upload',
+               content: data,
+               timestamp: new Date().toISOString(),
+               pending: true,
+            });
+         },
+      });
    };
 
    const handleIsSuccess = () => {

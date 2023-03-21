@@ -114,8 +114,6 @@ const ProductsList = (props: any) => {
       isFetching,
    } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
 
-   const { setSectionInfo } = useStore();
-
    const productColumns = useMemo(
       () =>
          catalog?.products?.length
@@ -131,12 +129,10 @@ const ProductsList = (props: any) => {
 
    useEffect(() => {
       if (catalog.name) {
-         // setSectionInfo(catalog.name, catalog.id);
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
-         return () => setSectionInfo('');
       }
-   }, [setSectionInfo, currentUrl, params.productId, products, catalog.name, catalog.id]);
+   }, [currentUrl, params.productId, products, catalog.name, catalog.id]);
 
    const NavBar = useMemo(
       () => <CustomNavBar title={catalog.name} catalogId={catalog.id} isProductListSection />,
@@ -177,13 +173,8 @@ const ProductsList = (props: any) => {
                      onModalChange={() => setOpen(false)}
                      onAccept={() => removeProducts({ id: catalogId, productsId: selected })}
                      queryKey={[`catalogs/:${catalogId}`, catalogId]}
-                     customMessage={(data: any) => {
-                        const isNotSingular = Number(data.removedProducts) >= 2;
-                        const msg = isNotSingular
-                           ? 'products have been deleted successfully'
-                           : 'product has been deleted successfully';
-                        return `${data.removedProducts} ${msg}`;
-                     }}
+                     customMessage={(data: any) => data.message}
+                     action="Delete"
                   >
                      <Typography variant="h6">
                         You are about to delete the selected products. Are you sure?
