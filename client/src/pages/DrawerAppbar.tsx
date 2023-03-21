@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type NotificationType = {
    timestamp?: string;
-   type: 'Upload' | 'Delete' | 'Duplicate' | 'Update' | 'Remove';
+   type: 'Upload' | 'Delete' | 'Duplicate' | 'Update' | 'Remove' | 'Create';
    content?: string;
    pending?: boolean;
 };
@@ -383,6 +383,7 @@ export default function MiniDrawer() {
                </div>
             </List>
          </Drawer>
+         {console.log('open notifications', openNotifications)}
          <NotificationBar isOpen={openNotifications} onToggle={toggleNotifications} />
       </div>
    );

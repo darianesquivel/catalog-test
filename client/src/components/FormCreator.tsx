@@ -13,6 +13,7 @@ import queryClientConfig from '../config/queryClientConfig';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
 
 const useStyles = makeStyles((theme) => ({
    container: {

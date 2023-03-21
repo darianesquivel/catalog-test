@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+import { useStore } from '../../pages/DrawerAppbar';
 
 const useStyles = makeStyles((theme) => ({
    creatorContainer: {
@@ -33,7 +34,7 @@ export default function CatalogCreator() {
    const [open, setOpen] = useState(false);
    const handleModal = () => setOpen((prev) => !prev);
    const history = useHistory();
-
+   const { setNotifications } = useStore();
    return (
       <>
          <Card className={classes.creatorContainer}>
@@ -50,9 +51,13 @@ export default function CatalogCreator() {
                keysToInvalidate={['catalogs']}
                acceptBtnName="Create"
                extraFn={(resData) => {
-                  const createdCatalogId = resData[0]?.id;
-                  if (createdCatalogId) {
-                     history.push(`/catalogs/${createdCatalogId}/upload`);
+                  if (resData?.data.id) {
+                     history.push(`/catalogs/${resData.data.id}/upload`);
+                     setNotifications({
+                        type: 'Create',
+                        content: resData,
+                        timestamp: new Date().toISOString(),
+                     });
                   }
                }}
             />

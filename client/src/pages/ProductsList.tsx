@@ -177,13 +177,7 @@ const ProductsList = (props: any) => {
                      onModalChange={() => setOpen(false)}
                      onAccept={() => removeProducts({ id: catalogId, productsId: selected })}
                      queryKey={[`catalogs/:${catalogId}`, catalogId]}
-                     customMessage={(data: any) => {
-                        const isNotSingular = Number(data.removedProducts) >= 2;
-                        const msg = isNotSingular
-                           ? 'products have been deleted successfully'
-                           : 'product has been deleted successfully';
-                        return `${data.removedProducts} ${msg}`;
-                     }}
+                     customMessage={(data: any) => data.message}
                      action="Delete"
                   >
                      <Typography variant="h6">

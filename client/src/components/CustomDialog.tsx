@@ -100,18 +100,13 @@ const CustomDialog = ({
 
    const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
    const { setNotifications } = useStore();
-
    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
       mutate(undefined, {
-         onSuccess: (responseMessage: any) => {
-            const content =
-               responseMessage instanceof Object
-                  ? `Removed Products: ${responseMessage.removedProducts}`
-                  : responseMessage;
+         onSuccess: (response: any) => {
             setNotifications({
                type: action,
-               content,
+               content: response,
                pending: true,
                timestamp: new Date().toISOString(),
             });
@@ -137,7 +132,7 @@ const CustomDialog = ({
       >
          {isSuccess ? (
             <CustomSnackBar
-               message={`${customMessage ? customMessage(data) : data}`}
+               message={`${customMessage ? customMessage(data) : Object(data).message}`}
                onClose={handleClose}
                open={isOpen}
             />

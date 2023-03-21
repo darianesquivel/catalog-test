@@ -39,7 +39,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function NotificationBar({ isOpen, onToggle }: any) {
    const classes = useStyles();
    const [viewedNotifications, setWiewedNotifications] = useState([]);
-   console.log({ viewedNotifications });
    const { notifications } = useStore((state: any) => ({
       notifications: state.notifications,
    }));
@@ -50,27 +49,7 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
 
    const { clearPendingNotifications, updateNotificationsStatus } = useStore();
 
-   const tabs = useMemo(
-      () => [
-         {
-            columnName: 'Pending',
-            content: (
-               <NotificationsAccordion
-                  filter="pending"
-                  notifications={notifications}
-                  viewTracker={setWiewedNotifications}
-               />
-            ),
-         },
-         {
-            columnName: 'Previous',
-            content: <NotificationsAccordion filter="previous" notifications={notifications} />,
-         },
-      ],
-      [notifications]
-   );
-
-   const toggleBar = (op: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+   const toggleBar = () => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
          event.type === 'keydown' &&
          ((event as React.KeyboardEvent).key === 'Tab' ||
@@ -81,6 +60,33 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
       onToggle(false);
    };
 
+   const tabs = useMemo(
+      () => [
+         {
+            columnName: 'Pending',
+            content: (
+               <NotificationsAccordion
+                  filter="pending"
+                  notifications={notifications}
+                  viewTracker={setWiewedNotifications}
+                  onToggle={onToggle}
+               />
+            ),
+         },
+         {
+            columnName: 'Previous',
+            content: (
+               <NotificationsAccordion
+                  filter="previous"
+                  notifications={notifications}
+                  onToggle={onToggle}
+               />
+            ),
+         },
+      ],
+      [notifications]
+   );
+
    useEffect(() => {
       updateNotificationsStatus(viewedNotifications);
       setWiewedNotifications([]);
@@ -88,7 +94,7 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
 
    return (
       <div className={classes.mainBox}>
-         <Drawer anchor={'left'} open={isOpen} onClose={toggleBar(false)}>
+         <Drawer anchor={'left'} open={isOpen} onClose={toggleBar()}>
             <AppBar className={classes.header} position="relative">
                <Toolbar disableGutters={true} className={classes.toolbar}>
                   <Typography variant="h6">Notifications</Typography>

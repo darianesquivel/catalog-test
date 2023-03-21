@@ -6,6 +6,7 @@ import moment from 'moment';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { faBellSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) => ({
    timestamp: {
@@ -36,15 +37,17 @@ type NotificationParams = {
    filter: 'pending' | 'previous';
    notifications: any[];
    viewTracker?: (value: any) => void;
+   onToggle?: (op: boolean) => void;
 };
 
 export default function NotificationsAccordion({
    filter,
    notifications,
    viewTracker,
+   onToggle,
 }: NotificationParams) {
    const classes = useStyles();
-
+   const history = useHistory();
    const defaultMessage = (
       <div className={classes.defaultMessage}>
          <FontAwesomeIcon icon={faBellSlash} />
@@ -63,12 +66,18 @@ export default function NotificationsAccordion({
       return defaultMessage;
    }
 
-   const handleClick = (timestamp: string) => {
+   const handleClick = (timestamp: string, response: any) => {
+      const { data, action } = response;
+
       if (viewTracker) {
          viewTracker((prev: any) => {
             return uniq([...prev, timestamp]);
          });
       }
+      if (!action.includes('Remove')) {
+         history.push(`/catalogs/${data.id}`);
+      }
+      onToggle?.(false);
    };
 
    const accordions = finalNotifications.map(({ title, content, timestamp }: any) => (
@@ -80,9 +89,9 @@ export default function NotificationsAccordion({
          >
             {title}
          </AccordionSummary>
-         <AccordionDetails onClick={() => handleClick(timestamp)}>
+         <AccordionDetails onClick={() => handleClick(timestamp, content)}>
             <div className={classes.accDetails}>
-               {content}
+               {content.message}
                <Typography className={classes.timestamp} variant="body2">
                   {moment(timestamp).fromNow()}
                </Typography>
