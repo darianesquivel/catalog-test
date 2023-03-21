@@ -10,10 +10,6 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import NotificationsAccordion from './NotificationsAccordion';
 
 const useStyles = makeStyles((theme: Theme) => ({
-   mainBox: {
-      position: 'relative',
-   },
-
    tabContainer: {
       height: '99vh',
       width: '400px',
@@ -49,17 +45,6 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
 
    const { clearPendingNotifications, updateNotificationsStatus } = useStore();
 
-   const toggleBar = () => (event: React.KeyboardEvent | React.MouseEvent) => {
-      if (
-         event.type === 'keydown' &&
-         ((event as React.KeyboardEvent).key === 'Tab' ||
-            (event as React.KeyboardEvent).key === 'Shift')
-      ) {
-         return;
-      }
-      onToggle(false);
-   };
-
    const tabs = useMemo(
       () => [
          {
@@ -90,21 +75,20 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
    useEffect(() => {
       updateNotificationsStatus(viewedNotifications);
       setWiewedNotifications([]);
-   }, [isOpen]);
 
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [isOpen]);
    return (
-      <div className={classes.mainBox}>
-         <Drawer anchor={'left'} open={isOpen} onClose={toggleBar()}>
-            <AppBar className={classes.header} position="relative">
-               <Toolbar disableGutters={true} className={classes.toolbar}>
-                  <Typography variant="h6">Notifications</Typography>
-                  <IconButton onClick={clearPendingNotifications} disabled={!hasPending}>
-                     <FontAwesomeIcon icon={faTrash} color="gray" size="sm" />
-                  </IconButton>
-               </Toolbar>
-            </AppBar>
-            <CustomTabs tabValues={tabs} extraStyles={classes.tabContainer} />
-         </Drawer>
-      </div>
+      <Drawer anchor={'left'} open={isOpen} onClose={() => onToggle(false)}>
+         <AppBar className={classes.header} position="relative">
+            <Toolbar disableGutters={true} className={classes.toolbar}>
+               <Typography variant="h6">Notifications</Typography>
+               <IconButton onClick={clearPendingNotifications} disabled={!hasPending}>
+                  <FontAwesomeIcon icon={faTrash} color="gray" size="sm" />
+               </IconButton>
+            </Toolbar>
+         </AppBar>
+         <CustomTabs tabValues={tabs} extraStyles={classes.tabContainer} />
+      </Drawer>
    );
 }

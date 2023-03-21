@@ -41,7 +41,7 @@ export default function CustomTabs({ tabValues, extraStyles }: TpropsArray) {
    return (
       <Paper square className={classNames(classes.content, extraStyles)}>
          <Tabs value={value} indicatorColor="primary" textColor="primary" onChange={handleChange}>
-            {tabValues.map((column, idx) => (
+            {tabValues.map((column) => (
                <Tab
                   label={column.columnName}
                   disabled={column.disabled}

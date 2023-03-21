@@ -114,8 +114,6 @@ const ProductsList = (props: any) => {
       isFetching,
    } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
 
-   const { setSectionInfo } = useStore();
-
    const productColumns = useMemo(
       () =>
          catalog?.products?.length
@@ -131,12 +129,10 @@ const ProductsList = (props: any) => {
 
    useEffect(() => {
       if (catalog.name) {
-         // setSectionInfo(catalog.name, catalog.id);
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
-         return () => setSectionInfo('');
       }
-   }, [setSectionInfo, currentUrl, params.productId, products, catalog.name, catalog.id]);
+   }, [currentUrl, params.productId, products, catalog.name, catalog.id]);
 
    const NavBar = useMemo(
       () => <CustomNavBar title={catalog.name} catalogId={catalog.id} isProductListSection />,

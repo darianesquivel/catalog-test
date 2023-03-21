@@ -182,16 +182,12 @@ export const useStore = create(
             set((state: any) => ({ ...state, currentUrl: newValue })),
          open: false,
          setOpen: () => set((state: any) => ({ ...state, open: !state.open })),
-         sectionInfo: '',
-         setSectionInfo: (name: string, id?: string) =>
-            set((state: any) => ({ ...state, sectionInfo: { name, id } })),
          mode: 'light',
          toggleMode: () =>
             set((state: any) => ({
                ...state,
                mode: state.mode === 'light' ? 'dark' : 'light',
             })),
-         // { title, content, pending: boolean, timestamp}
          notifications: [] as NotificationType[],
          setNotifications: ({ type, content, timestamp, pending = true }: NotificationType) => {
             let modelName: string;
@@ -383,7 +379,7 @@ export default function MiniDrawer() {
                </div>
             </List>
          </Drawer>
-         {console.log('open notifications', openNotifications)}
+
          <NotificationBar isOpen={openNotifications} onToggle={toggleNotifications} />
       </div>
    );

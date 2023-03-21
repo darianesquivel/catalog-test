@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 // utils
 import addProducts from '../api/addProducts';
@@ -164,9 +164,7 @@ export default function AddProducts() {
    const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
       addProducts(catalogId, data)
    );
-   const { setSectionInfo, setNotifications } = useStore();
-
-   useEffect(() => () => setSectionInfo(''), [setSectionInfo]);
+   const { setNotifications } = useStore();
 
    const handleFile = async (e: any) => {
       setUpload(false);
