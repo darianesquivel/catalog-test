@@ -112,6 +112,7 @@ export default function CustomNavBar({
    const [term, setTerm] = useState(getUrlTerm(history.location.search));
 
    const drawerOpen = useStore((state: any) => state.open);
+   const { setNotifications } = useStore();
 
    const { mutate, isLoading } = useMutateHook(() => getFilteredCatalogs(term));
 
@@ -170,6 +171,13 @@ export default function CustomNavBar({
          initialValues={{ name: title, id: catalogId }}
          keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
          acceptBtnName="Update"
+         extraFn={(data) => {
+            setNotifications({
+               type: 'Update',
+               content: data,
+               timestamp: new Date().toISOString(),
+            });
+         }}
       />
    );
    const ArrowIcon = !isMainSection ? (

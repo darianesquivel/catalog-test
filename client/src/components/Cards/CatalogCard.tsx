@@ -25,6 +25,8 @@ import clonedCatalog from '../../api/cloneCatalog';
 // STYLES
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+import React from 'react';
+import { useStore } from '../../pages/DrawerAppbar';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -97,6 +99,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
    const [option, setOption] = useState<string>('');
    const history = useHistory();
+   const { setNotifications } = useStore();
 
    const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
@@ -125,6 +128,13 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             initialValues={{ id, name }}
             keysToInvalidate={['catalogs']}
             acceptBtnName="Update"
+            extraFn={(data) => {
+               setNotifications({
+                  type: 'Update',
+                  content: data,
+                  timestamp: new Date().toISOString(),
+               });
+            }}
          />
       ) : option === 'remove' ? (
          <CustomDialog
@@ -132,6 +142,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             onModalChange={handleClose}
             onAccept={() => removeCatalog({ id })}
             queryKey={['catalogs']}
+            action="Remove"
          >
             <Typography variant="h6">
                You are about to delete the catalog "<b>{name}</b>". Are you sure?
@@ -148,6 +159,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             onModalChange={handleClose}
             onAccept={() => clonedCatalog(id)}
             queryKey={['catalogs']}
+            action="Duplicate"
          >
             <Typography variant="h6">
                You are about to duplicate the catalog "<b>{name}</b>". Are you sure?
