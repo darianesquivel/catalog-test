@@ -69,7 +69,7 @@ export default function NotificationBar({ isOpen, onToggle }: any) {
             ),
          },
       ],
-      [notifications]
+      [notifications, onToggle]
    );
 
    useEffect(() => {

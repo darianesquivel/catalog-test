@@ -103,7 +103,6 @@ const ProductsList = (props: any) => {
    const [info, setInfo] = useState<object>();
    const [selected, setSelected] = useState<any>([]);
    const [open, setOpen] = useState<boolean>(false);
-   const currentUrl = useStore((state) => state.currentUrl);
 
    const {
       data: catalog = {},
@@ -128,11 +127,15 @@ const ProductsList = (props: any) => {
    const history = useHistory();
 
    useEffect(() => {
-      if (catalog.name) {
+      let isMounted = true;
+      if (catalog.name && isMounted) {
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
       }
-   }, [currentUrl, params.productId, products, catalog.name, catalog.id]);
+      return () => {
+         isMounted = false;
+      };
+   }, [params.productId, products, catalog.name]);
 
    const NavBar = useMemo(
       () => <CustomNavBar title={catalog.name} catalogId={catalog.id} isProductListSection />,
@@ -142,6 +145,7 @@ const ProductsList = (props: any) => {
    const handleCheckBoxes = useCallback((values: any[]) => {
       setSelected(values);
    }, []);
+
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
