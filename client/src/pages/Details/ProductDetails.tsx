@@ -110,6 +110,8 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
    accordionTitle: {
       color: theme.palette.primary.main,
+      fontWeight: 500,
+
       '&:hover': {
          marginBottom: theme.spacing(-1 / 4),
          borderBottom: `2px solid ${theme.palette.primary.main}`,
@@ -122,17 +124,18 @@ const useStyles = makeStyles((theme: Theme) => ({
       boxShadow: 'none',
    },
    color: {
-      padding: '10px 0',
+      padding: theme.spacing(1.2, 0),
       width: '40px',
       boxShadow: '0 0 0 2px #cccccc',
       border: '2px solid #F8F8F8',
       cursor: 'pointer',
+      borderRadius: theme.shape.borderRadius / 8,
    },
    size: {
       display: 'inline-block',
       width: 'auto',
-      padding: '4px 8px',
-      borderRadius: `8px`,
+      padding: theme.spacing(1 / 2, 1),
+      borderRadius: theme.shape.borderRadius,
       border: `2px solid ${theme.palette.primary.main}`,
       cursor: 'pointer',
    },
@@ -147,17 +150,14 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
    },
    outOfStock: {
-      color: 'red',
+      color: theme.palette.error.main,
    },
    bold: {
-      fontWeight: 600,
+      fontWeight: 500,
    },
    checkbox: {
-      padding: '0',
-      marginRight: '2px',
-      '&:hover': {
-         // backgroundColor: 'transparent !important',
-      },
+      padding: theme.spacing(0),
+      marginRight: theme.spacing(1 / 4),
    },
 }));
 
@@ -174,6 +174,8 @@ type Tproduct = {
 };
 
 export default function ProductDetails() {
+   const toHex = require('colornames');
+
    const classes = useStyles();
    const { id: catalogId, productId } = useParams<{
       id: string;
@@ -195,7 +197,6 @@ export default function ProductDetails() {
    }, [product]);
 
    const { setSectionInfo } = useStore();
-   const [color, setColor] = useState('');
 
    const [imagesState, setImagesState] = useState<any>([]);
    const [selected, setSelected] = useState<any>(imagesState?.[0]);
@@ -216,9 +217,8 @@ export default function ProductDetails() {
    useEffect(() => {
       setSectionInfo(product.name);
       setImagesState(product.images?.map((obj: any) => obj?.url));
-      console.log(product.dinamicFields);
       return () => setSectionInfo('');
-   }, [product?.name, setSectionInfo, product?.images, setColor, product?.dinamicFields]);
+   }, [product?.name, setSectionInfo, product?.images]);
 
    return (
       <>
@@ -282,7 +282,7 @@ export default function ProductDetails() {
                         <Divider className={classes.divider} />
                      </div>
                      <div className={classes.accordionBox}>
-                        <Accordion className={classes.accordion}>
+                        <Accordion defaultExpanded className={classes.accordion}>
                            <AccordionSummary
                               expandIcon={<ExpandMoreIcon className={classes.icon} />}
                               aria-controls="panel1a-content"
@@ -299,7 +299,6 @@ export default function ProductDetails() {
                                  </Typography>
                               </div>
                               <div className={classes.productDesc}>
-                                 {/* STOCK */}
                                  {product.dinamicFields.Availability === 'in stock' ? (
                                     <div className={classes.stock}>
                                        <Checkbox
@@ -325,19 +324,17 @@ export default function ProductDetails() {
                                        {product.dinamicFields.Availability}
                                     </Typography>
                                  )}
-
-                                 {/* COLOR */}
                                  <div>
                                     <Typography variant="body2" className={classes.bold}>
                                        Colors
                                     </Typography>
                                     <div
                                        className={classes.color}
-                                       style={{ background: `${product.dinamicFields.Color}` }}
+                                       style={{
+                                          background: `${toHex(product?.dinamicFields?.Color)}`,
+                                       }}
                                     ></div>
                                  </div>
-
-                                 {/* SIZE */}
                                  <div>
                                     <Typography variant="body2" className={classes.bold}>
                                        Size
@@ -346,7 +343,6 @@ export default function ProductDetails() {
                                        <Typography>{product.dinamicFields.Size}</Typography>
                                     </div>
                                  </div>
-                                 {/* DESCRIPTION */}
                                  <Accordion className={classes.accordion}>
                                     <AccordionSummary
                                        expandIcon={<ExpandMoreIcon className={classes.icon} />}
