@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       position: 'relative',
    },
    rightBox: {
-      padding: theme.spacing(1, 0.5),
+      padding: theme.spacing(2),
       position: 'relative',
       overflow: 'auto',
    },
@@ -122,20 +122,16 @@ const useStyles = makeStyles((theme: Theme) => ({
       boxShadow: 'none',
    },
    color: {
+      padding: '10px 0',
       width: '40px',
-      heigth: '24px',
       boxShadow: '0 0 0 2px #cccccc',
       border: '2px solid #F8F8F8',
-      backgroundColor: 'black',
       cursor: 'pointer',
    },
    size: {
-      // width: '40px',
-      // height: '24px',
-      // boxShadow: '0 0 0 2px #cccccc',
       display: 'inline-block',
       width: 'auto',
-      padding: '4px',
+      padding: '4px 8px',
       borderRadius: `8px`,
       border: `2px solid ${theme.palette.primary.main}`,
       cursor: 'pointer',
@@ -152,6 +148,16 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
    outOfStock: {
       color: 'red',
+   },
+   bold: {
+      fontWeight: 600,
+   },
+   checkbox: {
+      padding: '0',
+      marginRight: '2px',
+      '&:hover': {
+         // backgroundColor: 'transparent !important',
+      },
    },
 }));
 
@@ -189,6 +195,7 @@ export default function ProductDetails() {
    }, [product]);
 
    const { setSectionInfo } = useStore();
+   const [color, setColor] = useState('');
 
    const [imagesState, setImagesState] = useState<any>([]);
    const [selected, setSelected] = useState<any>(imagesState?.[0]);
@@ -209,8 +216,9 @@ export default function ProductDetails() {
    useEffect(() => {
       setSectionInfo(product.name);
       setImagesState(product.images?.map((obj: any) => obj?.url));
+      console.log(product.dinamicFields);
       return () => setSectionInfo('');
-   }, [product?.name, setSectionInfo, product?.images]);
+   }, [product?.name, setSectionInfo, product?.images, setColor, product?.dinamicFields]);
 
    return (
       <>
@@ -259,13 +267,14 @@ export default function ProductDetails() {
 
             <Grid item className={classes.rightBox} xs={3}>
                {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
-               {console.log({ product })}
                {isSuccess ? (
                   <>
                      <div className={classes.header}>
-                        <Typography variant="subtitle1">Products Details</Typography>
+                        <Typography variant="subtitle1" className={classes.bold}>
+                           Products Details
+                        </Typography>
                         <Typography variant="body2" className={classes.idBox}>
-                           <Typography component={'span'} variant="body2">
+                           <Typography component={'span'} variant="body2" className={classes.bold}>
                               Product ID
                            </Typography>
                            <Typography variant="caption">{product.id}</Typography>
@@ -285,31 +294,54 @@ export default function ProductDetails() {
                            </AccordionSummary>
                            <AccordionDetails className={classes.details}>
                               <div className={classes.productTitle}>
-                                 <Typography variant="h6">{product.name}</Typography>
+                                 <Typography variant="h5" className={classes.bold}>
+                                    {product.name}
+                                 </Typography>
                               </div>
                               <div className={classes.productDesc}>
                                  {/* STOCK */}
-                                 <div className={classes.stock}>
-                                    <Typography>{product.dinamicFields.Availability}</Typography>
-                                    <Checkbox
-                                       checked={
-                                          product.dinamicFields.Availability === 'in stock'
-                                             ? true
-                                             : false
-                                       }
-                                       color="primary"
-                                    />
-                                 </div>
+                                 {product.dinamicFields.Availability === 'in stock' ? (
+                                    <div className={classes.stock}>
+                                       <Checkbox
+                                          size="small"
+                                          checked={true}
+                                          color="primary"
+                                          className={classes.checkbox}
+                                       />
+                                       <Typography
+                                          variant="caption"
+                                          color="primary"
+                                          className={classes.bold}
+                                       >
+                                          {product.dinamicFields.Availability}
+                                       </Typography>
+                                    </div>
+                                 ) : (
+                                    <Typography
+                                       color="error"
+                                       variant="caption"
+                                       className={classes.bold}
+                                    >
+                                       {product.dinamicFields.Availability}
+                                    </Typography>
+                                 )}
+
                                  {/* COLOR */}
                                  <div>
-                                    <Typography variant="body2">Colors</Typography>
-                                    <div className={classes.color}>
-                                       <Typography>{product.dinamicFields.Color}</Typography>
-                                    </div>
+                                    <Typography variant="body2" className={classes.bold}>
+                                       Colors
+                                    </Typography>
+                                    <div
+                                       className={classes.color}
+                                       style={{ background: `${product.dinamicFields.Color}` }}
+                                    ></div>
                                  </div>
+
                                  {/* SIZE */}
                                  <div>
-                                    <Typography variant="body2">Size</Typography>
+                                    <Typography variant="body2" className={classes.bold}>
+                                       Size
+                                    </Typography>
                                     <div className={classes.size}>
                                        <Typography>{product.dinamicFields.Size}</Typography>
                                     </div>
@@ -321,7 +353,9 @@ export default function ProductDetails() {
                                        aria-controls="panel1a-content"
                                        id="panel1a-header"
                                     >
-                                       <Typography variant="body2">Description </Typography>
+                                       <Typography variant="body2" className={classes.bold}>
+                                          Description{' '}
+                                       </Typography>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                        <Typography variant="body2">
