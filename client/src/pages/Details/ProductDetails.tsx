@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { Divider, Grid, CircularProgress } from '@material-ui/core';
+import { Divider, Grid, CircularProgress, Checkbox } from '@material-ui/core';
 import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CustomNavBar from '../../components/CustomNavBar';
 import { useProductInfoQuery } from '../../config/queries';
-import React from 'react';
+import toHex from 'colornames';
 
 const useStyles = makeStyles((theme: Theme) => ({
    gridContainer: {
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       position: 'relative',
    },
    rightBox: {
-      padding: theme.spacing(1, 0.5),
+      padding: theme.spacing(2),
       position: 'relative',
       overflow: 'auto',
    },
@@ -110,6 +110,8 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
    accordionTitle: {
       color: theme.palette.primary.main,
+      fontWeight: 500,
+
       '&:hover': {
          marginBottom: theme.spacing(-1 / 4),
          borderBottom: `2px solid ${theme.palette.primary.main}`,
@@ -120,6 +122,42 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
    accordion: {
       boxShadow: 'none',
+   },
+   color: {
+      padding: theme.spacing(1.2, 0),
+      width: '40px',
+      boxShadow: '0 0 0 2px #cccccc',
+      border: '2px solid #F8F8F8',
+      cursor: 'pointer',
+      borderRadius: theme.shape.borderRadius / 8,
+   },
+   size: {
+      display: 'inline-block',
+      width: 'auto',
+      padding: theme.spacing(1 / 2, 1),
+      borderRadius: theme.shape.borderRadius,
+      border: `2px solid ${theme.palette.primary.main}`,
+      cursor: 'pointer',
+   },
+   stock: {
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+   },
+   hideBorder: {
+      '&.MuiExpansionPanel-root:before': {
+         display: 'none',
+      },
+   },
+   outOfStock: {
+      color: theme.palette.error.main,
+   },
+   bold: {
+      fontWeight: 500,
+   },
+   checkbox: {
+      padding: theme.spacing(0),
+      marginRight: theme.spacing(1 / 4),
    },
 }));
 
@@ -223,13 +261,14 @@ export default function ProductDetails() {
 
             <Grid item className={classes.rightBox} xs={3}>
                {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
-
                {isSuccess ? (
                   <>
                      <div className={classes.header}>
-                        <Typography variant="subtitle1">Products Details</Typography>
+                        <Typography variant="subtitle1" className={classes.bold}>
+                           Products Details
+                        </Typography>
                         <Typography variant="body2" className={classes.idBox}>
-                           <Typography component={'span'} variant="body2">
+                           <Typography component={'span'} variant="body2" className={classes.bold}>
                               Product ID
                            </Typography>
                            <Typography variant="caption">{product.id}</Typography>
@@ -237,7 +276,7 @@ export default function ProductDetails() {
                         <Divider className={classes.divider} />
                      </div>
                      <div className={classes.accordionBox}>
-                        <Accordion className={classes.accordion}>
+                        <Accordion defaultExpanded className={classes.accordion}>
                            <AccordionSummary
                               expandIcon={<ExpandMoreIcon className={classes.icon} />}
                               aria-controls="panel1a-content"
@@ -249,11 +288,71 @@ export default function ProductDetails() {
                            </AccordionSummary>
                            <AccordionDetails className={classes.details}>
                               <div className={classes.productTitle}>
-                                 <Typography variant="h6">{product.name}</Typography>
+                                 <Typography variant="h5" className={classes.bold}>
+                                    {product.name}
+                                 </Typography>
                               </div>
                               <div className={classes.productDesc}>
-                                 <Typography variant="body1"> Description</Typography>
-                                 <Typography variant="body2">{product.description}</Typography>
+                                 {product.dinamicFields?.Availability === 'in stock' ? (
+                                    <div className={classes.stock}>
+                                       <Checkbox
+                                          size="small"
+                                          checked={true}
+                                          color="primary"
+                                          className={classes.checkbox}
+                                       />
+                                       <Typography
+                                          variant="caption"
+                                          color="primary"
+                                          className={classes.bold}
+                                       >
+                                          {product.dinamicFields?.Availability}
+                                       </Typography>
+                                    </div>
+                                 ) : (
+                                    <Typography
+                                       color="error"
+                                       variant="caption"
+                                       className={classes.bold}
+                                    >
+                                       {product.dinamicFields?.Availability}
+                                    </Typography>
+                                 )}
+                                 <div>
+                                    <Typography variant="body2" className={classes.bold}>
+                                       Colors
+                                    </Typography>
+                                    <div
+                                       className={classes.color}
+                                       style={{
+                                          background: `${toHex(product.dinamicFields?.Color)}`,
+                                       }}
+                                    ></div>
+                                 </div>
+                                 <div>
+                                    <Typography variant="body2" className={classes.bold}>
+                                       Size
+                                    </Typography>
+                                    <div className={classes.size}>
+                                       <Typography>{product.dinamicFields?.Size}</Typography>
+                                    </div>
+                                 </div>
+                                 <Accordion className={classes.accordion}>
+                                    <AccordionSummary
+                                       expandIcon={<ExpandMoreIcon className={classes.icon} />}
+                                       aria-controls="panel1a-content"
+                                       id="panel1a-header"
+                                    >
+                                       <Typography variant="body2" className={classes.bold}>
+                                          Description{' '}
+                                       </Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                       <Typography variant="body2">
+                                          {product.description}
+                                       </Typography>
+                                    </AccordionDetails>
+                                 </Accordion>
                               </div>
                            </AccordionDetails>
                            <Divider className={classes.divider} />
@@ -273,7 +372,6 @@ export default function ProductDetails() {
                            </AccordionDetails>
                            <Divider className={classes.divider} />
                         </Accordion>
-
                         <Accordion className={classes.accordion}>
                            <AccordionSummary
                               expandIcon={<ExpandMoreIcon className={classes.icon} />}
