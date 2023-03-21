@@ -14,7 +14,11 @@ router.post("/catalogs/catalog", async (req: Request, res: Response) => {
         name,
       },
     });
-    res.status(200).json(newCatalog);
+    res.status(200).json({
+      message: `Catalog ${name} created successfully`,
+      data: newCatalog[0],
+      action: "Create Catalog",
+    });
   } catch (err) {
     res.status(500).send(err);
   }
@@ -92,13 +96,13 @@ router.post(
       }
       const catalog = await catalogs.findByPk(catalogId);
 
-      res
-        .status(200)
-        .send(
-          `${productsAmount} ${
-            productsAmount > 1 ? "products were" : "product was"
-          } added successfuly in catalog "${catalog?.dataValues.name}"`
-        );
+      res.status(200).json({
+        action: "Upload products",
+        message: `${productsAmount} ${
+          productsAmount > 1 ? "products were" : "product was"
+        } added successfuly in catalog "${catalog?.dataValues.name}"`,
+        data: catalog,
+      });
     } catch (err: any) {
       console.log(err);
       res.status(503).send(err.message);
@@ -205,15 +209,15 @@ router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
         catalogId: id,
       },
     });
-    res
-      .status(200)
-      .send(
-        `${removedProducts} ${
-          removedProducts > 1 ? "products have" : "product has"
-        } been deleted from the catalog called "${
-          currentCatalog?.dataValues.name
-        }"`
-      );
+    res.status(200).json({
+      action: "Delete products",
+      message: `${removedProducts} ${
+        removedProducts > 1 ? "products have" : "product has"
+      } been deleted from the catalog called "${
+        currentCatalog?.dataValues.name
+      }"`,
+      data: currentCatalog,
+    });
   } catch (err) {
     res.sendStatus(503);
   }
@@ -230,11 +234,11 @@ router.put("/catalogs/:id", async (req: Request, res: Response) => {
       ...currentCatalog,
       name,
     });
-    res
-      .status(200)
-      .send(
-        `Catalog "${catalogName}" has been updated to "${updatedCatalog.name}" `
-      );
+    res.status(200).json({
+      action: "Update Catalog",
+      message: `Catalog "${catalogName}" has been updated to "${updatedCatalog.name}" `,
+      data: updatedCatalog,
+    });
   } catch (err) {
     res.status(503).send(err);
   }
@@ -247,7 +251,11 @@ router.delete("/catalogs/:id", async (req: Request, res: Response) => {
     const currentCatalog: any = await catalogs.findByPk(id);
     const catalogName = currentCatalog.name;
     await currentCatalog.destroy();
-    res.status(200).send(`Catalog "${catalogName}" was removed successfully`);
+    res.status(200).json({
+      action: "Remove Catalog",
+      message: `Catalog "${catalogName}" was removed successfully`,
+      data: currentCatalog,
+    });
   } catch (err) {
     res.status(503).send(err);
   }
@@ -311,10 +319,10 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
         }
       }
     }
-
     res.status(200).json({
+      action: "Duplicate catalog",
       message: `The catalog "${catalogName}" was duplicated successfully`,
-      ...clonedCatalog.dataValues,
+      data: clonedCatalog.dataValues,
     });
   } catch (err) {
     res.status(503).send(err);
