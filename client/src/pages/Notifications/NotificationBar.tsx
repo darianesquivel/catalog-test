@@ -13,10 +13,12 @@ const useStyles = makeStyles((theme: Theme) => ({
    mainBox: {
       position: 'relative',
    },
+
    tabContainer: {
       height: '99vh',
       width: '400px',
       overflowY: 'auto',
+      overflowX: 'hidden',
       '& [role="tablist"]': {
          display: 'flex',
          justifyContent: 'space-evenly',
