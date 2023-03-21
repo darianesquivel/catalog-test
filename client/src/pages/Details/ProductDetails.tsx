@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import CustomNavBar from '../../components/CustomNavBar';
 import { useProductInfoQuery } from '../../config/queries';
+import toHex from 'colornames';
 
 const useStyles = makeStyles((theme: Theme) => ({
    gridContainer: {
@@ -173,8 +174,6 @@ type Tproduct = {
 };
 
 export default function ProductDetails() {
-   const toHex = require('colornames');
-
    const classes = useStyles();
    const { id: catalogId, productId } = useParams<{
       id: string;
@@ -294,7 +293,7 @@ export default function ProductDetails() {
                                  </Typography>
                               </div>
                               <div className={classes.productDesc}>
-                                 {product.dinamicFields.Availability === 'in stock' ? (
+                                 {product.dinamicFields?.Availability === 'in stock' ? (
                                     <div className={classes.stock}>
                                        <Checkbox
                                           size="small"
@@ -307,7 +306,7 @@ export default function ProductDetails() {
                                           color="primary"
                                           className={classes.bold}
                                        >
-                                          {product.dinamicFields.Availability}
+                                          {product.dinamicFields?.Availability}
                                        </Typography>
                                     </div>
                                  ) : (
@@ -316,7 +315,7 @@ export default function ProductDetails() {
                                        variant="caption"
                                        className={classes.bold}
                                     >
-                                       {product.dinamicFields.Availability}
+                                       {product.dinamicFields?.Availability}
                                     </Typography>
                                  )}
                                  <div>
@@ -326,7 +325,7 @@ export default function ProductDetails() {
                                     <div
                                        className={classes.color}
                                        style={{
-                                          background: `${toHex(product?.dinamicFields?.Color)}`,
+                                          background: `${toHex(product.dinamicFields?.Color)}`,
                                        }}
                                     ></div>
                                  </div>
@@ -335,7 +334,7 @@ export default function ProductDetails() {
                                        Size
                                     </Typography>
                                     <div className={classes.size}>
-                                       <Typography>{product.dinamicFields.Size}</Typography>
+                                       <Typography>{product.dinamicFields?.Size}</Typography>
                                     </div>
                                  </div>
                                  <Accordion className={classes.accordion}>
