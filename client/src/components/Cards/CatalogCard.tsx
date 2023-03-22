@@ -62,17 +62,17 @@ const useStyles = makeStyles((theme) =>
       },
       products: {
          color: theme.palette.primary.main,
-         fontSize: '15px',
          marginBottom: theme.spacing(1),
          cursor: 'pointer',
+         fontWeight: 600,
       },
       createdAt: {
          display: 'flex',
          alignItems: 'center',
-         color: theme.palette.grey[500],
+         color: theme.palette.text.secondary,
          fontSize: '14px',
          gap: theme.spacing(1),
-         letterSpacing: '0.04em',
+         letterSpacing: '0.02em',
       },
       alertStyle: {
          backgroundColor: theme.palette.primary.light,
@@ -238,6 +238,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
                )}
                <CardContent>
                   <Typography
+                     variant="body2"
                      className={classes.products}
                      onClick={() => history.push(`/catalogs/${id}`)}
                   >{`${productCount > 1 ? productCount : 0} products`}</Typography>

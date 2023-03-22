@@ -50,7 +50,7 @@ function App() {
                   : {
                        primary: {
                           main: '#978efb',
-                          light: '#DAD7FD',
+                          light: '#d7dafd',
                        },
                     }),
             },

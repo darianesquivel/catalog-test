@@ -112,7 +112,10 @@ const useStyles = makeStyles((theme: Theme) =>
          color: theme.palette.primary.main,
       },
       textButton: {
-         letterSpacing: '0.04em',
+         letterSpacing: '0.02em',
+         '& .MuiTypography-body1': {
+            fontWeight: 500,
+         },
       },
       drawerHeader: {
          borderRadius: theme.shape.borderRadius,
@@ -120,7 +123,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       drawerTitle: {
          fontSize: '18px',
-         letterSpacing: '0.04em',
+         letterSpacing: '0.02em',
+         fontWeight: 500,
       },
       flexGrow: {
          flexGrow: 1,
@@ -358,13 +362,16 @@ export default function MiniDrawer() {
                            )}
                         </div>
                      </ListItemIcon>
-                     <ListItemText primary={'Notifications'} />
+                     <ListItemText primary={'Notifications'} className={classes.textButton} />
                   </ListItem>
                   <ListItem button className={classes.buttonStyle} onClick={toggleMode}>
                      <ListItemIcon>
                         <FontAwesomeIcon icon={mode === 'dark' ? faSun : faMoon} size="xl" />
                      </ListItemIcon>
-                     <ListItemText primary={mode === 'dark' ? 'Light Mode' : 'Dark Mode'} />
+                     <ListItemText
+                        primary={mode === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                        className={classes.textButton}
+                     />
                   </ListItem>
                   <ListItem button className={classes.buttonStyle} onClick={handleDrawerChange}>
                      <ListItemIcon>
@@ -374,7 +381,7 @@ export default function MiniDrawer() {
                            <FontAwesomeIcon icon={faChevronRight} size="xl" />
                         )}
                      </ListItemIcon>
-                     <ListItemText primary={'Close'} />
+                     <ListItemText primary={'Close'} className={classes.textButton} />
                   </ListItem>
                </div>
             </List>
