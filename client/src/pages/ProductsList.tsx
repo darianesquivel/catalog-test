@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
    },
    datagrid: {
       width: '100',
+      fontSize: '12px',
    },
    loading: {
       width: '100%',
