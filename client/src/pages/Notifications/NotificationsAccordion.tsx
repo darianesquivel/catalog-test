@@ -21,15 +21,16 @@ const useStyles = makeStyles((theme: Theme) => ({
       padding: theme.spacing(1, 2),
       alignItems: 'center',
       gap: theme.spacing(2),
-      color: theme.palette.grey[600],
+      color: theme.palette.text.secondary,
    },
    accDetails: {
+      width: '100%',
       padding: theme.spacing(1),
       cursor: 'pointer',
+      borderRadius: '8px',
       '&:hover': {
-         backgroundColor: theme.palette.grey[100],
+         backgroundColor: theme.palette.background.default,
       },
-      width: '100%',
    },
 }));
 
