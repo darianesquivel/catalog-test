@@ -14,11 +14,32 @@ router.post("/catalogs/catalog", async (req: Request, res: Response) => {
         name,
       },
     });
-    res.status(200).json({
-      message: `Catalog ${name} created successfully`,
-      data: newCatalog[0],
-      action: "Create Catalog",
-    });
+    const [value, isNewRecord] = newCatalog;
+
+    if (!isNewRecord) {
+      let { count, rows } = await catalogs.findAndCountAll({
+        where: {
+          name: {
+            [Op.iLike]: `${name} (%`,
+          },
+        },
+      });
+      const newRecord: any = await catalogs.create({
+        name: `${name} (${count + 1})`,
+      });
+
+      res.status(200).json({
+        message: `Catalog "${name} ()" created successfully`,
+        data: newRecord,
+        action: "Create Catalog",
+      });
+    } else {
+      res.status(200).json({
+        message: `Catalog ${name} created successfully`,
+        data: newCatalog[0],
+        action: "Create Catalog",
+      });
+    }
   } catch (err) {
     res.status(500).send(err);
   }
