@@ -10,7 +10,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SummaryDetails from './Details/SummaryDetails';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useStore } from './DrawerAppbar';
 import { useHistory, useParams } from 'react-router';
 
 import removeProducts from '../api/removeProducts';
@@ -215,8 +214,9 @@ const ProductsList = (props: any) => {
                   disableSelectionOnClick
                   onSelectionModelChange={handleCheckBoxes}
                   onCellClick={(cell: any) => {
-                     if (cell.field === 'image')
+                     if (cell.field === 'image') {
                         return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
+                     }
                      if (cell.field === 'info') {
                         setInfo(cell.row);
                         return history.push(`/catalogs/${catalogId}/${cell.id}/`);
