@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 // utils
 import addProducts from '../api/addProducts';
@@ -152,18 +152,24 @@ const columns: GridColDef[] = [
    { field: 'title', headerName: 'Title', width: 150 },
    { field: 'description', headerName: 'Description', width: 150 },
 ];
+const generateRowId = (title: string, id = '') => title + id;
 
 export default function AddProducts() {
    const [data, setData] = useState([]);
    const [preview, setPreview] = useState(false);
    const [upload, setUpload] = useState(true);
    const [isloadingFile, setIsLoadingFile] = useState(false);
+   const [initialSelectedRows, setInitialSelectedRows] = useState<any>([]);
+
    const history = useHistory();
    const classes = useStyles();
    const { id: catalogId } = useParams<{ id: string }>();
-   const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() =>
-      addProducts(catalogId, data)
-   );
+   const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() => {
+      const finalData = data.filter((row: any) =>
+         initialSelectedRows.includes(generateRowId(row.title, row.id))
+      );
+      return addProducts(catalogId, finalData);
+   });
    const { setNotifications } = useStore();
 
    const handleFile = async (e: any) => {
@@ -179,12 +185,15 @@ export default function AddProducts() {
             const csvData: any = result.data;
             const sanitizedData = await cleanJson(catalogId, csvData);
             setData(sanitizedData);
+            setInitialSelectedRows(
+               sanitizedData.map((row: any) => generateRowId(row.title, row.id))
+            );
             setIsLoadingFile(false);
             setPreview(true);
          },
       });
    };
-   const customColumns = [...columns, ...columnsCreator(data)];
+   const customColumns = useMemo(() => [...columns, ...columnsCreator(data)], [data]);
 
    const handleCancel = () => {
       setPreview(false);
@@ -288,20 +297,21 @@ export default function AddProducts() {
                            />
                         </Dialog>
                      ) : null}
-
                      {preview && !isLoading && data.length > 0 ? (
                         <DataGrid
                            rows={data}
                            // @ts-ignore
                            columns={customColumns}
-                           pageSize={10}
-                           rowsPerPageOptions={[10]}
+                           pageSize={100}
+                           checkboxSelection
+                           selectionModel={initialSelectedRows}
+                           onSelectionModelChange={(values) => setInitialSelectedRows(values)}
+                           rowsPerPageOptions={[100]}
                            disableSelectionOnClick
                            className={classes.tableData}
-                           getRowId={(row: any) => row.title}
+                           getRowId={(row: any) => generateRowId(row.title, row.id)}
                         />
                      ) : null}
-
                      {preview && data.length < 1 ? (
                         <Dialog
                            open={data.length < 1}
