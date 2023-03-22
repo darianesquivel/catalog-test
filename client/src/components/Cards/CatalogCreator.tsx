@@ -2,6 +2,7 @@ import { useState } from 'react';
 import FormCreator from '../FormCreator';
 import createCatalog from '../../api/createCatalog';
 import { useHistory } from 'react-router';
+import { useStore } from '../../pages/DrawerAppbar';
 
 // MUI
 import { CardActionArea, Typography, Card } from '@material-ui/core/';
@@ -12,8 +13,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
-import { useStore } from '../../pages/DrawerAppbar';
 
 const useStyles = makeStyles((theme) => ({
    creatorContainer: {
@@ -26,6 +25,10 @@ const useStyles = makeStyles((theme) => ({
       border: `1px dashed ${theme.palette.primary.main}`,
       textAlign: 'center',
       color: theme.palette.primary.main,
+   },
+   icon: {
+      fontSize: '6rem',
+      fontWeight: 200,
    },
 }));
 
