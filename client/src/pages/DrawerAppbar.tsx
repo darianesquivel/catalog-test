@@ -22,6 +22,7 @@ import { shallow } from 'zustand/shallow';
 import React, { useMemo, useState } from 'react';
 import NotificationBar from './Notifications/NotificationBar';
 import CircularIcon from '../components/CircularIcon';
+import Classnames from 'classnames';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -132,6 +133,9 @@ const useStyles = makeStyles((theme: Theme) =>
       link: {
          color: theme.palette.text.primary,
          textDecoration: 'none',
+      },
+      linkDisabled: {
+         pointerEvents: 'none',
       },
       bellContainer: {
          display: 'flex',
@@ -319,7 +323,13 @@ export default function MiniDrawer() {
 
                <div className={classes.flexGrow}>
                   {drawerButtons.map((button, index) => (
-                     <Link to={button.link} className={classes.link} key={index}>
+                     <Link
+                        to={button.link}
+                        className={Classnames(classes.link, {
+                           [classes.linkDisabled]: button.link === '',
+                        })}
+                        key={index}
+                     >
                         <ListItem
                            button
                            disabled={button.text === 'Data Explorer' ? false : true}
