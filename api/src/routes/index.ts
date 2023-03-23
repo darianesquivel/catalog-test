@@ -56,12 +56,13 @@ router.post(
       const processedData = jsonData
         .map((obj: any) => {
           return Object.fromEntries(
-            Object.entries(obj).filter(
-              ([key, value]: any) => !!key && !!value.trim()
-            )
+            Object.entries(obj).filter(([key, value]: any) => {
+              const isAnObject = value?.trim()?.startsWith("[");
+              return !!key && !!value && !isAnObject;
+            })
           );
         })
-        .map((obj: any, index: number) => {
+        .map((obj: any) => {
           const mainImage: any = Object.entries(obj)
             .find(([k]) => /image link|image$/gi.test(k))
             ?.flat()?.[1];
