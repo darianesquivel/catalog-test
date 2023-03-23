@@ -5,7 +5,6 @@ import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import CustomAlert from '../../components/CustomAlert';
 import _ from 'lodash';
 
 // STYLES
