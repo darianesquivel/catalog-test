@@ -223,7 +223,6 @@ export default function ProductDetails() {
             catalogId={product.catalog_id}
             productId={product.id}
          />
-         {console.log({ isLoading })}
          {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
          {error || (!isLoading && !data) ? (
             <NotFound error={error} info="An error occurred while loading the details" />
