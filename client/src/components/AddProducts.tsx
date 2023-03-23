@@ -143,10 +143,10 @@ const useStyles = makeStyles((theme) => ({
 
 const columns: GridColDef[] = [
    {
-      field: 'image',
+      field: 'Image',
       headerName: 'Image',
       width: 150,
-      renderCell: (params) => <img src={params.row.image} alt="" width="80px" />,
+      renderCell: (params) => <img src={params.row.mainImage} alt="" width="80px" />,
    },
    { field: 'id', headerName: 'Id', width: 150 },
    { field: 'title', headerName: 'Title', width: 150 },
