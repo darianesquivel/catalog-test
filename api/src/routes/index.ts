@@ -111,6 +111,7 @@ router.post(
           description,
           catalog_id,
           image,
+          mainImage,
           allImages,
           ...extraAttributes
         } = prod;
@@ -121,7 +122,7 @@ router.post(
           where: {
             name: title,
             description,
-            image,
+            image: mainImage,
             catalogId: catalog_id,
             dinamicFields: { ...extraAttributes },
           },
