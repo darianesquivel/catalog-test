@@ -110,14 +110,14 @@ const CustomDialog = ({
                pending: true,
                timestamp: new Date().toISOString(),
             });
-            queryClientConfig.invalidateQueries(queryKey);
+            // queryClientConfig.invalidateQueries(queryKey);
          },
       });
    };
    const handleClose = async () => {
       // we don't do the invalidation in onSuccess because of the rerender of all the cards
       // which makes the success alert visible only a few microseconds
-      // queryClientConfig.invalidateQueries(queryKey);
+      queryClientConfig.invalidateQueries(queryKey);
       // MAKE A VIDEO OF THIS ISSUE
       onModalChange();
    };
@@ -146,7 +146,6 @@ const CustomDialog = ({
          ) : (
             <DialogContent className={classes.container}>
                {children && children}
-
                <DialogActions>
                   <div className={classes.buttonWrapper}>
                      <Button
