@@ -214,6 +214,8 @@ export default function ProductDetails() {
       setImagesState(product.images?.map((obj: any) => obj?.url));
    }, [product?.name, product?.images]);
 
+   console.log({ product });
+
    return (
       <>
          <CustomNavBar
@@ -287,7 +289,7 @@ export default function ProductDetails() {
                                  </Typography>
                               </div>
                               <div className={classes.productDesc}>
-                                 {product.dinamicFields?.Availability === 'in stock' ? (
+                                 {product.dinamicFields?.availability === 'in stock' ? (
                                     <div className={classes.stock}>
                                        <Checkbox
                                           size="small"
@@ -300,7 +302,7 @@ export default function ProductDetails() {
                                           color="primary"
                                           className={classes.bold}
                                        >
-                                          {product.dinamicFields?.Availability}
+                                          {product.dinamicFields?.availability}
                                        </Typography>
                                     </div>
                                  ) : (
@@ -312,25 +314,30 @@ export default function ProductDetails() {
                                        {product.dinamicFields?.Availability}
                                     </Typography>
                                  )}
-                                 <div>
-                                    <Typography variant="body2" className={classes.bold}>
-                                       Colors
-                                    </Typography>
-                                    <div
-                                       className={classes.color}
-                                       style={{
-                                          background: `${toHex(product.dinamicFields?.color)}`,
-                                       }}
-                                    ></div>
-                                 </div>
-                                 <div>
-                                    <Typography variant="body2" className={classes.bold}>
-                                       Size
-                                    </Typography>
-                                    <div className={classes.size}>
-                                       <Typography>{product.dinamicFields?.size}</Typography>
+                                 {product.dinamicFields?.color ? (
+                                    <div>
+                                       <Typography variant="body2" className={classes.bold}>
+                                          Colors
+                                       </Typography>
+                                       <div
+                                          className={classes.color}
+                                          style={{
+                                             background: `${toHex(product.dinamicFields?.color)}`,
+                                          }}
+                                       ></div>
                                     </div>
-                                 </div>
+                                 ) : null}
+                                 {product.dinamicFields?.size ? (
+                                    <div>
+                                       <Typography variant="body2" className={classes.bold}>
+                                          Size
+                                       </Typography>
+                                       <div className={classes.size}>
+                                          <Typography>{product.dinamicFields?.size}</Typography>
+                                       </div>
+                                    </div>
+                                 ) : null}
+
                                  <Accordion className={classes.accordion}>
                                     <AccordionSummary
                                        expandIcon={<ExpandMoreIcon className={classes.icon} />}
