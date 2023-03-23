@@ -23,6 +23,7 @@ import classNames from 'classnames';
 import CustomNavBar from '../components/CustomNavBar';
 import { useSingleCatalogQuery } from '../config/queries';
 import React from 'react';
+import NotFound from './NotFound';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -197,12 +198,7 @@ const ProductsList = (props: any) => {
                </div>
             ) : null}
             {isError ? (
-               <div>
-                  <CustomAlert
-                     alertType="error"
-                     message={`An error occurred while loading the catalogs: ${error}`}
-                  />
-               </div>
+               <NotFound error={error} info="An error occurred while loading the catalogs" />
             ) : null}
             {isSuccess && !isFetching ? (
                <DataGrid
