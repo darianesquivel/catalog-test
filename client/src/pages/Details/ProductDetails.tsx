@@ -5,7 +5,6 @@ import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import CustomAlert from '../../components/CustomAlert';
 import _ from 'lodash';
 
 // STYLES
@@ -13,6 +12,7 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 import CustomNavBar from '../../components/CustomNavBar';
 import { useProductInfoQuery } from '../../config/queries';
 import toHex from 'colornames';
+import NotFound from '../NotFound';
 
 const useStyles = makeStyles((theme: Theme) => ({
    gridContainer: {
@@ -222,10 +222,13 @@ export default function ProductDetails() {
             catalogId={product.catalog_id}
             productId={product.id}
          />
-         <Grid container className={classes.gridContainer}>
-            <Grid item xs={9} className={classes.leftBox}>
-               {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
-               {isSuccess ? (
+         {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
+         {error || (!isLoading && !data) ? (
+            <NotFound error={error} info="An error occurred while loading the details" />
+         ) : null}
+         {isSuccess && data ? (
+            <Grid container className={classes.gridContainer}>
+               <Grid item xs={9} className={classes.leftBox}>
                   <Grid container className={classes.imagesContainer}>
                      <Grid item xs={2} className={classes.carousel}>
                         {imagesState?.map((url: string) =>
@@ -250,18 +253,9 @@ export default function ProductDetails() {
                         />
                      </Grid>
                   </Grid>
-               ) : null}
-               {error && (
-                  <CustomAlert
-                     alertType="error"
-                     message={`There was an error creating the catalog: ${error}`}
-                  />
-               )}
-            </Grid>
+               </Grid>
 
-            <Grid item className={classes.rightBox} xs={3}>
-               {isLoading ? <CircularProgress size={28} className={classes.center} /> : null}
-               {isSuccess ? (
+               <Grid item className={classes.rightBox} xs={3}>
                   <>
                      <div className={classes.header}>
                         <Typography variant="subtitle1" className={classes.bold}>
@@ -390,14 +384,9 @@ export default function ProductDetails() {
                         </Accordion>
                      </div>
                   </>
-               ) : error ? (
-                  <CustomAlert
-                     alertType="error"
-                     message={`There was an error creating the catalog: ${error}`}
-                  />
-               ) : null}
+               </Grid>
             </Grid>
-         </Grid>
+         ) : null}
       </>
    );
 }
