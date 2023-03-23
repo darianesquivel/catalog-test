@@ -1,3 +1,4 @@
+import { mapKeys } from "lodash";
 import { query, Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
@@ -14,11 +15,32 @@ router.post("/catalogs/catalog", async (req: Request, res: Response) => {
         name,
       },
     });
-    res.status(200).json({
-      message: `Catalog ${name} created successfully`,
-      data: newCatalog[0],
-      action: "Create Catalog",
-    });
+    const [value, isNewRecord] = newCatalog;
+
+    if (!isNewRecord) {
+      let { count, rows } = await catalogs.findAndCountAll({
+        where: {
+          name: {
+            [Op.iLike]: `${name} (%`,
+          },
+        },
+      });
+      const newRecord: any = await catalogs.create({
+        name: `${name} (${count + 1})`,
+      });
+
+      res.status(200).json({
+        message: `Catalog "${name} ()" created successfully`,
+        data: newRecord,
+        action: "Create Catalog",
+      });
+    } else {
+      res.status(200).json({
+        message: `Catalog ${name} created successfully`,
+        data: newCatalog[0],
+        action: "Create Catalog",
+      });
+    }
   } catch (err) {
     res.status(500).send(err);
   }
@@ -34,15 +56,36 @@ router.post(
       const processedData = jsonData
         .map((obj: any) => {
           return Object.fromEntries(
-            Object.entries(obj).filter(([key, value]: any) => !!key && !!value)
+            Object.entries(obj).filter(
+              ([key, value]: any) => !!key && !!value.trim()
+            )
           );
         })
-        .map((obj: any, index: number) => ({
-          catalog_id: catalogId,
-          allImages: obj.Images,
-          ...obj,
-        }))
-        .filter((obj: any) => obj.description && obj.title && obj.image);
+        .map((obj: any, index: number) => {
+          const mainImage: any = Object.entries(obj)
+            .find(([k]) => /image link|image$/gi.test(k))
+            ?.flat()?.[1];
+
+          return {
+            mainImage: mainImage || "",
+            catalog_id: catalogId,
+            allImages: obj.Images || "",
+            ...mapKeys(obj, (value, key) => key.toLowerCase()),
+          };
+        })
+        .filter((obj: any) => {
+          const columnNames = Object.keys(obj);
+
+          const hasMinimumValues = [
+            /title/gi,
+            /description/gi,
+            /image/gi,
+          ].every((regex) => {
+            const bool = columnNames.some((key) => regex.test(key));
+            return bool;
+          });
+          return hasMinimumValues;
+        });
 
       res.status(200).json(processedData);
     } catch (err: any) {
@@ -68,6 +111,7 @@ router.post(
           description,
           catalog_id,
           image,
+          mainImage,
           allImages,
           ...extraAttributes
         } = prod;
@@ -78,7 +122,7 @@ router.post(
           where: {
             name: title,
             description,
-            image,
+            image: mainImage,
             catalogId: catalog_id,
             dinamicFields: { ...extraAttributes },
           },

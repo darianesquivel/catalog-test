@@ -321,7 +321,7 @@ export default function ProductDetails() {
                                     <div
                                        className={classes.color}
                                        style={{
-                                          background: `${toHex(product.dinamicFields?.Color)}`,
+                                          background: `${toHex(product.dinamicFields?.color)}`,
                                        }}
                                     ></div>
                                  </div>
@@ -330,7 +330,7 @@ export default function ProductDetails() {
                                        Size
                                     </Typography>
                                     <div className={classes.size}>
-                                       <Typography>{product.dinamicFields?.Size}</Typography>
+                                       <Typography>{product.dinamicFields?.size}</Typography>
                                     </div>
                                  </div>
                                  <Accordion className={classes.accordion}>

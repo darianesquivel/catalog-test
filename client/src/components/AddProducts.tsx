@@ -143,10 +143,10 @@ const useStyles = makeStyles((theme) => ({
 
 const columns: GridColDef[] = [
    {
-      field: 'image',
+      field: 'Image',
       headerName: 'Image',
       width: 150,
-      renderCell: (params) => <img src={params.row.image} alt="" width="80px" />,
+      renderCell: (params) => <img src={params.row.mainImage} alt="" width="80px" />,
    },
    { field: 'id', headerName: 'Id', width: 150 },
    { field: 'title', headerName: 'Title', width: 150 },
@@ -321,7 +321,7 @@ export default function AddProducts() {
                         >
                            <CustomAlert
                               alertType="error"
-                              message={`The columns: id , title , description , image are required to upload a csv`}
+                              message={`The columns: title , description and image are required to upload a csv`}
                               closeIcon={true}
                               onClose={handleCancel}
                            />

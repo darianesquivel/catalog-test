@@ -99,7 +99,7 @@ type NavBarProps = {
 
 export default function CustomNavBar({
    catalogId,
-   title,
+   title = '',
    productId,
    isProductListSection = false,
    isUploadSection = false,
@@ -119,10 +119,9 @@ export default function CustomNavBar({
    const isCatalogLoading = useIsFetching({
       queryKey: ['catalogs'],
    });
+   const isMainSection = ![isProductDetails, isUploadSection, isProductListSection].includes(true);
 
-   const sectionTitle = title ? title : 'Catalog Explorer';
-
-   const isMainSection = sectionTitle.includes('Catalog Explorer');
+   const sectionTitle = isMainSection ? 'Catalog Explorer' : title;
 
    const handleRefresh = async () => {
       queryClientConfig.invalidateQueries(['catalogs']);
@@ -180,20 +179,21 @@ export default function CustomNavBar({
          }}
       />
    );
-   const ArrowIcon = !isMainSection ? (
-      <IconButton
-         className={classes.icons}
-         onClick={() => {
-            if (isProductDetails || isUploadSection) {
-               history.goBack();
-            } else {
-               history.push('/catalogs');
-            }
-         }}
-      >
-         <FontAwesomeIcon icon={faAngleLeft} size="sm" />
-      </IconButton>
-   ) : null;
+   const ArrowIcon =
+      !isMainSection && title ? (
+         <IconButton
+            className={classes.icons}
+            onClick={() => {
+               if (isProductDetails || isUploadSection) {
+                  history.goBack();
+               } else {
+                  history.push('/catalogs');
+               }
+            }}
+         >
+            <FontAwesomeIcon icon={faAngleLeft} size="sm" />
+         </IconButton>
+      ) : null;
 
    const RefreshIcon = isMainSection ? (
       <IconButton
@@ -207,29 +207,31 @@ export default function CustomNavBar({
       </IconButton>
    ) : null;
 
-   const EditIcon = isProductListSection ? (
-      <IconButton className={classes.icons} onClick={() => setOpen(true)}>
-         <FontAwesomeIcon icon={faPen} size="xs" />
-      </IconButton>
-   ) : null;
+   const EditIcon =
+      isProductListSection && title ? (
+         <IconButton className={classes.icons} onClick={() => setOpen(true)}>
+            <FontAwesomeIcon icon={faPen} size="xs" />
+         </IconButton>
+      ) : null;
 
-   const FinalIcons = isProductListSection ? (
-      <Button
-         variant="outlined"
-         color="primary"
-         onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
-         className={classes.addProductBtn}
-      >
-         Add products
-      </Button>
-   ) : isMainSection && !isProductListSection && !isProductDetails ? (
-      <SearchBar
-         onSubmit={handleSearchSubmit}
-         initialTerm={term}
-         onChange={handleSearchChange}
-         searching={!!isLoading}
-      />
-   ) : null;
+   const FinalIcons =
+      isProductListSection && title ? (
+         <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+            className={classes.addProductBtn}
+         >
+            Add products
+         </Button>
+      ) : isMainSection && !isProductListSection && !isProductDetails ? (
+         <SearchBar
+            onSubmit={handleSearchSubmit}
+            initialTerm={term}
+            onChange={handleSearchChange}
+            searching={!!isLoading}
+         />
+      ) : null;
 
    return (
       <div>
