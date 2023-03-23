@@ -5,7 +5,7 @@ import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import _ from 'lodash';
+import _, { upperFirst } from 'lodash';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -188,7 +188,7 @@ export default function ProductDetails() {
    const extraBullets = useMemo(() => {
       if (product?.dinamicFields) {
          return Object.entries(product.dinamicFields).map(([key, value]: any) => ({
-            key,
+            key: upperFirst(key),
             value,
          }));
       } else return [];
@@ -198,13 +198,13 @@ export default function ProductDetails() {
    const [selected, setSelected] = useState<any>(imagesState?.[0]);
    const keyValues = _.uniqBy(
       [
-         { key: 'title', value: product.name },
+         { key: 'Title', value: product.name },
          {
-            key: 'images',
+            key: 'Images',
             value: imagesState?.join(', ') || '-',
          },
-         { key: 'mainImageUrl', value: product.image },
-         { key: 'description', value: product.description },
+         { key: 'MainImageUrl', value: product.image },
+         { key: 'Description', value: product.description },
          ...extraBullets,
       ],
       'key'

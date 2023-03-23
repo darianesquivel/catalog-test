@@ -6,6 +6,8 @@ import DetailTable from '../../components/DetailTable';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core/styles';
+import { unionBy, upperFirst } from 'lodash';
+import { useMemo } from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
    container: {
@@ -47,19 +49,44 @@ const useStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
       justifyContent: 'flex-start',
    },
+   customTabs: {
+      overflowY: 'auto',
+   },
+   bulletsStyles: {
+      '& > div': {
+         gap: theme.spacing(2),
+      },
+   },
 }));
 
-export default function SummaryDetails({ name, image, description, closeModal }: any) {
+export default function SummaryDetails({ name, image, description, closeModal, ...extra }: any) {
    const classes = useStyles();
-   const metadataContent = [
-      { key: 'Title', value: name },
-      { key: 'Image', value: image },
-      { key: 'Description', value: description },
-   ];
+
+   const extraBullets = useMemo(() => {
+      if (extra?.dinamicFields) {
+         return Object.entries(extra.dinamicFields).map(([key, value]: any) => ({
+            key: upperFirst(key),
+            value,
+         }));
+      } else return [];
+   }, [extra?.dinamicFields]);
+
+   const metadataContent = unionBy(
+      [
+         { key: 'Title', value: name },
+         { key: 'Image', value: image },
+         { key: 'Description', value: description },
+         ...extraBullets,
+      ],
+      'key'
+   );
+
    const tabs = [
       {
          columnName: 'Metadata',
-         content: <DetailTable rows={metadataContent} boldKeys />,
+         content: (
+            <DetailTable rows={metadataContent} boldKeys extraStyles={classes.bulletsStyles} />
+         ),
       },
       {
          columnName: 'Enrichment',
@@ -107,7 +134,7 @@ export default function SummaryDetails({ name, image, description, closeModal }:
             <Typography variant="body2">Description</Typography>
             <Typography variant="caption">{description}</Typography>
          </div>
-         <CustomTabs tabValues={tabs} />
+         <CustomTabs tabValues={tabs} extraStyles={classes.customTabs} />
       </Container>
    );
 }
