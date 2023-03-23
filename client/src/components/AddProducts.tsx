@@ -321,7 +321,7 @@ export default function AddProducts() {
                         >
                            <CustomAlert
                               alertType="error"
-                              message={`The columns: id , title , description , image are required to upload a csv`}
+                              message={`The columns: title , description and image are required to upload a csv`}
                               closeIcon={true}
                               onClose={handleCancel}
                            />
