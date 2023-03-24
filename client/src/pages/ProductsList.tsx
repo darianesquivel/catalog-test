@@ -112,6 +112,7 @@ const ProductsList = (props: any) => {
    const [open, setOpen] = useState<boolean>(false);
 
    const view = useStore((state: any) => state.view);
+   const [productSelected, setProductSelected] = useState([]);
 
    const {
       data: catalog = {},
@@ -154,7 +155,8 @@ const ProductsList = (props: any) => {
    const handleCheckBoxes = useCallback((values: any[]) => {
       setSelected(values);
    }, []);
-   console.log({ rows });
+
+   console.log({ selected });
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
@@ -214,13 +216,16 @@ const ProductsList = (props: any) => {
             {isSuccess && !isFetching ? (
                view ? (
                   <div className={classes.catalogViewContainer}>
-                     {rows.map((prod) => (
+                     {rows.map((prod, index) => (
                         <ProductCard
                            brand={prod.brand}
                            title={prod.name}
                            image={prod.image}
                            catalogId={prod.catalogId}
                            id={prod.id}
+                           key={index}
+                           onSelectionModelChange={handleCheckBoxes}
+                           selected={selected}
                         />
                      ))}
                   </div>

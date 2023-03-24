@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       borderRadius: theme.shape.borderRadius,
       textTransform: 'none',
       padding: theme.spacing(0.3, 2),
+      marginLeft: theme.spacing(1),
    },
    icons: {
       width: '45px',
@@ -115,7 +116,6 @@ export default function CustomNavBar({
 
    const view = useStore((state: any) => state.view);
    const { toggleView } = useStore();
-   console.log({ view });
 
    const drawerOpen = useStore((state: any) => state.open);
    const { setNotifications } = useStore();
@@ -227,7 +227,12 @@ export default function CustomNavBar({
    const FinalIcons =
       isProductListSection && title ? (
          <>
-            <Button onClick={toggleView}>
+            <Button
+               onClick={toggleView}
+               variant="outlined"
+               color="primary"
+               className={classes.addProductBtn}
+            >
                {view ? <FontAwesomeIcon icon={faThList} /> : <FontAwesomeIcon icon={faThLarge} />}
             </Button>
             <Button
