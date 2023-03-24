@@ -6,6 +6,7 @@ import {
    faRocket,
    faTrash,
    faInfoCircle,
+   faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SummaryDetails from './Details/SummaryDetails';
@@ -15,7 +16,7 @@ import { useHistory, useParams } from 'react-router';
 import removeProducts from '../api/removeProducts';
 import CustomDialog from '../components/CustomDialog';
 import CustomAlert from '../components/CustomAlert';
-import { columnsCreator } from '../components/helpers';
+import { columnsCreator, downloadCSV } from '../components/helpers';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,9 +43,15 @@ const useStyles = makeStyles((theme) => ({
    },
    buttonsContainer: {
       display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+   },
+   iconGroups: {
+      display: 'flex',
       gap: theme.spacing(2),
       marginBottom: theme.spacing(2),
    },
+
    button: {
       display: 'flex',
       borderRadius: theme.shape.borderRadius,
@@ -113,7 +120,6 @@ const ProductsList = (props: any) => {
       error,
       isFetching,
    } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
-
    const productColumns = useMemo(
       () =>
          catalog?.products?.length
@@ -152,31 +158,47 @@ const ProductsList = (props: any) => {
          <div className={classes.mainBox}>
             {NavBar}
             <div className={classes.buttonsContainer}>
-               <Button className={classes.button} variant="contained" disabled>
-                  <FontAwesomeIcon size="lg" icon={faTags} />
-                  <Typography className={classes.typographyButtons}>Enrichment</Typography>
-               </Button>
-               <Button className={classes.button} variant="contained" disabled>
-                  <FontAwesomeIcon size="lg" icon={faPenNib} />
-                  <Typography className={classes.typographyButtons}>Scribe</Typography>
-               </Button>
-               <Button className={classes.button} variant="contained" disabled>
-                  <FontAwesomeIcon size="lg" icon={faRocket} />
-                  <Typography className={classes.typographyButtons}>Assistant</Typography>
-               </Button>
-               <Button
-                  className={classes.button}
-                  variant="contained"
-                  onClick={() => setOpen(true)}
-                  disabled={!selected.length}
-               >
-                  <FontAwesomeIcon size="lg" icon={faTrash} />
-               </Button>
+               <div className={classes.iconGroups}>
+                  <Button className={classes.button} variant="contained" disabled>
+                     <FontAwesomeIcon size="lg" icon={faTags} />
+                     <Typography className={classes.typographyButtons}>Enrichment</Typography>
+                  </Button>
+                  <Button className={classes.button} variant="contained" disabled>
+                     <FontAwesomeIcon size="lg" icon={faPenNib} />
+                     <Typography className={classes.typographyButtons}>Scribe</Typography>
+                  </Button>
+                  <Button className={classes.button} variant="contained" disabled>
+                     <FontAwesomeIcon size="lg" icon={faRocket} />
+                     <Typography className={classes.typographyButtons}>Assistant</Typography>
+                  </Button>
+                  <Button
+                     className={classes.button}
+                     variant="contained"
+                     onClick={() => setOpen(true)}
+                     disabled={!selected.length}
+                  >
+                     <FontAwesomeIcon size="lg" icon={faTrash} />
+                  </Button>
+               </div>
+               <div className={classes.iconGroups}>
+                  <Button
+                     className={classes.button}
+                     variant="contained"
+                     disabled={!products.length}
+                     onClick={() => downloadCSV(products, catalog.name)}
+                  >
+                     <FontAwesomeIcon size="lg" icon={faDownload} />
+                  </Button>
+               </div>
+
                {open && (
                   <CustomDialog
                      isOpen={open}
                      onModalChange={() => setOpen(false)}
-                     onAccept={() => removeProducts({ id: catalogId, productsId: selected })}
+                     onAccept={() => {
+                        setSelected([]);
+                        return removeProducts({ id: catalogId, productsId: selected });
+                     }}
                      queryKey={[`catalogs/:${catalogId}`, catalogId]}
                      customMessage={(data: any) => data.message}
                      action="Delete"
