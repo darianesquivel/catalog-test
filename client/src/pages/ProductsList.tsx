@@ -1,5 +1,5 @@
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Tooltip, Typography } from '@material-ui/core';
 import {
    faTags,
    faPenNib,
@@ -45,11 +45,21 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      marginBottom: theme.spacing(2),
    },
-   iconGroups: {
+   startIconsGroup: {
       display: 'flex',
       gap: theme.spacing(2),
-      marginBottom: theme.spacing(2),
+      border: 'solid black 1px',
+   },
+   endButtons: {
+      borderRadius: theme.shape.borderRadius,
+      textTransform: 'none',
+      // fontSize: '14px',
+      padding: theme.spacing(1.2, 0),
+   },
+   endIconButtons: {
+      fontWeight: 500,
    },
 
    button: {
@@ -158,7 +168,7 @@ const ProductsList = (props: any) => {
          <div className={classes.mainBox}>
             {NavBar}
             <div className={classes.buttonsContainer}>
-               <div className={classes.iconGroups}>
+               <div className={classes.startIconsGroup}>
                   <Button className={classes.button} variant="contained" disabled>
                      <FontAwesomeIcon size="lg" icon={faTags} />
                      <Typography className={classes.typographyButtons}>Enrichment</Typography>
@@ -180,15 +190,22 @@ const ProductsList = (props: any) => {
                      <FontAwesomeIcon size="lg" icon={faTrash} />
                   </Button>
                </div>
-               <div className={classes.iconGroups}>
-                  <Button
-                     className={classes.button}
-                     variant="contained"
-                     disabled={!products.length}
-                     onClick={() => downloadCSV(products, catalog.name)}
-                  >
-                     <FontAwesomeIcon size="lg" icon={faDownload} />
-                  </Button>
+               <div>
+                  <Tooltip title={'Export to CSV'}>
+                     <Button
+                        className={classes.endButtons}
+                        variant="outlined"
+                        color="primary"
+                        disabled={!products.length}
+                        onClick={() => downloadCSV(products, catalog.name)}
+                     >
+                        <FontAwesomeIcon
+                           size="sm"
+                           icon={faDownload}
+                           className={classes.endIconButtons}
+                        />
+                     </Button>
+                  </Tooltip>
                </div>
 
                {open && (
