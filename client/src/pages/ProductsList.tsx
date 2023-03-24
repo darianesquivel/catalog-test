@@ -22,8 +22,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import CustomNavBar from '../components/CustomNavBar';
 import { useSingleCatalogQuery } from '../config/queries';
-import React from 'react';
 import NotFound from './NotFound';
+import ProductCard from '../components/Cards/ProductCard';
+import { useStore } from '../pages/DrawerAppbar';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -67,6 +68,11 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       justifyContent: 'center',
    },
+   catalogViewContainer: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax( 290px, 1fr))',
+      gap: theme.spacing(2),
+   },
 }));
 
 const columns: GridColDef[] = [
@@ -104,6 +110,8 @@ const ProductsList = (props: any) => {
    const [info, setInfo] = useState<object>();
    const [selected, setSelected] = useState<any>([]);
    const [open, setOpen] = useState<boolean>(false);
+
+   const view = useStore((state: any) => state.view);
 
    const {
       data: catalog = {},
@@ -146,52 +154,55 @@ const ProductsList = (props: any) => {
    const handleCheckBoxes = useCallback((values: any[]) => {
       setSelected(values);
    }, []);
-
+   console.log({ rows });
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
             {NavBar}
-            <div className={classes.buttonsContainer}>
-               <Button className={classes.button} variant="contained" disabled>
-                  <FontAwesomeIcon size="lg" icon={faTags} />
-                  <Typography className={classes.typographyButtons}>Enrichment</Typography>
-               </Button>
-               <Button className={classes.button} variant="contained" disabled>
-                  <FontAwesomeIcon size="lg" icon={faPenNib} />
-                  <Typography className={classes.typographyButtons}>Scribe</Typography>
-               </Button>
-               <Button className={classes.button} variant="contained" disabled>
-                  <FontAwesomeIcon size="lg" icon={faRocket} />
-                  <Typography className={classes.typographyButtons}>Assistant</Typography>
-               </Button>
-               <Button
-                  className={classes.button}
-                  variant="contained"
-                  onClick={() => setOpen(true)}
-                  disabled={!selected.length}
-               >
-                  <FontAwesomeIcon size="lg" icon={faTrash} />
-               </Button>
-               {open && (
-                  <CustomDialog
-                     isOpen={open}
-                     onModalChange={() => setOpen(false)}
-                     onAccept={() => removeProducts({ id: catalogId, productsId: selected })}
-                     queryKey={[`catalogs/:${catalogId}`, catalogId]}
-                     customMessage={(data: any) => data.message}
-                     action="Delete"
+            {!view ? (
+               <div className={classes.buttonsContainer}>
+                  <Button className={classes.button} variant="contained" disabled>
+                     <FontAwesomeIcon size="lg" icon={faTags} />
+                     <Typography className={classes.typographyButtons}>Enrichment</Typography>
+                  </Button>
+                  <Button className={classes.button} variant="contained" disabled>
+                     <FontAwesomeIcon size="lg" icon={faPenNib} />
+                     <Typography className={classes.typographyButtons}>Scribe</Typography>
+                  </Button>
+                  <Button className={classes.button} variant="contained" disabled>
+                     <FontAwesomeIcon size="lg" icon={faRocket} />
+                     <Typography className={classes.typographyButtons}>Assistant</Typography>
+                  </Button>
+                  <Button
+                     className={classes.button}
+                     variant="contained"
+                     onClick={() => setOpen(true)}
+                     disabled={!selected.length}
                   >
-                     <Typography variant="h6">
-                        You are about to delete the selected products. Are you sure?
-                     </Typography>
-                     <CustomAlert
-                        message="This action can't be undone."
-                        alertType="error"
-                        variant="filled"
-                     />
-                  </CustomDialog>
-               )}
-            </div>
+                     <FontAwesomeIcon size="lg" icon={faTrash} />
+                  </Button>
+                  {open && (
+                     <CustomDialog
+                        isOpen={open}
+                        onModalChange={() => setOpen(false)}
+                        onAccept={() => removeProducts({ id: catalogId, productsId: selected })}
+                        queryKey={[`catalogs/:${catalogId}`, catalogId]}
+                        customMessage={(data: any) => data.message}
+                        action="Delete"
+                     >
+                        <Typography variant="h6">
+                           You are about to delete the selected products. Are you sure?
+                        </Typography>
+                        <CustomAlert
+                           message="This action can't be undone."
+                           alertType="error"
+                           variant="filled"
+                        />
+                     </CustomDialog>
+                  )}
+               </div>
+            ) : null}
+
             {isLoading || isFetching ? (
                <div className={classes.loading}>
                   <CircularProgress />
@@ -201,25 +212,39 @@ const ProductsList = (props: any) => {
                <NotFound error={error} info="An error occurred while loading the catalogs" />
             ) : null}
             {isSuccess && !isFetching ? (
-               <DataGrid
-                  className={classes.datagrid}
-                  rows={rows}
-                  columns={customColumns}
-                  pageSize={100}
-                  rowsPerPageOptions={[100]}
-                  checkboxSelection
-                  disableSelectionOnClick
-                  onSelectionModelChange={handleCheckBoxes}
-                  onCellClick={(cell: any) => {
-                     if (cell.field === 'image') {
-                        return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
-                     }
-                     if (cell.field === 'info') {
-                        setInfo(cell.row);
-                        return history.push(`/catalogs/${catalogId}/${cell.id}/`);
-                     }
-                  }}
-               />
+               view ? (
+                  <div className={classes.catalogViewContainer}>
+                     {rows.map((prod) => (
+                        <ProductCard
+                           brand={prod.brand}
+                           title={prod.name}
+                           image={prod.image}
+                           catalogId={prod.catalogId}
+                           id={prod.id}
+                        />
+                     ))}
+                  </div>
+               ) : (
+                  <DataGrid
+                     className={classes.datagrid}
+                     rows={rows}
+                     columns={customColumns}
+                     pageSize={100}
+                     rowsPerPageOptions={[100]}
+                     checkboxSelection
+                     disableSelectionOnClick
+                     onSelectionModelChange={handleCheckBoxes}
+                     onCellClick={(cell: any) => {
+                        if (cell.field === 'image') {
+                           return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
+                        }
+                        if (cell.field === 'info') {
+                           setInfo(cell.row);
+                           return history.push(`/catalogs/${catalogId}/${cell.id}/`);
+                        }
+                     }}
+                  />
+               )
             ) : null}
          </div>
          {info && <SummaryDetails {...info} closeModal={setInfo} />}

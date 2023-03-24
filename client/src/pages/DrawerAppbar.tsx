@@ -196,6 +196,9 @@ export const useStore = create(
                ...state,
                mode: state.mode === 'light' ? 'dark' : 'light',
             })),
+         view: false,
+         toggleView: () => set((state: any) => ({ ...state, view: !state.view })),
+
          notifications: [] as NotificationType[],
          setNotifications: ({ type, content, timestamp, pending = true }: NotificationType) => {
             let modelName: string;

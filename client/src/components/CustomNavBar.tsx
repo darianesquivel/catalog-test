@@ -11,12 +11,12 @@ import queryClientConfig from '../config/queryClientConfig';
 import { useMutateHook } from '../hooks';
 import getFilteredCatalogs from '../api/getFilteredCatalogs';
 import { useIsFetching } from '@tanstack/react-query';
+import { faThLarge, faThList } from '@fortawesome/free-solid-svg-icons';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
 import clsx from 'clsx';
-import React from 'react';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -95,6 +95,8 @@ type NavBarProps = {
    isProductListSection?: boolean;
    isUploadSection?: boolean;
    isProductDetails?: boolean;
+   onToggle?: any;
+   view?: boolean;
 };
 
 export default function CustomNavBar({
@@ -110,6 +112,10 @@ export default function CustomNavBar({
 
    const [open, setOpen] = useState(false);
    const [term, setTerm] = useState(getUrlTerm(history.location.search));
+
+   const view = useStore((state: any) => state.view);
+   const { toggleView } = useStore();
+   console.log({ view });
 
    const drawerOpen = useStore((state: any) => state.open);
    const { setNotifications } = useStore();
@@ -161,6 +167,10 @@ export default function CustomNavBar({
       ),
       [classes.sectionName, sectionTitle]
    );
+
+   const handleClick = () => {
+      toggleView();
+   };
 
    const UpdateForm = open && catalogId && title && (
       <FormCreator
@@ -216,14 +226,19 @@ export default function CustomNavBar({
 
    const FinalIcons =
       isProductListSection && title ? (
-         <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
-            className={classes.addProductBtn}
-         >
-            Add products
-         </Button>
+         <>
+            <Button onClick={toggleView}>
+               {view ? <FontAwesomeIcon icon={faThList} /> : <FontAwesomeIcon icon={faThLarge} />}
+            </Button>
+            <Button
+               variant="outlined"
+               color="primary"
+               onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+               className={classes.addProductBtn}
+            >
+               Add products
+            </Button>
+         </>
       ) : isMainSection && !isProductListSection && !isProductDetails ? (
          <SearchBar
             onSubmit={handleSearchSubmit}
