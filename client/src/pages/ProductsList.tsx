@@ -225,7 +225,7 @@ const ProductsList = (props: any) => {
                            id={prod.id}
                            key={index}
                            onSelectionModelChange={handleCheckBoxes}
-                           selected={selected}
+                           selected
                         />
                      ))}
                   </div>
