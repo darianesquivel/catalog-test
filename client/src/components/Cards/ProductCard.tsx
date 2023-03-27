@@ -34,15 +34,15 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius / 4,
       width: 19,
       height: 19,
-      boxShadow: 'inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)',
+      border: `1px solid ${theme.palette.grey[300]}`,
       backgroundColor: '#f5f8fa',
       margin: '2px',
    },
    brand: {
       background: theme.palette.primary.main,
       display: 'inline-block',
-      padding: theme.spacing(0, 1),
-      borderRadius: theme.shape.borderRadius,
+      padding: theme.spacing(0.3, 1),
+      borderRadius: theme.shape.borderRadius * 2,
       color: 'white',
       fontWeight: 500,
    },
@@ -95,8 +95,7 @@ function ProductCard({
             </CardContent>
          </CardActionArea>
       );
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [brand, image, title]);
+   }, [brand, image, title, classes, handleClick]);
 
    const RenderCheckBox = useMemo(
       () => (
