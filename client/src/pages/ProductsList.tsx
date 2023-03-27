@@ -288,19 +288,21 @@ const ProductsList = (props: any) => {
                </div>
                <div>
                   <Tooltip title={'Export to CSV'}>
-                     <Button
-                        className={classes.endButtons}
-                        variant="outlined"
-                        color="primary"
-                        disabled={!products.length}
-                        onClick={() => downloadCSV(products, catalog.name)}
-                     >
-                        <FontAwesomeIcon
-                           size="sm"
-                           icon={faDownload}
-                           className={classes.endIconButtons}
-                        />
-                     </Button>
+                     <span>
+                        <Button
+                           className={classes.endButtons}
+                           variant="outlined"
+                           color="primary"
+                           disabled={!products.length}
+                           onClick={() => downloadCSV(products, catalog.name)}
+                        >
+                           <FontAwesomeIcon
+                              size="sm"
+                              icon={faDownload}
+                              className={classes.endIconButtons}
+                           />
+                        </Button>
+                     </span>
                   </Tooltip>
                </div>
                {bulkOption === 'delete' && (
