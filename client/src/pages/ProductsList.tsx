@@ -226,7 +226,7 @@ const ProductsList = (props: any) => {
 
    const handleCheckBoxes = useCallback(
       (values: any[]) => {
-         if (isViewList) {
+         if (!isViewList) {
             setSelected((prevState: any) => {
                if (prevState.includes(values)) {
                   return prevState.filter((id: any) => id !== values);
@@ -338,14 +338,6 @@ const ProductsList = (props: any) => {
             ) : null}
             {isSuccess && !isFetching ? (
                isViewList ? (
-                  <div
-                     className={classNames(classes.catalogViewContainer, {
-                        [classes.catalogViewContainerNoDate]: rows.length < 5,
-                     })}
-                  >
-                     {catalogRenderView}
-                  </div>
-               ) : (
                   <DataGrid
                      className={classes.datagrid}
                      rows={rows}
@@ -365,6 +357,14 @@ const ProductsList = (props: any) => {
                         }
                      }}
                   />
+               ) : (
+                  <div
+                     className={classNames(classes.catalogViewContainer, {
+                        [classes.catalogViewContainerNoDate]: rows.length < 5,
+                     })}
+                  >
+                     {catalogRenderView}
+                  </div>
                )
             ) : null}
          </div>
