@@ -18,6 +18,7 @@ import removeProducts from '../api/removeProducts';
 import CustomDialog from '../components/CustomDialog';
 import CustomAlert from '../components/CustomAlert';
 import { columnsCreator, downloadCSV } from '../components/helpers';
+import Lazyload from 'react-lazyload';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
@@ -241,17 +242,18 @@ const ProductsList = (props: any) => {
       [isViewList]
    );
 
-   const catalogRenderView = rows.map((prod, index) => (
-      <ProductCard
-         brand={prod.brand}
-         title={prod.name}
-         image={prod.image}
-         catalogId={prod.catalogId}
-         id={prod.id}
-         key={index}
-         onSelectionChange={handleCheckBoxes}
-         isSelected={selected.includes(prod.id)}
-      />
+   const catalogRenderView = rows.map((prod) => (
+      <Lazyload key={prod.id} height={100}>
+         <ProductCard
+            brand={prod.brand}
+            title={prod.name}
+            image={prod.image}
+            catalogId={prod.catalogId}
+            id={prod.id}
+            onSelectionChange={handleCheckBoxes}
+            isSelected={selected.includes(prod.id)}
+         />
+      </Lazyload>
    ));
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
