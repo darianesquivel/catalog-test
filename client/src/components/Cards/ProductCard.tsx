@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
    brand: {
       background: theme.palette.primary.main,
       display: 'inline-block',
-      padding: theme.spacing(0, 1),
-      borderRadius: theme.shape.borderRadius,
+      padding: theme.spacing(0.3, 1),
+      borderRadius: theme.shape.borderRadius * 2,
       color: 'white',
       fontWeight: 500,
    },
