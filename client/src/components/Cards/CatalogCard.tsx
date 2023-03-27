@@ -240,7 +240,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
                      variant="body2"
                      className={classes.products}
                      onClick={() => history.push(`/catalogs/${id}`)}
-                  >{`${productCount > 1 ? productCount : 0} products`}</Typography>
+                  >{`${productCount} products`}</Typography>
                   <Typography className={classes.createdAt} variant="body2">
                      <FontAwesomeIcon size="1x" icon={faCalendarDay} />
                      {`Created: ${date}`}

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
-import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
+import { Toolbar, AppBar, Typography, IconButton, Button, Menu, MenuItem } from '@material-ui/core';
 import SearchBar from './SearchBar';
 import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,12 +11,12 @@ import queryClientConfig from '../config/queryClientConfig';
 import { useMutateHook } from '../hooks';
 import getFilteredCatalogs from '../api/getFilteredCatalogs';
 import { useIsFetching } from '@tanstack/react-query';
+import { faThLarge, faThList } from '@fortawesome/free-solid-svg-icons';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
 import clsx from 'clsx';
-import React from 'react';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -40,6 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       borderRadius: theme.shape.borderRadius,
       textTransform: 'none',
       padding: theme.spacing(0.3, 2),
+      marginLeft: theme.spacing(1),
    },
    icons: {
       width: '45px',
@@ -95,21 +96,31 @@ type NavBarProps = {
    isProductListSection?: boolean;
    isUploadSection?: boolean;
    isProductDetails?: boolean;
+   onToggle?: any;
+   view?: boolean;
+   count?: any;
+   onClean?: any;
+   onSelectAll?: any;
 };
 
 export default function CustomNavBar({
    catalogId,
    title = '',
-   productId,
    isProductListSection = false,
    isUploadSection = false,
    isProductDetails = false,
+   count,
+   onClean,
+   onSelectAll,
 }: NavBarProps) {
    const classes = useStyles();
    const history = useHistory();
-
    const [open, setOpen] = useState(false);
    const [term, setTerm] = useState(getUrlTerm(history.location.search));
+   const [anchorEl, setAnchorEl] = useState(null);
+
+   const isViewList = useStore((state: any) => state.isViewList);
+   const { toggleView } = useStore();
 
    const drawerOpen = useStore((state: any) => state.open);
    const { setNotifications } = useStore();
@@ -161,6 +172,14 @@ export default function CustomNavBar({
       ),
       [classes.sectionName, sectionTitle]
    );
+
+   const handleClick = (event: any) => {
+      setAnchorEl(event.currentTarget);
+   };
+
+   const handleClose = () => {
+      setAnchorEl(null);
+   };
 
    const UpdateForm = open && catalogId && title && (
       <FormCreator
@@ -216,14 +235,55 @@ export default function CustomNavBar({
 
    const FinalIcons =
       isProductListSection && title ? (
-         <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
-            className={classes.addProductBtn}
-         >
-            Add products
-         </Button>
+         <>
+            {isViewList ? (
+               <div>
+                  <Button
+                     variant="outlined"
+                     color="primary"
+                     className={classes.addProductBtn}
+                     onClick={handleClick}
+                  >
+                     {`${count} selected`}
+                  </Button>
+                  <Menu
+                     id="simple-menu"
+                     anchorEl={anchorEl}
+                     keepMounted
+                     open={Boolean(anchorEl)}
+                     onClose={handleClose}
+                  >
+                     <MenuItem onClick={onSelectAll}>Select all product</MenuItem>
+                     <MenuItem onClick={onClean} disabled={count === 0}>
+                        Clean selected
+                     </MenuItem>
+                  </Menu>
+               </div>
+            ) : null}
+
+            <Button
+               onClick={toggleView}
+               variant="outlined"
+               color="primary"
+               className={classes.addProductBtn}
+            >
+               {isViewList ? (
+                  <>
+                     <FontAwesomeIcon size="lg" icon={faThList} />
+                  </>
+               ) : (
+                  <FontAwesomeIcon size="lg" icon={faThLarge} />
+               )}
+            </Button>
+            <Button
+               variant="outlined"
+               color="primary"
+               onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+               className={classes.addProductBtn}
+            >
+               Add products
+            </Button>
+         </>
       ) : isMainSection && !isProductListSection && !isProductDetails ? (
          <SearchBar
             onSubmit={handleSearchSubmit}
