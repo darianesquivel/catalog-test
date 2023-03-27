@@ -115,10 +115,9 @@ const CustomDialog = ({
       });
    };
    const handleClose = async () => {
-      // we don't do the invalidation in onSuccess because of the rerender of all the cards
-      // which makes the success alert visible only a few microseconds
-      queryClientConfig.invalidateQueries(queryKey);
-      // MAKE A VIDEO OF THIS ISSUE
+      if (isSuccess) {
+         queryClientConfig.invalidateQueries(queryKey);
+      }
       onModalChange();
    };
 

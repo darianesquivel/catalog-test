@@ -1,5 +1,5 @@
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
-import { Button, CircularProgress, Typography } from '@material-ui/core';
+import { Button, CircularProgress, Tooltip, Typography } from '@material-ui/core';
 import {
    faTags,
    faPenNib,
@@ -7,6 +7,7 @@ import {
    faTrash,
    faInfoCircle,
    faDownload,
+   faLayerGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SummaryDetails from './Details/SummaryDetails';
@@ -25,6 +26,7 @@ import CustomNavBar from '../components/CustomNavBar';
 import { useSingleCatalogQuery } from '../config/queries';
 import React from 'react';
 import NotFound from './NotFound';
+import PopOverList from '../components/PopOverList';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -45,11 +47,20 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-   },
-   iconGroups: {
-      display: 'flex',
-      gap: theme.spacing(2),
       marginBottom: theme.spacing(2),
+   },
+   startIconsGroup: {
+      display: 'flex',
+      // gap: theme.spacing(2),
+   },
+   endButtons: {
+      borderRadius: theme.shape.borderRadius,
+      textTransform: 'none',
+      // fontSize: '14px',
+      padding: theme.spacing(1.2, 0),
+   },
+   endIconButtons: {
+      fontWeight: 500,
    },
 
    button: {
@@ -57,8 +68,8 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.shape.borderRadius,
    },
    typographyButtons: {
-      fontSize: '15px',
-      textTransform: 'capitalize',
+      fontSize: '14px',
+      textTransform: 'initial',
       marginLeft: theme.spacing(2),
    },
    thumbnails: {
@@ -104,13 +115,39 @@ const columns: GridColDef[] = [
    { field: 'name', headerName: 'Title', width: 150 },
    { field: 'description', headerName: 'Description', width: 150 },
 ];
-
+const options: { id: string; content: string; disabled: boolean; icon: any }[] = [
+   {
+      id: 'delete',
+      content: 'Delete products',
+      disabled: false,
+      icon: <FontAwesomeIcon size="sm" icon={faTrash} />,
+   },
+   {
+      id: 'enrichment',
+      content: 'Enrichment',
+      disabled: true,
+      icon: <FontAwesomeIcon size="sm" icon={faTags} />,
+   },
+   {
+      id: 'scribe',
+      content: 'Scribe',
+      disabled: true,
+      icon: <FontAwesomeIcon size="sm" icon={faPenNib} />,
+   },
+   {
+      id: 'assistant',
+      content: 'Assistant',
+      disabled: true,
+      icon: <FontAwesomeIcon size="sm" icon={faRocket} />,
+   },
+];
 const ProductsList = (props: any) => {
    const classes = useStyles();
    const catalogId = props.match.params.id;
    const [info, setInfo] = useState<object>();
    const [selected, setSelected] = useState<any>([]);
-   const [open, setOpen] = useState<boolean>(false);
+   const [bulkOption, setBulkOption] = useState<string | null>(null);
+   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
    const {
       data: catalog = {},
@@ -127,7 +164,10 @@ const ProductsList = (props: any) => {
             : columns,
       [catalog]
    );
-   const products: any[] = useMemo(() => (catalog?.products ? catalog.products : []), [catalog]);
+   const products: any[] = useMemo(
+      () => (catalog?.products ? catalog.products : []),
+      [catalog.products]
+   );
    const customColumns = [...columns, ...productColumns];
    const rows: GridRowsProp = products;
    const params: any = useParams();
@@ -153,48 +193,60 @@ const ProductsList = (props: any) => {
       setSelected(values);
    }, []);
 
+   const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+   };
+   const handleClose = () => {
+      setBulkOption(null);
+      setAnchorEl(null);
+   };
+
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
             {NavBar}
             <div className={classes.buttonsContainer}>
-               <div className={classes.iconGroups}>
-                  <Button className={classes.button} variant="contained" disabled>
-                     <FontAwesomeIcon size="lg" icon={faTags} />
-                     <Typography className={classes.typographyButtons}>Enrichment</Typography>
-                  </Button>
-                  <Button className={classes.button} variant="contained" disabled>
-                     <FontAwesomeIcon size="lg" icon={faPenNib} />
-                     <Typography className={classes.typographyButtons}>Scribe</Typography>
-                  </Button>
-                  <Button className={classes.button} variant="contained" disabled>
-                     <FontAwesomeIcon size="lg" icon={faRocket} />
-                     <Typography className={classes.typographyButtons}>Assistant</Typography>
-                  </Button>
+               <div className={classes.startIconsGroup}>
                   <Button
                      className={classes.button}
                      variant="contained"
-                     onClick={() => setOpen(true)}
+                     color="primary"
+                     onClick={openBulkOptinos}
                      disabled={!selected.length}
                   >
-                     <FontAwesomeIcon size="lg" icon={faTrash} />
+                     <FontAwesomeIcon size="lg" icon={faLayerGroup} />
+                     <Typography className={classes.typographyButtons}>Bulk actions</Typography>
                   </Button>
+                  <PopOverList
+                     options={options}
+                     buttonTarget={anchorEl}
+                     setButtonTarget={setAnchorEl}
+                     currentOption={bulkOption}
+                     setCurrentOption={setBulkOption}
+                     onClose={handleClose}
+                  />
                </div>
-               <div className={classes.iconGroups}>
-                  <Button
-                     className={classes.button}
-                     variant="contained"
-                     disabled={!products.length}
-                     onClick={() => downloadCSV(products, catalog.name)}
-                  >
-                     <FontAwesomeIcon size="lg" icon={faDownload} />
-                  </Button>
+               <div>
+                  <Tooltip title={'Export to CSV'}>
+                     <Button
+                        className={classes.endButtons}
+                        variant="outlined"
+                        color="primary"
+                        disabled={!products.length}
+                        onClick={() => downloadCSV(products, catalog.name)}
+                     >
+                        <FontAwesomeIcon
+                           size="sm"
+                           icon={faDownload}
+                           className={classes.endIconButtons}
+                        />
+                     </Button>
+                  </Tooltip>
                </div>
-
-               {open && (
+               {bulkOption === 'delete' && (
                   <CustomDialog
-                     isOpen={open}
-                     onModalChange={() => setOpen(false)}
+                     isOpen={!!bulkOption}
+                     onModalChange={handleClose}
                      onAccept={() => {
                         setSelected([]);
                         return removeProducts({ id: catalogId, productsId: selected });
