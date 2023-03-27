@@ -83,7 +83,10 @@ const useStyles = makeStyles((theme) =>
       },
    })
 );
-
+/**
+ * CONTINUAR CON EL DESARROLLO DE LAS OPTIONS PARA LAS BULK OPTIONS
+ * EVENTUALMENTE HABRÁ QUE MODULARIZAR ESTE COMPONENTE PORQUE ES LA SEGUNDA VEZ QUE USAMOS EL POPOVER
+ */
 // the below type we should reuse in Catalog Explorer
 type TcatalogCard = {
    id: string;
