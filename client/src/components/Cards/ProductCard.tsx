@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { memo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import ClassNames from 'classnames';
 import { Checkbox } from '@material-ui/core';
@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
    brand: {
       background: theme.palette.primary.main,
       display: 'inline-block',
-      padding: theme.spacing(0.3, 1),
-      borderRadius: theme.shape.borderRadius * 2,
+      padding: theme.spacing(0, 1),
+      borderRadius: theme.shape.borderRadius,
       color: 'white',
       fontWeight: 500,
    },
@@ -69,24 +69,12 @@ function ProductCard({
 }: TProductCard) {
    const classes = useStyles();
    const history = useHistory();
-   const handleClick = () => {
+   const handleClick = useCallback(() => {
       history.push(`/catalogs/${catalogId}/${id}/details`);
-   };
+   }, [catalogId, history, id]);
 
-   console.log('CARD');
-   return (
-      <Card
-         className={ClassNames(classes.cardContainer, {
-            [classes.cardContainerSelected]: isSelected,
-         })}
-      >
-         <Checkbox
-            checked={isSelected}
-            color="primary"
-            className={classes.checkbox}
-            onClick={() => onSelectionChange(id)}
-            icon={<span className={classes.icon} />}
-         />
+   const RenderCardContent = useMemo(() => {
+      return (
          <CardActionArea>
             <CardMedia
                component="img"
@@ -106,6 +94,31 @@ function ProductCard({
                </Typography>
             </CardContent>
          </CardActionArea>
+      );
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [brand, image, title]);
+
+   const RenderCheckBox = useMemo(
+      () => (
+         <Checkbox
+            checked={isSelected}
+            color="primary"
+            className={classes.checkbox}
+            onClick={() => onSelectionChange(id)}
+            icon={<span className={classes.icon} />}
+         />
+      ),
+      [classes.checkbox, classes.icon, id, isSelected, onSelectionChange]
+   );
+
+   return (
+      <Card
+         className={ClassNames(classes.cardContainer, {
+            [classes.cardContainerSelected]: isSelected,
+         })}
+      >
+         {RenderCheckBox}
+         {RenderCardContent}
       </Card>
    );
 }
