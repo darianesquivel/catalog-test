@@ -200,7 +200,6 @@ const ProductsList = (props: any) => {
       setBulkOption(null);
       setAnchorEl(null);
    };
-   console.log('bulk option in product list', bulkOption);
 
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
