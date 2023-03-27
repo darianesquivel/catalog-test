@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
       width: '350px',
       height: 300,
       borderRadius: theme.shape.borderRadius / 8,
-      border: `2px solid rgba(0,0,0,0)`,
+      border: `2px solid ${theme.palette.background.paper}`,
    },
    cardContainerSelected: {
       border: `2px solid ${theme.palette.primary.main}`,
@@ -19,18 +19,24 @@ const useStyles = makeStyles((theme) => ({
    productImg: {
       borderBottom: `2px solid ${theme.palette.background.paper}`,
       height: 200,
-
       '&:hover': {
          borderBottom: `2px solid ${theme.palette.primary.main}`,
       },
    },
-   actionArea: {},
    cardContent: {
       height: 100,
    },
    checkbox: {
       position: 'absolute',
       zIndex: 1000,
+   },
+   icon: {
+      borderRadius: theme.shape.borderRadius / 4,
+      width: 19,
+      height: 19,
+      boxShadow: 'inset 0 0 0 1px rgba(16,22,26,.2), inset 0 -1px 0 rgba(16,22,26,.1)',
+      backgroundColor: '#f5f8fa',
+      margin: '2px',
    },
 }));
 
@@ -69,8 +75,8 @@ function ProductCard({
             color="primary"
             className={classes.checkbox}
             onClick={() => onSelectionChange(id)}
+            icon={<span className={classes.icon} />}
          />
-
          <CardActionArea>
             <CardMedia
                component="img"
