@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
-import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
+import { Toolbar, AppBar, Typography, IconButton, Button, Menu, MenuItem } from '@material-ui/core';
 import SearchBar from './SearchBar';
 import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -98,23 +98,28 @@ type NavBarProps = {
    isProductDetails?: boolean;
    onToggle?: any;
    view?: boolean;
+   count?: any;
+   onClean?: any;
+   onSelectAll?: any;
 };
 
 export default function CustomNavBar({
    catalogId,
    title = '',
-   productId,
    isProductListSection = false,
    isUploadSection = false,
    isProductDetails = false,
+   count,
+   onClean,
+   onSelectAll,
 }: NavBarProps) {
    const classes = useStyles();
    const history = useHistory();
-
    const [open, setOpen] = useState(false);
    const [term, setTerm] = useState(getUrlTerm(history.location.search));
+   const [anchorEl, setAnchorEl] = useState(null);
 
-   const view = useStore((state: any) => state.view);
+   const isViewList = useStore((state: any) => state.isViewList);
    const { toggleView } = useStore();
 
    const drawerOpen = useStore((state: any) => state.open);
@@ -168,8 +173,12 @@ export default function CustomNavBar({
       [classes.sectionName, sectionTitle]
    );
 
-   const handleClick = () => {
-      toggleView();
+   const handleClick = (event: any) => {
+      setAnchorEl(event.currentTarget);
+   };
+
+   const handleClose = () => {
+      setAnchorEl(null);
    };
 
    const UpdateForm = open && catalogId && title && (
@@ -227,13 +236,44 @@ export default function CustomNavBar({
    const FinalIcons =
       isProductListSection && title ? (
          <>
+            {isViewList ? (
+               <div>
+                  <Button
+                     variant="outlined"
+                     color="primary"
+                     className={classes.addProductBtn}
+                     onClick={handleClick}
+                  >
+                     {`${count} selected`}
+                  </Button>
+                  <Menu
+                     id="simple-menu"
+                     anchorEl={anchorEl}
+                     keepMounted
+                     open={Boolean(anchorEl)}
+                     onClose={handleClose}
+                  >
+                     <MenuItem onClick={onSelectAll}>Select all product</MenuItem>
+                     <MenuItem onClick={onClean} disabled={count === 0}>
+                        Clean selected
+                     </MenuItem>
+                  </Menu>
+               </div>
+            ) : null}
+
             <Button
                onClick={toggleView}
                variant="outlined"
                color="primary"
                className={classes.addProductBtn}
             >
-               {view ? <FontAwesomeIcon icon={faThList} /> : <FontAwesomeIcon icon={faThLarge} />}
+               {isViewList ? (
+                  <>
+                     <FontAwesomeIcon size="lg" icon={faThList} />
+                  </>
+               ) : (
+                  <FontAwesomeIcon size="lg" icon={faThLarge} />
+               )}
             </Button>
             <Button
                variant="outlined"

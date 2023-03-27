@@ -1,20 +1,20 @@
-import {
-   Button,
-   Card,
-   CardActionArea,
-   CardActions,
-   CardContent,
-   CardMedia,
-   Typography,
-} from '@material-ui/core';
+import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { memo } from 'react';
 import { useHistory } from 'react-router-dom';
+import ClassNames from 'classnames';
+import { Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
    cardContainer: {
-      width: 345,
+      width: '350px',
       height: 300,
       borderRadius: theme.shape.borderRadius / 8,
+      border: `2px solid rgba(0,0,0,0)`,
+   },
+   cardContainerSelected: {
+      border: `2px solid ${theme.palette.primary.main}`,
+      zIndex: 1000,
    },
    productImg: {
       borderBottom: `2px solid ${theme.palette.background.paper}`,
@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
    cardContent: {
       height: 100,
    },
+   checkbox: {
+      position: 'absolute',
+      zIndex: 1000,
+   },
 }));
 
 type TProductCard = {
@@ -36,28 +40,37 @@ type TProductCard = {
    image?: string;
    catalogId?: string;
    id?: string;
-   onSelectionModelChange?: any;
-   selected?: any;
+   onSelectionChange?: any;
+   isSelected: boolean;
 };
 
-export default function ProductCard({
+function ProductCard({
    title,
    brand,
    image,
    catalogId,
    id,
-   onSelectionModelChange,
-   selected,
+   onSelectionChange,
+   isSelected = false,
 }: TProductCard) {
    const classes = useStyles();
    const history = useHistory();
-
    const handleClick = () => {
       history.push(`/catalogs/${catalogId}/${id}/details`);
    };
-
    return (
-      <Card className={classes.cardContainer} onClick={() => onSelectionModelChange(id)}>
+      <Card
+         className={ClassNames(classes.cardContainer, {
+            [classes.cardContainerSelected]: isSelected,
+         })}
+      >
+         <Checkbox
+            checked={isSelected}
+            color="primary"
+            className={classes.checkbox}
+            onClick={() => onSelectionChange(id)}
+         />
+
          <CardActionArea>
             <CardMedia
                component="img"
@@ -80,3 +93,5 @@ export default function ProductCard({
       </Card>
    );
 }
+
+export default memo(ProductCard);

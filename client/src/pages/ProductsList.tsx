@@ -6,6 +6,7 @@ import {
    faRocket,
    faTrash,
    faInfoCircle,
+   faDownload,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SummaryDetails from './Details/SummaryDetails';
@@ -15,7 +16,7 @@ import { useHistory, useParams } from 'react-router';
 import removeProducts from '../api/removeProducts';
 import CustomDialog from '../components/CustomDialog';
 import CustomAlert from '../components/CustomAlert';
-import { columnsCreator } from '../components/helpers';
+import { columnsCreator, downloadCSV } from '../components/helpers';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
       height: 'calc(100vh - 145px)',
    },
    buttonsContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+   },
+   iconGroups: {
       display: 'flex',
       gap: theme.spacing(2),
       marginBottom: theme.spacing(2),
@@ -70,8 +76,8 @@ const useStyles = makeStyles((theme) => ({
    },
    catalogViewContainer: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax( 290px, 1fr))',
-      gap: theme.spacing(2),
+      gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
+      gap: theme.spacing(1),
    },
 }));
 
@@ -111,8 +117,7 @@ const ProductsList = (props: any) => {
    const [selected, setSelected] = useState<any>([]);
    const [open, setOpen] = useState<boolean>(false);
 
-   const view = useStore((state: any) => state.view);
-   const [productSelected, setProductSelected] = useState([]);
+   const isViewList = useStore((state: any) => state.isViewList);
 
    const {
       data: catalog = {},
@@ -141,53 +146,111 @@ const ProductsList = (props: any) => {
       if (catalog.name && isMounted) {
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
+         setSelected([]);
       }
       return () => {
          isMounted = false;
       };
-   }, [params.productId, products, catalog.name]);
+   }, [params.productId, products, catalog.name, isViewList]);
+
+   const handleCleanSelect = () => {
+      setSelected([]);
+   };
+
+   const handleSelectAll = useCallback(() => {
+      const allProducts = products.map((product) => product.id);
+      setSelected(allProducts);
+   }, [products]);
 
    const NavBar = useMemo(
-      () => <CustomNavBar title={catalog.name} catalogId={catalog.id} isProductListSection />,
-      [catalog.name, catalog.id]
+      () => (
+         <CustomNavBar
+            title={catalog.name}
+            catalogId={catalog.id}
+            isProductListSection
+            count={selected.length}
+            onClean={handleCleanSelect}
+            onSelectAll={handleSelectAll}
+         />
+      ),
+      [catalog.name, catalog.id, selected, handleSelectAll]
    );
 
-   const handleCheckBoxes = useCallback((values: any[]) => {
-      setSelected(values);
-   }, []);
+   const handleCheckBoxes = useCallback(
+      (values: any[]) => {
+         if (isViewList) {
+            setSelected((prevState: any) => {
+               if (prevState.includes(values)) {
+                  return prevState.filter((id: any) => id !== values);
+               } else {
+                  return [...prevState, values];
+               }
+            });
+         } else {
+            setSelected(values);
+         }
+      },
+      [isViewList]
+   );
 
-   console.log({ selected });
+   const catalogRenderView = rows.map((prod, index) => (
+      <ProductCard
+         brand={prod.brand}
+         title={prod.name}
+         image={prod.image}
+         catalogId={prod.catalogId}
+         id={prod.id}
+         key={index}
+         onSelectionChange={handleCheckBoxes}
+         isSelected={selected.includes(prod.id)}
+      />
+   ));
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
             {NavBar}
-            {!view ? (
+            {!isViewList ? (
                <div className={classes.buttonsContainer}>
-                  <Button className={classes.button} variant="contained" disabled>
-                     <FontAwesomeIcon size="lg" icon={faTags} />
-                     <Typography className={classes.typographyButtons}>Enrichment</Typography>
-                  </Button>
-                  <Button className={classes.button} variant="contained" disabled>
-                     <FontAwesomeIcon size="lg" icon={faPenNib} />
-                     <Typography className={classes.typographyButtons}>Scribe</Typography>
-                  </Button>
-                  <Button className={classes.button} variant="contained" disabled>
-                     <FontAwesomeIcon size="lg" icon={faRocket} />
-                     <Typography className={classes.typographyButtons}>Assistant</Typography>
-                  </Button>
-                  <Button
-                     className={classes.button}
-                     variant="contained"
-                     onClick={() => setOpen(true)}
-                     disabled={!selected.length}
-                  >
-                     <FontAwesomeIcon size="lg" icon={faTrash} />
-                  </Button>
+                  <div className={classes.iconGroups}>
+                     <Button className={classes.button} variant="contained" disabled>
+                        <FontAwesomeIcon size="lg" icon={faTags} />
+                        <Typography className={classes.typographyButtons}>Enrichment</Typography>
+                     </Button>
+                     <Button className={classes.button} variant="contained" disabled>
+                        <FontAwesomeIcon size="lg" icon={faPenNib} />
+                        <Typography className={classes.typographyButtons}>Scribe</Typography>
+                     </Button>
+                     <Button className={classes.button} variant="contained" disabled>
+                        <FontAwesomeIcon size="lg" icon={faRocket} />
+                        <Typography className={classes.typographyButtons}>Assistant</Typography>
+                     </Button>
+                     <Button
+                        className={classes.button}
+                        variant="contained"
+                        onClick={() => setOpen(true)}
+                        disabled={!selected.length}
+                     >
+                        <FontAwesomeIcon size="lg" icon={faTrash} />
+                     </Button>
+                  </div>
+                  <div className={classes.iconGroups}>
+                     <Button
+                        className={classes.button}
+                        variant="contained"
+                        disabled={!products.length}
+                        onClick={() => downloadCSV(products, catalog.name)}
+                     >
+                        <FontAwesomeIcon size="lg" icon={faDownload} />
+                     </Button>
+                  </div>
                   {open && (
                      <CustomDialog
                         isOpen={open}
                         onModalChange={() => setOpen(false)}
-                        onAccept={() => removeProducts({ id: catalogId, productsId: selected })}
+                        onAccept={() => {
+                           setSelected([]);
+                           return removeProducts({ id: catalogId, productsId: selected });
+                        }}
                         queryKey={[`catalogs/:${catalogId}`, catalogId]}
                         customMessage={(data: any) => data.message}
                         action="Delete"
@@ -214,21 +277,8 @@ const ProductsList = (props: any) => {
                <NotFound error={error} info="An error occurred while loading the catalogs" />
             ) : null}
             {isSuccess && !isFetching ? (
-               view ? (
-                  <div className={classes.catalogViewContainer}>
-                     {rows.map((prod, index) => (
-                        <ProductCard
-                           brand={prod.brand}
-                           title={prod.name}
-                           image={prod.image}
-                           catalogId={prod.catalogId}
-                           id={prod.id}
-                           key={index}
-                           onSelectionModelChange={handleCheckBoxes}
-                           selected
-                        />
-                     ))}
-                  </div>
+               isViewList ? (
+                  <div className={classes.catalogViewContainer}>{catalogRenderView}</div>
                ) : (
                   <DataGrid
                      className={classes.datagrid}
