@@ -38,6 +38,14 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: '#f5f8fa',
       margin: '2px',
    },
+   brand: {
+      background: theme.palette.primary.main,
+      display: 'inline-block',
+      padding: theme.spacing(0, 1),
+      borderRadius: theme.shape.borderRadius,
+      color: 'white',
+      fontWeight: 500,
+   },
 }));
 
 type TProductCard = {
@@ -64,6 +72,8 @@ function ProductCard({
    const handleClick = () => {
       history.push(`/catalogs/${catalogId}/${id}/details`);
    };
+
+   console.log('CARD');
    return (
       <Card
          className={ClassNames(classes.cardContainer, {
@@ -88,7 +98,7 @@ function ProductCard({
                className={classes.productImg}
             />
             <CardContent className={classes.cardContent}>
-               <Typography gutterBottom variant="body2" component="h2">
+               <Typography className={classes.brand} gutterBottom variant="body2" component="h2">
                   {brand}
                </Typography>
                <Typography variant="caption" color="textSecondary" component="p">
