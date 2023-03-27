@@ -84,7 +84,6 @@ const useStyles = makeStyles((theme) =>
    })
 );
 
-// the below type we should reuse in Catalog Explorer
 type TcatalogCard = {
    id: string;
    name: string;

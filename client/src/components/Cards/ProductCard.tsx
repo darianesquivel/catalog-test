@@ -7,9 +7,8 @@ import { Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
    cardContainer: {
-      width: '350px',
       height: 300,
-      borderRadius: theme.shape.borderRadius / 8,
+      borderRadius: theme.shape.borderRadius,
       border: `2px solid ${theme.palette.background.paper}`,
    },
    cardContainerSelected: {
@@ -74,6 +73,7 @@ function ProductCard({
    }, [catalogId, history, id]);
 
    const RenderCardContent = useMemo(() => {
+      console.log('CARD');
       return (
          <CardActionArea>
             <CardMedia
