@@ -283,9 +283,7 @@ const ProductsList = (props: any) => {
                      options={options}
                      buttonTarget={anchorEl}
                      setButtonTarget={setAnchorEl}
-                     currentOption={bulkOption}
                      setCurrentOption={setBulkOption}
-                     onClose={handleClose}
                   />
                </div>
                <div>
