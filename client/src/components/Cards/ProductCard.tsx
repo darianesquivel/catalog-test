@@ -73,7 +73,6 @@ function ProductCard({
    }, [catalogId, history, id]);
 
    const RenderCardContent = useMemo(() => {
-      console.log('CARD');
       return (
          <CardActionArea>
             <CardMedia

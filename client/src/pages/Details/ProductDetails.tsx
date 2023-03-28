@@ -13,8 +13,24 @@ import CustomNavBar from '../../components/CustomNavBar';
 import { useProductInfoQuery } from '../../config/queries';
 import toHex from 'colornames';
 import NotFound from '../NotFound';
+import classNames from 'classnames';
 
 const useStyles = makeStyles((theme: Theme) => ({
+   root: {
+      '&.MuiAccordion-root:before': {
+         backgroundColor: 'transparent',
+      },
+      '&.MuiAccordionSummary-root': {
+         paddingLeft: theme.spacing(0),
+         justifyContent: 'flex-start',
+      },
+      '&.MuiAccordionDetails-root': {
+         padding: theme.spacing(0),
+      },
+      '& .MuiAccordionSummary-content': {
+         flexGrow: 0,
+      },
+   },
    gridContainer: {
       background: theme.palette.background.paper,
       height: 'calc(100vh - 115px)',
@@ -43,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       height: '100%',
       width: '100%',
    },
-
    img: {
       cursor: 'pointer',
       width: '100%',
@@ -111,7 +126,6 @@ const useStyles = makeStyles((theme: Theme) => ({
    accordionTitle: {
       color: theme.palette.primary.main,
       fontWeight: 500,
-
       '&:hover': {
          marginBottom: theme.spacing(-1 / 4),
          borderBottom: `2px solid ${theme.palette.primary.main}`,
@@ -124,31 +138,27 @@ const useStyles = makeStyles((theme: Theme) => ({
       boxShadow: 'none',
    },
    color: {
-      padding: theme.spacing(1.2, 0),
-      width: '40px',
-      boxShadow: '0 0 0 2px #cccccc',
-      border: '2px solid #F8F8F8',
+      padding: theme.spacing(1.6, 0),
+      width: '50px',
+      boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
       cursor: 'pointer',
-      borderRadius: theme.shape.borderRadius / 8,
+      borderRadius: theme.shape.borderRadius * 2,
+      marginTop: theme.spacing(0.5),
    },
    size: {
       display: 'inline-block',
-      width: 'auto',
-      padding: theme.spacing(1 / 2, 1),
-      borderRadius: theme.shape.borderRadius,
-      border: `2px solid ${theme.palette.primary.main}`,
+      padding: theme.spacing(1 / 1.5, 1.5),
+      borderRadius: theme.shape.borderRadius * 2,
+      boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
       cursor: 'pointer',
+      marginTop: theme.spacing(0.5),
    },
    stock: {
       display: 'flex',
       alignItems: 'center',
       cursor: 'pointer',
    },
-   hideBorder: {
-      '&.MuiExpansionPanel-root:before': {
-         display: 'none',
-      },
-   },
+
    outOfStock: {
       color: theme.palette.error.main,
    },
@@ -307,47 +317,56 @@ export default function ProductDetails() {
                                     <Typography
                                        color="error"
                                        variant="caption"
-                                       className={classes.bold}
+                                       className={classNames(classes.outOfStock, classes.bold)}
                                     >
-                                       {product.dinamicFields?.Availability}
+                                       {product.dinamicFields?.availability}
                                     </Typography>
                                  )}
                                  {product.dinamicFields?.color ? (
                                     <div>
-                                       <Typography variant="body2" className={classes.bold}>
+                                       <Typography variant="subtitle2" className={classes.bold}>
                                           Colors
                                        </Typography>
                                        <div
                                           className={classes.color}
                                           style={{
-                                             background: `${toHex(product.dinamicFields?.color)}`,
+                                             background: `${
+                                                toHex(product.dinamicFields?.color) ||
+                                                toHex(product.dinamicFields?.['color normalized'])
+                                             }`,
                                           }}
                                        ></div>
                                     </div>
                                  ) : null}
                                  {product.dinamicFields?.size ? (
                                     <div>
-                                       <Typography variant="body2" className={classes.bold}>
+                                       <Typography variant="subtitle2" className={classes.bold}>
                                           Size
                                        </Typography>
                                        <div className={classes.size}>
-                                          <Typography>{product.dinamicFields?.size}</Typography>
+                                          <Typography variant="caption">
+                                             {product.dinamicFields?.size}
+                                          </Typography>
                                        </div>
                                     </div>
                                  ) : null}
 
-                                 <Accordion className={classes.accordion}>
+                                 <Accordion elevation={0} className={classes.root}>
                                     <AccordionSummary
                                        expandIcon={<ExpandMoreIcon className={classes.icon} />}
                                        aria-controls="panel1a-content"
                                        id="panel1a-header"
+                                       className={classes.root}
                                     >
-                                       <Typography variant="body2" className={classes.bold}>
-                                          Description{' '}
+                                       <Typography
+                                          variant="subtitle2"
+                                          className={classNames(classes.bold, classes.root)}
+                                       >
+                                          Description
                                        </Typography>
                                     </AccordionSummary>
-                                    <AccordionDetails>
-                                       <Typography variant="body2">
+                                    <AccordionDetails className={classes.root}>
+                                       <Typography variant="caption">
                                           {product.description}
                                        </Typography>
                                     </AccordionDetails>
