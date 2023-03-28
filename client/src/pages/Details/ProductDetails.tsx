@@ -223,8 +223,7 @@ export default function ProductDetails() {
    useEffect(() => {
       setImagesState(product.images?.map((obj: any) => obj?.url));
    }, [product?.name, product?.images]);
-   console.log({ product });
-   console.log(toHex(product.dinamicFields?.color));
+
    return (
       <>
          <CustomNavBar
