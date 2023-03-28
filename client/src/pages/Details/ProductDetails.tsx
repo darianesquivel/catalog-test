@@ -23,9 +23,11 @@ const useStyles = makeStyles((theme: Theme) => ({
       '&.MuiAccordionSummary-root': {
          paddingLeft: theme.spacing(0),
       },
-      '&.MuiAccordionSummary-content': {},
       '&.MuiAccordionDetails-root': {
          padding: theme.spacing(0),
+      },
+      '&.MuiAccordionSummary-content': {
+         flexGrow: 0,
       },
    },
    gridContainer: {
@@ -137,7 +139,6 @@ const useStyles = makeStyles((theme: Theme) => ({
    color: {
       padding: theme.spacing(1.6, 0),
       width: '50px',
-      // boxShadow: 'inset 0 0 0 2px #cccccc',
       boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
       cursor: 'pointer',
       borderRadius: theme.shape.borderRadius * 2,
@@ -145,7 +146,7 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
    size: {
       display: 'inline-block',
-      padding: theme.spacing(1 / 2, 1),
+      padding: theme.spacing(1 / 1.5, 1.5),
       borderRadius: theme.shape.borderRadius * 2,
       boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
       cursor: 'pointer',
@@ -353,7 +354,10 @@ export default function ProductDetails() {
                                        id="panel1a-header"
                                        className={classes.root}
                                     >
-                                       <Typography variant="body2" className={classes.bold}>
+                                       <Typography
+                                          variant="subtitle2"
+                                          className={classNames(classes.bold, classes.root)}
+                                       >
                                           Description
                                        </Typography>
                                     </AccordionSummary>
