@@ -13,6 +13,7 @@ import CustomNavBar from '../../components/CustomNavBar';
 import { useProductInfoQuery } from '../../config/queries';
 import toHex from 'colornames';
 import NotFound from '../NotFound';
+import classNames from 'classnames';
 
 const useStyles = makeStyles((theme: Theme) => ({
    root: {
@@ -55,7 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       height: '100%',
       width: '100%',
    },
-
    img: {
       cursor: 'pointer',
       width: '100%',
@@ -123,7 +123,6 @@ const useStyles = makeStyles((theme: Theme) => ({
    accordionTitle: {
       color: theme.palette.primary.main,
       fontWeight: 500,
-
       '&:hover': {
          marginBottom: theme.spacing(-1 / 4),
          borderBottom: `2px solid ${theme.palette.primary.main}`,
@@ -136,19 +135,19 @@ const useStyles = makeStyles((theme: Theme) => ({
       boxShadow: 'none',
    },
    color: {
-      padding: theme.spacing(1.2, 0),
-      width: '40px',
-      boxShadow: '0 0 0 2px #cccccc',
-      border: '2px solid #F8F8F8',
+      padding: theme.spacing(1.6, 0),
+      width: '50px',
+      // boxShadow: 'inset 0 0 0 2px #cccccc',
+      boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
       cursor: 'pointer',
-      borderRadius: theme.shape.borderRadius,
+      borderRadius: theme.shape.borderRadius * 2,
       marginTop: theme.spacing(0.5),
    },
    size: {
       display: 'inline-block',
-      padding: theme.spacing(0.5 / 2, 0.5),
-      borderRadius: theme.shape.borderRadius,
-      boxShadow: `0 0 0 2px ${theme.palette.primary.main} `,
+      padding: theme.spacing(1 / 2, 1),
+      borderRadius: theme.shape.borderRadius * 2,
+      boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
       cursor: 'pointer',
       marginTop: theme.spacing(0.5),
    },
@@ -157,11 +156,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       alignItems: 'center',
       cursor: 'pointer',
    },
-   hideBorder: {
-      '&.MuiExpansionPanel-root:before': {
-         display: 'none',
-      },
-   },
+
    outOfStock: {
       color: theme.palette.error.main,
    },
@@ -320,14 +315,14 @@ export default function ProductDetails() {
                                     <Typography
                                        color="error"
                                        variant="caption"
-                                       className={classes.bold}
+                                       className={classNames(classes.outOfStock, classes.bold)}
                                     >
-                                       {product.dinamicFields?.Availability}
+                                       {product.dinamicFields?.availability}
                                     </Typography>
                                  )}
                                  {product.dinamicFields?.color ? (
                                     <div>
-                                       <Typography variant="body2" className={classes.bold}>
+                                       <Typography variant="subtitle2" className={classes.bold}>
                                           Colors
                                        </Typography>
                                        <div
@@ -340,11 +335,13 @@ export default function ProductDetails() {
                                  ) : null}
                                  {product.dinamicFields?.size ? (
                                     <div>
-                                       <Typography variant="body2" className={classes.bold}>
+                                       <Typography variant="subtitle2" className={classes.bold}>
                                           Size
                                        </Typography>
                                        <div className={classes.size}>
-                                          <Typography>{product.dinamicFields?.size}</Typography>
+                                          <Typography variant="caption">
+                                             {product.dinamicFields?.size}
+                                          </Typography>
                                        </div>
                                     </div>
                                  ) : null}
