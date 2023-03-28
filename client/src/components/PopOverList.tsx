@@ -9,25 +9,23 @@ const useStyles = makeStyles((theme: Theme) => ({
    typographyButtons: {
       fontSize: '14px',
       textTransform: 'initial',
-      marginLeft: theme.spacing(2),
+   },
+   icons: {
+      marginRight: theme.spacing(2),
    },
 }));
 type PopOverProps = {
-   options: { id: string; content: string; disabled: boolean; icon: any }[];
+   options: { id: string; content: string; disabled?: boolean; icon?: any }[];
    buttonTarget: HTMLButtonElement | null;
    setButtonTarget: (value: any) => any;
-   currentOption: string | null;
    setCurrentOption: (currentOption: string | null) => any;
-   onClose: () => any;
 };
 
 export default function PopOverList({
    options,
    buttonTarget,
    setButtonTarget,
-   currentOption,
    setCurrentOption,
-   onClose,
 }: PopOverProps) {
    const classes = useStyles();
    const handleOption = (id: string) => {
@@ -53,8 +51,13 @@ export default function PopOverList({
          >
             <MenuList>
                {options.map(({ id, content, disabled, icon }) => (
-                  <MenuItem key={id} onClick={() => handleOption(id)} disabled={disabled}>
-                     {icon}
+                  <MenuItem
+                     key={id}
+                     alignItems="center"
+                     onClick={() => handleOption(id)}
+                     disabled={disabled}
+                  >
+                     {icon && <span className={classes.icons}>{icon}</span>}
                      <Typography className={classes.typographyButtons}>{content}</Typography>
                   </MenuItem>
                ))}
