@@ -22,9 +22,13 @@ const useStyles = makeStyles((theme: Theme) => ({
       },
       '&.MuiAccordionSummary-root': {
          paddingLeft: theme.spacing(0),
+         justifyContent: 'flex-start',
       },
       '&.MuiAccordionDetails-root': {
          padding: theme.spacing(0),
+      },
+      '& .MuiAccordionSummary-content': {
+         flexGrow: 0,
       },
    },
    gridContainer: {
