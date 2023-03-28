@@ -26,9 +26,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       '&.MuiAccordionDetails-root': {
          padding: theme.spacing(0),
       },
-      '&.MuiAccordionSummary-content': {
-         flexGrow: 0,
-      },
    },
    gridContainer: {
       background: theme.palette.background.paper,
