@@ -223,7 +223,8 @@ export default function ProductDetails() {
    useEffect(() => {
       setImagesState(product.images?.map((obj: any) => obj?.url));
    }, [product?.name, product?.images]);
-
+   console.log({ product });
+   console.log(toHex(product.dinamicFields?.color));
    return (
       <>
          <CustomNavBar
@@ -330,7 +331,10 @@ export default function ProductDetails() {
                                        <div
                                           className={classes.color}
                                           style={{
-                                             background: `${toHex(product.dinamicFields?.color)}`,
+                                             background: `${
+                                                toHex(product.dinamicFields?.color) ||
+                                                toHex(product.dinamicFields?.['color normalized'])
+                                             }`,
                                           }}
                                        ></div>
                                     </div>
