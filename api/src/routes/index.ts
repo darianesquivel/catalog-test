@@ -70,7 +70,7 @@ router.post(
           return {
             mainImage: mainImage || "",
             catalog_id: catalogId,
-            allImages: obj.Images || "",
+            allImages: obj.images || obj.Images,
             ...mapKeys(obj, (value, key) => key.toLowerCase()),
           };
         })
