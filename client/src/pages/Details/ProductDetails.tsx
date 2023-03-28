@@ -5,7 +5,7 @@ import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import _, { before, upperFirst } from 'lodash';
+import _, { upperFirst } from 'lodash';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core/styles';
