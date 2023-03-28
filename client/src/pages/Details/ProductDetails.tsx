@@ -5,7 +5,7 @@ import Accordion from '@material-ui/core/Accordion';
 import { AccordionSummary, AccordionDetails, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailTable from '../../components/DetailTable';
-import _, { upperFirst } from 'lodash';
+import _, { before, upperFirst } from 'lodash';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core/styles';
@@ -15,6 +15,18 @@ import toHex from 'colornames';
 import NotFound from '../NotFound';
 
 const useStyles = makeStyles((theme: Theme) => ({
+   root: {
+      '&.MuiAccordion-root:before': {
+         backgroundColor: 'transparent',
+      },
+      '&.MuiAccordionSummary-root': {
+         paddingLeft: theme.spacing(0),
+      },
+      '&.MuiAccordionSummary-content': {},
+      '&.MuiAccordionDetails-root': {
+         padding: theme.spacing(0),
+      },
+   },
    gridContainer: {
       background: theme.palette.background.paper,
       height: 'calc(100vh - 115px)',
@@ -129,15 +141,16 @@ const useStyles = makeStyles((theme: Theme) => ({
       boxShadow: '0 0 0 2px #cccccc',
       border: '2px solid #F8F8F8',
       cursor: 'pointer',
-      borderRadius: theme.shape.borderRadius / 8,
+      borderRadius: theme.shape.borderRadius,
+      marginTop: theme.spacing(0.5),
    },
    size: {
       display: 'inline-block',
-      width: 'auto',
-      padding: theme.spacing(1 / 2, 1),
+      padding: theme.spacing(0.5 / 2, 0.5),
       borderRadius: theme.shape.borderRadius,
-      border: `2px solid ${theme.palette.primary.main}`,
+      boxShadow: `0 0 0 2px ${theme.palette.primary.main} `,
       cursor: 'pointer',
+      marginTop: theme.spacing(0.5),
    },
    stock: {
       display: 'flex',
@@ -336,18 +349,19 @@ export default function ProductDetails() {
                                     </div>
                                  ) : null}
 
-                                 <Accordion className={classes.accordion}>
+                                 <Accordion elevation={0} className={classes.root}>
                                     <AccordionSummary
                                        expandIcon={<ExpandMoreIcon className={classes.icon} />}
                                        aria-controls="panel1a-content"
                                        id="panel1a-header"
+                                       className={classes.root}
                                     >
                                        <Typography variant="body2" className={classes.bold}>
-                                          Description{' '}
+                                          Description
                                        </Typography>
                                     </AccordionSummary>
-                                    <AccordionDetails>
-                                       <Typography variant="body2">
+                                    <AccordionDetails className={classes.root}>
+                                       <Typography variant="caption">
                                           {product.description}
                                        </Typography>
                                     </AccordionDetails>
