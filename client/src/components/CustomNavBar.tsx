@@ -17,6 +17,7 @@ import { faThLarge, faThList } from '@fortawesome/free-solid-svg-icons';
 import { makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
 import clsx from 'clsx';
+import PopOverList from './PopOverList';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -134,6 +135,10 @@ export default function CustomNavBar({
 
    const sectionTitle = isMainSection ? 'Catalog Explorer' : title;
 
+   const menuOptions: { id: string; content: string; disabled?: boolean }[] = [
+      { id: 'selectall', content: 'Select all product' },
+      { id: 'clean', content: 'Clean selected', disabled: !count },
+   ];
    const handleRefresh = async () => {
       queryClientConfig.invalidateQueries(['catalogs']);
       setTerm('');
@@ -177,7 +182,13 @@ export default function CustomNavBar({
       setAnchorEl(event.currentTarget);
    };
 
-   const handleClose = () => {
+   const handleMenuOption = (id: string | null) => {
+      if (!id) return;
+      if (id === menuOptions[0].id) {
+         onSelectAll();
+      } else {
+         onClean();
+      }
       setAnchorEl(null);
    };
 
@@ -246,18 +257,12 @@ export default function CustomNavBar({
                   >
                      {`${count} selected`}
                   </Button>
-                  <Menu
-                     id="simple-menu"
-                     anchorEl={anchorEl}
-                     keepMounted
-                     open={Boolean(anchorEl)}
-                     onClose={handleClose}
-                  >
-                     <MenuItem onClick={onSelectAll}>Select all product</MenuItem>
-                     <MenuItem onClick={onClean} disabled={count === 0}>
-                        Clean selected
-                     </MenuItem>
-                  </Menu>
+                  <PopOverList
+                     options={menuOptions}
+                     buttonTarget={anchorEl}
+                     setCurrentOption={handleMenuOption}
+                     setButtonTarget={setAnchorEl}
+                  />
                </div>
             ) : null}
 

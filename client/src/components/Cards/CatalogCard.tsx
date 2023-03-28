@@ -2,13 +2,10 @@ import { useState } from 'react';
 import {
    CardContent,
    Typography,
-   Popover,
    Card,
    CardHeader,
    CardMedia,
    IconButton,
-   MenuItem,
-   MenuList,
 } from '@material-ui/core';
 
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -27,6 +24,7 @@ import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import React from 'react';
 import { useStore } from '../../pages/DrawerAppbar';
+import PopOverList from '../PopOverList';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -92,11 +90,16 @@ type TcatalogCard = {
    image?: string;
    productCount: number;
 };
+const menuOptions: { id: string; content: string }[] = [
+   { id: 'edit', content: 'Edit catalog' },
+   { id: 'duplicate', content: 'Duplicate catalog' },
+   { id: 'remove', content: 'Remove catalog' },
+];
 
 export default function CatalogCard({ id, name, products, createdAt, productCount }: TcatalogCard) {
    const classes = useStyles();
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-   const [option, setOption] = useState<string>('');
+   const [option, setOption] = useState<any>(null);
    const history = useHistory();
    const { setNotifications } = useStore();
 
@@ -109,15 +112,12 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
       setOption('');
    };
 
-   const handleOption = (event: any) => {
-      const eventName = event.target.id;
-      setOption(eventName);
+   const handleOption = (id: string | null) => {
+      setOption(id);
    };
    const date = createdAt ? new Date(createdAt).toLocaleString() : 'no date';
    const defaultImage = products?.[0]?.image;
 
-   const menuOpen = Boolean(anchorEl);
-   const targetId = menuOpen ? 'simple-popover' : undefined;
    const renderDialog =
       option === 'edit' ? (
          <FormCreator
@@ -171,6 +171,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             />
          </CustomDialog>
       ) : null;
+
    return (
       <>
          <Card className={classNames(classes.catalogCard, classes.root)}>
@@ -181,32 +182,12 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
                         <IconButton onClick={openOptions} aria-label="settings">
                            <MoreVertIcon />
                         </IconButton>
-                        <Popover
-                           id={targetId}
-                           open={menuOpen}
-                           anchorEl={anchorEl}
-                           onClose={handleClose}
-                           anchorOrigin={{
-                              vertical: 'bottom',
-                              horizontal: 'right',
-                           }}
-                           transformOrigin={{
-                              vertical: 'top',
-                              horizontal: 'center',
-                           }}
-                        >
-                           <MenuList>
-                              <MenuItem onClick={handleOption} id="edit">
-                                 Edit catalog
-                              </MenuItem>
-                              <MenuItem id="duplicate" onClick={handleOption}>
-                                 Duplicate catalog
-                              </MenuItem>
-                              <MenuItem onClick={handleOption} id="remove">
-                                 Remove catalog
-                              </MenuItem>
-                           </MenuList>
-                        </Popover>
+                        <PopOverList
+                           buttonTarget={anchorEl}
+                           options={menuOptions}
+                           setButtonTarget={setAnchorEl}
+                           setCurrentOption={handleOption}
+                        />
                      </>
                   }
                   title={name ? name : 'Default'}
