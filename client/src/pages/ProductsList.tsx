@@ -246,7 +246,7 @@ const ProductsList = (props: any) => {
    );
 
    const catalogRenderView = rows.map((prod) => (
-      // <Lazyload key={prod.id} debounce={500} height={200}>
+      // <Lazyload key={prod.id}>
       <ProductCard
          brand={prod.brand}
          title={prod.name}
@@ -258,6 +258,7 @@ const ProductsList = (props: any) => {
       />
       // </Lazyload>
    ));
+
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
    };
