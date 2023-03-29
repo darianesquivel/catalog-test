@@ -64,7 +64,7 @@ router.post(
         })
         .map((obj: any) => {
           const mainImage: any = Object.entries(obj)
-            .find(([k]) => /image link|image$/gi.test(k))
+            .find(([k]) => /mainImageUrl|image link|image$/gi.test(k))
             ?.flat()?.[1];
 
           return {
