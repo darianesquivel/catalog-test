@@ -57,12 +57,10 @@ const useStyles = makeStyles((theme) => ({
    },
    startIconsGroup: {
       display: 'flex',
-      // gap: theme.spacing(2),
    },
    endButtons: {
       borderRadius: theme.shape.borderRadius,
       textTransform: 'none',
-      // fontSize: '14px',
       padding: theme.spacing(1.2, 0),
    },
    endIconButtons: {
@@ -94,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
       gap: theme.spacing(1),
-      height: 'calc(100vh - 135px)',
+      maxHeight: 'calc(100vh - 135px)',
       paddingBottom: theme.spacing(1),
       overflow: 'scroll',
    },
@@ -304,17 +302,17 @@ const ProductsList = (props: any) => {
    );
 
    const catalogRenderView = rows.map((prod) => (
-      // <Lazyload key={prod.id}>
-      <ProductCard
-         brand={prod.brand}
-         title={prod.name}
-         image={prod.image}
-         catalogId={prod.catalogId}
-         id={prod.id}
-         onSelectionChange={handleCheckBoxes}
-         isSelected={selected.includes(prod.id)}
-      />
-      // </Lazyload>
+      <Lazyload key={prod.id} overflow throttle={100} height={200}>
+         <ProductCard
+            brand={prod.brand}
+            title={prod.name}
+            image={prod.image}
+            catalogId={prod.catalogId}
+            id={prod.id}
+            onSelectionChange={handleCheckBoxes}
+            isSelected={selected.includes(prod.id)}
+         />
+      </Lazyload>
    ));
 
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
