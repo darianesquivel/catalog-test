@@ -29,6 +29,10 @@ import NotFound from './NotFound';
 import ProductCard from '../components/Cards/ProductCard';
 import { useStore } from '../pages/DrawerAppbar';
 import PopOverList from '../components/PopOverList';
+import updateProducts from '../api/updateProducts';
+import { useMutateHook } from '../hooks';
+import CustomSnackBar from '../components/CustomSnackbar';
+import queryClientConfig from '../config/queryClientConfig';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -106,6 +110,7 @@ const columns: GridColDef[] = [
       field: 'info',
       headerName: 'Info',
       width: 30,
+
       renderCell: (params) => {
          return (
             <FontAwesomeIcon
@@ -125,9 +130,13 @@ const columns: GridColDef[] = [
          <img src={params.row.image} alt="" width="80px" style={{ cursor: 'pointer' }} />
       ),
    },
-   { field: 'id', headerName: 'id', width: 150 },
-   { field: 'name', headerName: 'Title', width: 150 },
-   { field: 'description', headerName: 'Description', width: 150 },
+   {
+      field: 'id',
+      headerName: 'id',
+      width: 150,
+   },
+   { field: 'name', headerName: 'Title', width: 150, editable: true },
+   { field: 'description', headerName: 'Description', width: 150, editable: true },
 ];
 const options: { id: string; content: string; disabled: boolean; icon: any }[] = [
    {
@@ -162,7 +171,9 @@ const ProductsList = (props: any) => {
    const [selected, setSelected] = useState<any>([]);
    const [bulkOption, setBulkOption] = useState<string | null>(null);
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+   const [cellChanges, setCellChanges] = useState<any[]>([]);
+   const [cellWasChanged, setCellWasChanged] = useState(false);
+   const [openSnackBar, setOpenSnackBar] = useState(false);
    const isViewList = useStore((state: any) => state.isViewList);
 
    const {
@@ -174,6 +185,13 @@ const ProductsList = (props: any) => {
       isFetching,
    } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
 
+   const {
+      mutate,
+      isSuccess: isUpdateSuccess,
+      isLoading: isUpdateLoading,
+      error: updateError,
+      data: updatedData,
+   } = useMutateHook(() => updateProducts(catalogId, cellChanges));
    const productColumns = useMemo(
       () =>
          catalog?.products?.length
@@ -211,6 +229,36 @@ const ProductsList = (props: any) => {
       setSelected(allProducts);
    }, [products]);
 
+   const saveValuesFn = useCallback(() => {
+      mutate(undefined, {
+         onSuccess: (response: any) => {
+            setOpenSnackBar(true);
+            setCellChanges([]);
+            queryClientConfig.setQueryData(
+               [`catalogs/:${catalogId}`, catalogId],
+               (oldData: any) => {
+                  if (oldData) {
+                     const filtered = oldData.products.filter(
+                        ({ id }: any) => !response.data.some((product: any) => product?.id === id)
+                     );
+                     return {
+                        ...oldData,
+                        products: [...response.data, ...filtered],
+                     };
+                  }
+               }
+            );
+         },
+         onError: (error) => {
+            setOpenSnackBar(true);
+         },
+      });
+   }, [mutate, catalogId]);
+
+   const updateMessage = isUpdateSuccess
+      ? `${Object(updatedData)?.data?.length} products have been updated successfully`
+      : `${updateError}`;
+
    const NavBar = useMemo(
       () => (
          <CustomNavBar
@@ -220,9 +268,19 @@ const ProductsList = (props: any) => {
             count={selected.length}
             onClean={handleCleanSelect}
             onSelectAll={handleSelectAll}
+            saveActions={[cellChanges, saveValuesFn]}
+            isUpdateLoading={isUpdateLoading}
          />
       ),
-      [catalog.name, catalog.id, selected, handleSelectAll]
+      [
+         catalog.name,
+         catalog.id,
+         selected,
+         handleSelectAll,
+         cellChanges,
+         isUpdateLoading,
+         saveValuesFn,
+      ]
    );
 
    const handleCheckBoxes = useCallback(
@@ -262,11 +320,26 @@ const ProductsList = (props: any) => {
       setBulkOption(null);
       setAnchorEl(null);
    };
+   const handleCellChanges = (cellChanged: any) => {
+      const { id, field } = cellChanged;
+      setCellChanges((prev: any[]) => {
+         // remove existent one
+         const filteredValues = prev.filter((rec: any) => !(rec.id === id && rec.field === field));
+         return [...filteredValues, cellChanged];
+      });
+   };
 
    return (
       <div className={classNames(classes.container, { [classes.details]: info })}>
          <div className={classes.mainBox}>
             {NavBar}
+            <CustomSnackBar
+               open={openSnackBar}
+               message={updateMessage}
+               onClose={() => setOpenSnackBar(false)}
+               alertType={isUpdateSuccess ? 'success' : 'error'}
+            />
+
             <div className={classes.buttonsContainer}>
                <div className={classes.startIconsGroup}>
                   <Button
@@ -355,11 +428,20 @@ const ProductsList = (props: any) => {
                      checkboxSelection
                      disableSelectionOnClick
                      onSelectionModelChange={handleCheckBoxes}
+                     editMode="cell"
+                     onEditCellPropsChange={() => {
+                        setCellWasChanged(true);
+                     }}
+                     onCellEditCommit={(cell: any) => {
+                        if (cellWasChanged) {
+                           handleCellChanges(cell);
+                           setCellWasChanged(false);
+                        }
+                     }}
                      onCellClick={(cell: any) => {
                         if (cell.field === 'image') {
                            return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
-                        }
-                        if (cell.field === 'info') {
+                        } else if (cell.field === 'info') {
                            setInfo(cell.row);
                            return history.push(`/catalogs/${catalogId}/${cell.id}/`);
                         }

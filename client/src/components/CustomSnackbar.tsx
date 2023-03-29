@@ -3,23 +3,24 @@ import React from 'react';
 import CustomAlert from './CustomAlert';
 
 type Tprops = {
-   onClose: () => void;
+   onClose?: () => void;
    open: boolean;
    message: string;
+   alertType?: 'success' | 'error' | 'warning';
 };
 
-export default function CustomSnackBar({ onClose, message, open }: Tprops) {
+export default function CustomSnackBar({ onClose, message, open, alertType = 'success' }: Tprops) {
    return (
       <Snackbar
          open={open}
-         autoHideDuration={1500}
+         autoHideDuration={2500}
          anchorOrigin={{
             vertical: 'top',
             horizontal: 'center',
          }}
-         onClose={() => onClose()}
+         onClose={() => onClose?.()}
       >
-         <CustomAlert alertType={'success'} message={message} />
+         <CustomAlert alertType={alertType} message={message} />
       </Snackbar>
    );
 }
