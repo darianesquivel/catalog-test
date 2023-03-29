@@ -190,11 +190,14 @@ router.put(
           description,
           dinamicFields: {
             ...currentProduct.dataValues.dinamicFields,
-            ...restOfFields
-          }
+            ...restOfFields,
+          },
           ...fields.values,
         });
-        updatedProducts.push({...updatedValues?.dataValues, ...updatedValues?.dataValues.dinamicFields});
+        updatedProducts.push({
+          ...updatedValues?.dataValues,
+          ...updatedValues?.dataValues.dinamicFields,
+        });
       } catch (error) {
         console.log(error);
         res.status(503).send(error);
@@ -203,7 +206,9 @@ router.put(
 
     res.status(200).json({
       action: "Update Products",
-      message: `${arrangedById.length} have been updated form the catalog ${Object(currentCatalog)?.name}`,
+      message: `${arrangedById.length} have been updated form the catalog ${
+        Object(currentCatalog)?.name
+      }`,
       data: updatedProducts,
     });
   }
@@ -465,4 +470,3 @@ async function insertData(product: any, catalogs: any) {
   }
 }
 export default router;
-
