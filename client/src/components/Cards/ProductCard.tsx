@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { memo, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import ClassNames from 'classnames';
-import { Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
    cardContainer: {
