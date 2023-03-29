@@ -57,12 +57,10 @@ const useStyles = makeStyles((theme) => ({
    },
    startIconsGroup: {
       display: 'flex',
-      // gap: theme.spacing(2),
    },
    endButtons: {
       borderRadius: theme.shape.borderRadius,
       textTransform: 'none',
-      // fontSize: '14px',
       padding: theme.spacing(1.2, 0),
    },
    endIconButtons: {
@@ -94,6 +92,9 @@ const useStyles = makeStyles((theme) => ({
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
       gap: theme.spacing(1),
+      maxHeight: 'calc(100vh - 135px)',
+      paddingBottom: theme.spacing(1),
+      overflow: 'scroll',
    },
    catalogViewContainerNoDate: {
       display: 'grid',
@@ -301,7 +302,7 @@ const ProductsList = (props: any) => {
    );
 
    const catalogRenderView = rows.map((prod) => (
-      <Lazyload key={prod.id} height={100}>
+      <Lazyload key={prod.id} overflow throttle={100} height={200}>
          <ProductCard
             brand={prod.brand}
             title={prod.name}
@@ -313,6 +314,7 @@ const ProductsList = (props: any) => {
          />
       </Lazyload>
    ));
+
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
    };

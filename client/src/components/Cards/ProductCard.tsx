@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { memo, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import ClassNames from 'classnames';
-import { Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
    cardContainer: {
@@ -96,26 +95,13 @@ function ProductCard({
       );
    }, [brand, image, title, classes, handleClick]);
 
-   const RenderCheckBox = useMemo(
-      () => (
-         <Checkbox
-            checked={isSelected}
-            color="primary"
-            className={classes.checkbox}
-            onClick={() => onSelectionChange(id)}
-            icon={<span className={classes.icon} />}
-         />
-      ),
-      [classes.checkbox, classes.icon, id, isSelected, onSelectionChange]
-   );
-
    return (
       <Card
+         onClick={() => onSelectionChange(id)}
          className={ClassNames(classes.cardContainer, {
             [classes.cardContainerSelected]: isSelected,
          })}
       >
-         {RenderCheckBox}
          {RenderCardContent}
       </Card>
    );

@@ -169,6 +169,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       padding: theme.spacing(0),
       marginRight: theme.spacing(1 / 4),
    },
+   price: {
+      display: 'flex',
+      gap: theme.spacing(1 / 2),
+   },
 }));
 
 type Tproduct = {
@@ -223,7 +227,6 @@ export default function ProductDetails() {
    useEffect(() => {
       setImagesState(product.images?.map((obj: any) => obj?.url));
    }, [product?.name, product?.images]);
-
    return (
       <>
          <CustomNavBar
@@ -297,7 +300,7 @@ export default function ProductDetails() {
                                  </Typography>
                               </div>
                               <div className={classes.productDesc}>
-                                 {product.dinamicFields?.availability === 'in stock' ? (
+                                 {product.dinamicFields?.availability === 'in stock' || true ? (
                                     <div className={classes.stock}>
                                        <Checkbox
                                           size="small"
@@ -310,7 +313,7 @@ export default function ProductDetails() {
                                           color="primary"
                                           className={classes.bold}
                                        >
-                                          {product.dinamicFields?.availability}
+                                          in stock
                                        </Typography>
                                     </div>
                                  ) : (
@@ -319,9 +322,20 @@ export default function ProductDetails() {
                                        variant="caption"
                                        className={classNames(classes.outOfStock, classes.bold)}
                                     >
-                                       {product.dinamicFields?.availability}
+                                       out of stock
                                     </Typography>
                                  )}
+                                 {product.dinamicFields?.price ? (
+                                    <div className={classes.price}>
+                                       <Typography variant="body1" className={classes.bold}>
+                                          ${Number(product.dinamicFields?.price)}
+                                       </Typography>
+
+                                       <Typography variant="body1" className={classes.bold}>
+                                          USD
+                                       </Typography>
+                                    </div>
+                                 ) : null}
                                  {product.dinamicFields?.color ? (
                                     <div>
                                        <Typography variant="subtitle2" className={classes.bold}>
