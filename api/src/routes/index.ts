@@ -154,7 +154,60 @@ router.post(
     }
   }
 );
+//UPDATE PRODUCTS
+router.put(
+  "/catalogs/:catalog_id/products/bulk",
+  async (req: Request, res: Response) => {
+    const { catalog_id } = req.params;
+    const { changedProducts } = req.body;
+    const currentCatalog = await catalogs.findByPk(catalog_id);
+    const productIds: string[] = Array.from(
+      new Set(changedProducts.map(({ id }: any) => id))
+    );
+    let arrangedById: any[] = [];
 
+    // order the data by id and parsing as key values into an object
+    // output  {id: string, values: {...newKeyValues}}
+    productIds.forEach((id: string) => {
+      const currentProductChanges = changedProducts
+        .filter((prod: any) => prod.id === id)
+        .map(({ field, value }: any) => ({
+          [field]: value,
+        }))
+        .reduce((acc: object, current: any) => ({ ...acc, ...current }), {});
+      arrangedById.push({ id, values: currentProductChanges });
+    });
+
+    const updatedProducts = [];
+
+    for (const fields of arrangedById) {
+      const currentProduct = await product.findByPk(fields.id);
+
+      const { name, description, ...restOfFields } = fields.values;
+      try {
+        const updatedValues = await currentProduct?.update({
+          name,
+          description,
+          dinamicFields: {
+            ...currentProduct.dataValues.dinamicFields,
+            ...restOfFields
+          }
+          ...fields.values,
+        });
+        updatedProducts.push({...updatedValues?.dataValues, ...updatedValues?.dataValues.dinamicFields});
+      } catch (error) {
+        console.log(error);
+        res.status(503).send(error);
+      }
+    }
+
+    res.status(200).json({
+      action: "Update Products",
+      message: `${arrangedById.length} have been updated form the catalog ${Object(currentCatalog)?.name}`,
+      data: updatedProducts,
+    });
+  }
+);
 //GET CATALOGS
 router.get("/catalogs", async (req: Request, res: Response) => {
   // await insertData(product, catalogs);
@@ -412,3 +465,4 @@ async function insertData(product: any, catalogs: any) {
   }
 }
 export default router;
+

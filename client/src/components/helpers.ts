@@ -9,6 +9,7 @@ export function columnsCreator(data: any[]) {
             field: key,
             headerName: key.replace(/\w/, (value: string) => value?.toUpperCase()),
             width: 150,
+            editable: !/createdat|updatedat|id|link|catalogid/i.test(key),
          }))
       )
       .reduce((acc: any, current: any) => {
