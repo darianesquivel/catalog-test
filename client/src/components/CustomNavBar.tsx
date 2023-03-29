@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
-import { Toolbar, AppBar, Typography, IconButton, Button, Menu, MenuItem } from '@material-ui/core';
+import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
 import SearchBar from './SearchBar';
 import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
