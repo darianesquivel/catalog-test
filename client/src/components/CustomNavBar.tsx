@@ -102,6 +102,8 @@ type NavBarProps = {
    count?: any;
    onClean?: any;
    onSelectAll?: any;
+   saveActions?: any[];
+   isUpdateLoading?: boolean;
 };
 
 export default function CustomNavBar({
@@ -113,13 +115,15 @@ export default function CustomNavBar({
    count,
    onClean,
    onSelectAll,
+   saveActions = [],
+   isUpdateLoading,
 }: NavBarProps) {
    const classes = useStyles();
    const history = useHistory();
    const [open, setOpen] = useState(false);
    const [term, setTerm] = useState(getUrlTerm(history.location.search));
    const [anchorEl, setAnchorEl] = useState(null);
-
+   const [changedValues, saveChangesFn] = saveActions;
    const isViewList = useStore((state: any) => state.isViewList);
    const { toggleView } = useStore();
 
@@ -132,7 +136,6 @@ export default function CustomNavBar({
       queryKey: ['catalogs'],
    });
    const isMainSection = ![isProductDetails, isUploadSection, isProductListSection].includes(true);
-
    const sectionTitle = isMainSection ? 'Catalog Explorer' : title;
 
    const menuOptions: { id: string; content: string; disabled?: boolean }[] = [
@@ -169,6 +172,7 @@ export default function CustomNavBar({
    const handleSearchChange = (value: string) => {
       setTerm(value);
    };
+
    const RenderTitle = useMemo(
       () => (
          <div className={classes.sectionName}>
@@ -265,7 +269,6 @@ export default function CustomNavBar({
                   />
                </div>
             ) : null}
-
             <Button
                onClick={toggleView}
                variant="outlined"
@@ -288,6 +291,17 @@ export default function CustomNavBar({
             >
                Add products
             </Button>
+            {changedValues?.length ? (
+               <Button
+                  variant="outlined"
+                  color="primary"
+                  className={classes.addProductBtn}
+                  onClick={saveChangesFn}
+                  disabled={isUpdateLoading}
+               >
+                  {isUpdateLoading ? 'Saving changes...' : `Save ${changedValues?.length} changes`}
+               </Button>
+            ) : null}
          </>
       ) : isMainSection && !isProductListSection && !isProductDetails ? (
          <SearchBar
