@@ -180,7 +180,7 @@ const drawerButtons = [
    },
 ];
 
-const partialValues = ['currentUrl', 'sectionInfo', 'searchingData', 'notifications'];
+const partialValues = ['currentUrl', 'sectionInfo', 'searchingData', 'notifications', 'isViewList'];
 // zustand global state
 export const useStore = create(
    persist(

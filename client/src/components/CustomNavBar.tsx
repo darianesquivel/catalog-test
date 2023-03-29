@@ -251,7 +251,7 @@ export default function CustomNavBar({
    const FinalIcons =
       isProductListSection && title ? (
          <>
-            {isViewList ? (
+            {!isViewList ? (
                <div>
                   <Button
                      variant="outlined"
@@ -275,7 +275,7 @@ export default function CustomNavBar({
                color="primary"
                className={classes.addProductBtn}
             >
-               {isViewList ? (
+               {!isViewList ? (
                   <>
                      <FontAwesomeIcon size="lg" icon={faThList} />
                   </>
