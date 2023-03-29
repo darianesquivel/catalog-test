@@ -96,26 +96,13 @@ function ProductCard({
       );
    }, [brand, image, title, classes, handleClick]);
 
-   const RenderCheckBox = useMemo(
-      () => (
-         <Checkbox
-            checked={isSelected}
-            color="primary"
-            className={classes.checkbox}
-            onClick={() => onSelectionChange(id)}
-            icon={<span className={classes.icon} />}
-         />
-      ),
-      [classes.checkbox, classes.icon, id, isSelected, onSelectionChange]
-   );
-
    return (
       <Card
+         onClick={() => onSelectionChange(id)}
          className={ClassNames(classes.cardContainer, {
             [classes.cardContainerSelected]: isSelected,
          })}
       >
-         {RenderCheckBox}
          {RenderCardContent}
       </Card>
    );
