@@ -90,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
       gap: theme.spacing(1),
+      height: 'calc(100vh - 135px)',
+      paddingBottom: theme.spacing(1),
+      overflow: 'scroll',
    },
    catalogViewContainerNoDate: {
       display: 'grid',
@@ -243,17 +246,17 @@ const ProductsList = (props: any) => {
    );
 
    const catalogRenderView = rows.map((prod) => (
-      <Lazyload key={prod.id} height={100}>
-         <ProductCard
-            brand={prod.brand}
-            title={prod.name}
-            image={prod.image}
-            catalogId={prod.catalogId}
-            id={prod.id}
-            onSelectionChange={handleCheckBoxes}
-            isSelected={selected.includes(prod.id)}
-         />
-      </Lazyload>
+      // <Lazyload key={prod.id} debounce={500} height={200}>
+      <ProductCard
+         brand={prod.brand}
+         title={prod.name}
+         image={prod.image}
+         catalogId={prod.catalogId}
+         id={prod.id}
+         onSelectionChange={handleCheckBoxes}
+         isSelected={selected.includes(prod.id)}
+      />
+      // </Lazyload>
    ));
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
