@@ -33,6 +33,7 @@ import updateProducts from '../api/updateProducts';
 import { useMutateHook } from '../hooks';
 import CustomSnackBar from '../components/CustomSnackbar';
 import queryClientConfig from '../config/queryClientConfig';
+import CopyToClipBoard from '../components/CopyToClipBoard';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -135,6 +136,9 @@ const columns: GridColDef[] = [
       field: 'id',
       headerName: 'id',
       width: 150,
+      renderCell: (params) => (
+         <CopyToClipBoard value={params.row.id}>{params.row.id}</CopyToClipBoard>
+      ),
    },
    { field: 'name', headerName: 'Title', width: 150, editable: true },
    { field: 'description', headerName: 'Description', width: 150, editable: true },
@@ -175,6 +179,7 @@ const ProductsList = (props: any) => {
    const [cellChanges, setCellChanges] = useState<any[]>([]);
    const [cellWasChanged, setCellWasChanged] = useState(false);
    const [openSnackBar, setOpenSnackBar] = useState(false);
+
    const isViewList = useStore((state: any) => state.isViewList);
 
    const {
@@ -452,7 +457,7 @@ const ProductsList = (props: any) => {
                )
             ) : null}
          </div>
-         {info && <SummaryDetails {...info} closeModal={setInfo} />}
+         {info && <SummaryDetails {...info} closeModal={setInfo} />})
       </div>
    );
 };
