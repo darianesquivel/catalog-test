@@ -172,7 +172,7 @@ const options: { id: string; content: string; disabled: boolean; icon: any }[] =
 const ProductsList = (props: any) => {
    const classes = useStyles();
    const catalogId = props.match.params.id;
-   const [info, setInfo] = useState<object>();
+   const [info, setInfo] = useState<object | undefined>();
    const [selected, setSelected] = useState<any>([]);
    const [bulkOption, setBulkOption] = useState<string | null>(null);
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -288,6 +288,10 @@ const ProductsList = (props: any) => {
          saveValuesFn,
       ]
    );
+   const handleCloseInfo = () => {
+      setInfo(undefined);
+      history.push(`/catalogs/${catalogId}`);
+   };
 
    const handleCheckBoxes = useCallback(
       (values: any[]) => {
@@ -457,7 +461,7 @@ const ProductsList = (props: any) => {
                )
             ) : null}
          </div>
-         {info && <SummaryDetails {...info} closeModal={setInfo} />})
+         {info && <SummaryDetails {...info} closeModal={handleCloseInfo} />})
       </div>
    );
 };
