@@ -205,9 +205,10 @@ router.put(
     }
     const prodAmount = arrangedById.length;
     const conjugation = prodAmount > 1 ? "have" : "has";
+    const singOrPlural = prodAmount > 1 ? "products" : "product";
     res.status(200).json({
       action: "Update Products",
-      message: `${prodAmount} ${conjugation} been updated form the catalog ${
+      message: `${prodAmount} ${singOrPlural} ${conjugation} been updated form the catalog ${
         Object(currentCatalog)?.name
       }`,
       data: updatedProducts,

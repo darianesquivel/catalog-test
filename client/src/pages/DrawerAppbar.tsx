@@ -153,9 +153,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type NotificationType = {
    timestamp?: string;
-   type: 'Upload' | 'Delete' | 'Duplicate' | 'Update' | 'Remove' | 'Create';
+   type: 'Upload' | 'Delete' | 'Duplicate' | 'Update' | 'Remove' | 'Create' | 'Update products';
    content?: string;
    pending?: boolean;
+   catalogId?: string;
 };
 const drawerButtons = [
    {
@@ -200,18 +201,29 @@ export const useStore = create(
          toggleView: () => set((state: any) => ({ ...state, isViewList: !state.isViewList })),
 
          notifications: [] as NotificationType[],
-         setNotifications: ({ type, content, timestamp, pending = true }: NotificationType) => {
+         setNotifications: ({
+            type,
+            content,
+            timestamp,
+            pending = true,
+            catalogId,
+         }: NotificationType) => {
             let modelName: string;
 
             if (['Upload', 'Delete'].includes(type)) {
                modelName = 'products';
+            } else if (type.includes('Update products')) {
+               modelName = '';
             } else {
                modelName = 'catalogs';
             }
             let title = `${type} ${modelName} - Completed`;
             set((state: any) => ({
                ...state,
-               notifications: [{ title, content, timestamp, pending }, ...state.notifications],
+               notifications: [
+                  { title, content, timestamp, pending, catalogId },
+                  ...state.notifications,
+               ],
             }));
          },
 

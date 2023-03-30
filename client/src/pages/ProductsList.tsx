@@ -181,6 +181,7 @@ const ProductsList = (props: any) => {
    const [openSnackBar, setOpenSnackBar] = useState(false);
 
    const isViewList = useStore((state: any) => state.isViewList);
+   const { setNotifications } = useStore();
 
    const {
       data: catalog = {},
@@ -255,38 +256,35 @@ const ProductsList = (props: any) => {
                   }
                }
             );
+            setNotifications({
+               type: 'Update products',
+               content: response,
+               pending: true,
+               timestamp: new Date().toISOString(),
+               catalogId: catalogId,
+            });
          },
          onError: (error) => {
             setOpenSnackBar(true);
          },
       });
-   }, [mutate, catalogId]);
+   }, [mutate, catalogId, setNotifications]);
 
    const updateMessage = isUpdateSuccess ? Object(updatedData).message : updateError;
 
-   const NavBar = useMemo(
-      () => (
-         <CustomNavBar
-            title={catalog.name}
-            catalogId={catalog.id}
-            isProductListSection
-            count={selected.length}
-            onClean={handleCleanSelect}
-            onSelectAll={handleSelectAll}
-            saveActions={[cellChanges, saveValuesFn]}
-            isUpdateLoading={isUpdateLoading}
-         />
-      ),
-      [
-         catalog.name,
-         catalog.id,
-         selected,
-         handleSelectAll,
-         cellChanges,
-         isUpdateLoading,
-         saveValuesFn,
-      ]
+   const NavBar = (
+      <CustomNavBar
+         title={catalog.name}
+         catalogId={catalog.id}
+         isProductListSection
+         count={selected.length}
+         onClean={handleCleanSelect}
+         onSelectAll={handleSelectAll}
+         saveActions={[cellChanges, saveValuesFn]}
+         isUpdateLoading={isUpdateLoading}
+      />
    );
+
    const handleCloseInfo = () => {
       setInfo(undefined);
       history.push(`/catalogs/${catalogId}`);

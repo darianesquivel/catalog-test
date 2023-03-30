@@ -67,7 +67,7 @@ export default function NotificationsAccordion({
       return defaultMessage;
    }
 
-   const handleClick = (timestamp: string, response: any) => {
+   const handleClick = (timestamp: string, response: any, catalogId?: string) => {
       const { data, action } = response;
 
       if (viewTracker) {
@@ -76,12 +76,13 @@ export default function NotificationsAccordion({
          });
       }
       if (!action.includes('Remove')) {
-         history.push(`/catalogs/${data.id}`);
+         const pathNameId = data.id || catalogId;
+         history.push(`/catalogs/${pathNameId}`);
       }
       onToggle?.(false);
    };
 
-   const accordions = finalNotifications.map(({ title, content, timestamp }: any) => (
+   const accordions = finalNotifications.map(({ title, content, timestamp, catalogId }: any) => (
       <Accordion key={timestamp}>
          <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -90,7 +91,7 @@ export default function NotificationsAccordion({
          >
             {title}
          </AccordionSummary>
-         <AccordionDetails onClick={() => handleClick(timestamp, content)}>
+         <AccordionDetails onClick={() => handleClick(timestamp, content, catalogId)}>
             <div className={classes.accDetails}>
                {content.message}
                <Typography className={classes.timestamp} variant="body2">
