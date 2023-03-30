@@ -59,7 +59,7 @@ export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
                >
                   <Tooltip title={key}>
                      <Typography
-                        variant="body2"
+                        variant="caption"
                         className={classNames(classes.keys, classes.ellipsis, {
                            [classes.bold]: boldKeys,
                         })}
@@ -71,7 +71,7 @@ export default function DetailTable({ rows, boldKeys, extraStyles }: Trows) {
                      <Tooltip title={value}>
                         <Typography
                            ref={textRef.current}
-                           variant="body2"
+                           variant="caption"
                            className={classNames(classes.values, classes.ellipsis)}
                         >
                            {value}
