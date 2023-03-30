@@ -1,4 +1,4 @@
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridRowsProp, GridColDef, GridCellParams } from '@mui/x-data-grid';
 import { Button, CircularProgress, Tooltip, Typography } from '@material-ui/core';
 import {
    faTags,
@@ -105,6 +105,11 @@ const useStyles = makeStyles((theme) => ({
       },
       gap: theme.spacing(1),
    },
+   edited: {
+      '& svg': {
+         color: theme.palette.primary.main,
+      },
+   },
 }));
 
 const columns: GridColDef[] = [
@@ -210,7 +215,9 @@ const ProductsList = (props: any) => {
          : columns;
    }, [products]);
 
-   const customColumns = useMemo(() => [...columns, ...productColumns], [productColumns]);
+   const customColumns = useMemo(() => {
+      return [...columns, ...productColumns];
+   }, [productColumns]);
 
    const rows: GridRowsProp = products;
    const params: any = useParams();
@@ -350,11 +357,21 @@ const ProductsList = (props: any) => {
                   return history.push(`/catalogs/${catalogId}/${cell.id}/`);
                }
             }}
+            getCellClassName={(params: GridCellParams) => {
+               const isEdited = cellChanges.some(({ id }: any) => id === params.id);
+               if (isEdited && params.field === 'info') {
+                  return classes.edited;
+               } else {
+                  return '';
+               }
+            }}
          />
       );
    }, [
       catalogId,
+      cellChanges,
       cellWasChanged,
+      classes.edited,
       classes.datagrid,
       customColumns,
       handleCheckBoxes,

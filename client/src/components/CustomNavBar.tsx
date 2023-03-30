@@ -293,7 +293,7 @@ export default function CustomNavBar({
             </Button>
             {changedValues?.length ? (
                <Button
-                  variant="outlined"
+                  variant="contained"
                   color="primary"
                   className={classes.addProductBtn}
                   onClick={saveChangesFn}
