@@ -261,9 +261,7 @@ const ProductsList = (props: any) => {
       });
    }, [mutate, catalogId]);
 
-   const updateMessage = isUpdateSuccess
-      ? `${Object(updatedData)?.data?.length} products have been updated successfully`
-      : `${updateError}`;
+   const updateMessage = isUpdateSuccess ? Object(updatedData).message : updateError;
 
    const NavBar = useMemo(
       () => (
