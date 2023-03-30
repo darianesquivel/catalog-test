@@ -90,10 +90,24 @@ type TcatalogCard = {
    image?: string;
    productCount: number;
 };
-const menuOptions: { id: string; content: string }[] = [
-   { id: 'edit', content: 'Edit catalog' },
-   { id: 'duplicate', content: 'Duplicate catalog' },
-   { id: 'remove', content: 'Remove catalog' },
+const menuOptions: { id: string; content: string; optionDesc?: string }[] = [
+   { id: 'edit', content: 'Edit catalog', optionDesc: 'Edit the catalog name' },
+   {
+      id: 'duplicate',
+      content: 'Duplicate catalog',
+      optionDesc: 'Duplicate the current catalog and all its products',
+   },
+   {
+      id: 'copy link',
+      content: 'Copy upload link',
+      optionDesc: 'Copy the catalog link to upload products',
+   },
+   { id: 'copy key', content: 'Copy catalog key', optionDesc: 'Copy the catalog id' },
+   {
+      id: 'remove',
+      content: 'Remove catalog',
+      optionDesc: 'Delete the catalog and all its content permanently',
+   },
 ];
 
 export default function CatalogCard({ id, name, products, createdAt, productCount }: TcatalogCard) {
@@ -117,60 +131,80 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
    };
    const date = createdAt ? new Date(createdAt).toLocaleString() : 'no date';
    const defaultImage = products?.[0]?.image;
+   let renderDialog: any;
 
-   const renderDialog =
-      option === 'edit' ? (
-         <FormCreator
-            onModalChange={handleClose}
-            isOpen={true}
-            apiFunction={updateCatalog}
-            initialValues={{ id, name }}
-            keysToInvalidate={['catalogs']}
-            acceptBtnName="Update"
-            extraFn={(data) => {
-               setNotifications({
-                  type: 'Update',
-                  content: data,
-                  timestamp: new Date().toISOString(),
-               });
-            }}
-         />
-      ) : option === 'remove' ? (
-         <CustomDialog
-            isOpen={Boolean(option)}
-            onModalChange={handleClose}
-            onAccept={() => removeCatalog({ id })}
-            queryKey={['catalogs']}
-            action="Remove"
-         >
-            <Typography variant="h6">
-               You are about to delete the catalog "<b>{name}</b>". Are you sure?
-            </Typography>
-            <CustomAlert
-               message="This action can't be undone."
-               alertType="error"
-               variant="filled"
+   switch (option) {
+      case 'edit':
+         renderDialog = (
+            <FormCreator
+               onModalChange={handleClose}
+               isOpen={true}
+               apiFunction={updateCatalog}
+               initialValues={{ id, name }}
+               keysToInvalidate={['catalogs']}
+               acceptBtnName="Update"
+               extraFn={(data) => {
+                  setNotifications({
+                     type: 'Update',
+                     content: data,
+                     timestamp: new Date().toISOString(),
+                  });
+               }}
             />
-         </CustomDialog>
-      ) : option === 'duplicate' ? (
-         <CustomDialog
-            isOpen={Boolean(option)}
-            onModalChange={handleClose}
-            onAccept={() => clonedCatalog(id)}
-            queryKey={['catalogs']}
-            action="Duplicate"
-         >
-            <Typography variant="h6">
-               You are about to duplicate the catalog "<b>{name}</b>". Are you sure?
-            </Typography>
-            <CustomAlert
-               message="The catalog and all its products will be duplicated"
-               alertType="info"
-               variant="standard"
-               propClassName={classes.alertStyle}
-            />
-         </CustomDialog>
-      ) : null;
+         );
+         break;
+      case 'remove':
+         renderDialog = (
+            <CustomDialog
+               isOpen={Boolean(option)}
+               onModalChange={handleClose}
+               onAccept={() => removeCatalog({ id })}
+               queryKey={['catalogs']}
+               action="Remove"
+            >
+               <Typography variant="h6">
+                  You are about to delete the catalog "<b>{name}</b>". Are you sure?
+               </Typography>
+               <CustomAlert
+                  message="This action can't be undone."
+                  alertType="error"
+                  variant="filled"
+               />
+            </CustomDialog>
+         );
+         break;
+      case 'duplicate':
+         renderDialog = (
+            <CustomDialog
+               isOpen={Boolean(option)}
+               onModalChange={handleClose}
+               onAccept={() => clonedCatalog(id)}
+               queryKey={['catalogs']}
+               action="Duplicate"
+            >
+               <Typography variant="h6">
+                  You are about to duplicate the catalog "<b>{name}</b>". Are you sure?
+               </Typography>
+               <CustomAlert
+                  message="The catalog and all its products will be duplicated"
+                  alertType="info"
+                  variant="standard"
+                  propClassName={classes.alertStyle}
+               />
+            </CustomDialog>
+         );
+         break;
+      case 'copy link':
+         alert(option);
+         break;
+      case 'copy key':
+         alert(option);
+         break;
+
+      default:
+         renderDialog = null;
+         break;
+   }
 
    return (
       <>
