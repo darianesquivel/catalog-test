@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
    checkbox: {
       display: 'none',
       position: 'absolute',
-      zIndex: 5000,
+      zIndex: 1000,
    },
    icon: {
       borderRadius: theme.shape.borderRadius / 4,
