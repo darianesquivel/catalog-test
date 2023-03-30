@@ -225,8 +225,15 @@ export default function ProductDetails() {
    );
 
    useEffect(() => {
-      setImagesState(product.images?.map((obj: any) => obj?.url));
+      let mounted = true;
+      if (mounted) {
+         setImagesState(product.images?.map((obj: any) => obj?.url));
+      }
+      return () => {
+         mounted = false;
+      };
    }, [product?.name, product?.images]);
+
    return (
       <>
          <CustomNavBar
