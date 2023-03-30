@@ -1,4 +1,11 @@
-import { Card, CardActionArea, CardContent, CardMedia, Typography } from '@material-ui/core';
+import {
+   Card,
+   CardActionArea,
+   CardContent,
+   CardMedia,
+   Checkbox,
+   Typography,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { memo, useCallback, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -9,6 +16,18 @@ const useStyles = makeStyles((theme) => ({
       height: 300,
       borderRadius: theme.shape.borderRadius,
       border: `2px solid ${theme.palette.background.paper}`,
+   },
+   cardActionArea: {
+      '&:hover': {
+         '& > span': {
+            display: 'block',
+         },
+      },
+   },
+   cardActionAreaSelected: {
+      '& > span': {
+         display: 'block',
+      },
    },
    cardContainerSelected: {
       border: `2px solid ${theme.palette.primary.main}`,
@@ -25,8 +44,9 @@ const useStyles = makeStyles((theme) => ({
       height: 100,
    },
    checkbox: {
+      display: 'none',
       position: 'absolute',
-      zIndex: 1000,
+      zIndex: 5000,
    },
    icon: {
       borderRadius: theme.shape.borderRadius / 4,
@@ -63,7 +83,7 @@ function ProductCard({
    catalogId,
    id,
    onSelectionChange,
-   isSelected = false,
+   isSelected,
 }: TProductCard) {
    const classes = useStyles();
    const history = useHistory();
@@ -73,7 +93,17 @@ function ProductCard({
 
    const RenderCardContent = useMemo(() => {
       return (
-         <CardActionArea>
+         <CardActionArea
+            className={ClassNames(classes.cardActionArea, {
+               [classes.cardActionAreaSelected]: isSelected,
+            })}
+         >
+            <Checkbox
+               className={classes.checkbox}
+               color="primary"
+               checked={isSelected}
+               icon={<span className={classes.icon} />}
+            />
             <CardMedia
                component="img"
                alt="Contemplative Reptile"
@@ -83,6 +113,7 @@ function ProductCard({
                onClick={handleClick}
                className={classes.productImg}
             />
+
             <CardContent className={classes.cardContent}>
                <Typography className={classes.brand} gutterBottom variant="body2" component="h2">
                   {brand}
@@ -93,7 +124,7 @@ function ProductCard({
             </CardContent>
          </CardActionArea>
       );
-   }, [brand, image, title, classes, handleClick]);
+   }, [brand, image, title, classes, handleClick, isSelected]);
 
    return (
       <Card
