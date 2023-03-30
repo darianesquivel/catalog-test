@@ -186,7 +186,6 @@ const ProductsList = (props: any) => {
       data: catalog = {},
       isLoading,
       isError,
-      isSuccess,
       error,
       isFetching,
    } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
@@ -198,18 +197,20 @@ const ProductsList = (props: any) => {
       error: updateError,
       data: updatedData,
    } = useMutateHook(() => updateProducts(catalogId, cellChanges));
-   const productColumns = useMemo(
-      () =>
-         catalog?.products?.length
-            ? columnsCreator(catalog.products.map((product: any) => product.dinamicFields))
-            : columns,
-      [catalog]
-   );
+
    const products: any[] = useMemo(
       () => (catalog?.products ? catalog.products : []),
       [catalog.products]
    );
-   const customColumns = [...columns, ...productColumns];
+
+   const productColumns = useMemo(() => {
+      return products.length
+         ? columnsCreator(products.map((product: any) => product.dinamicFields))
+         : columns;
+   }, [products]);
+
+   const customColumns = useMemo(() => [...columns, ...productColumns], [productColumns]);
+
    const rows: GridRowsProp = products;
    const params: any = useParams();
    const history = useHistory();
@@ -322,6 +323,46 @@ const ProductsList = (props: any) => {
       </Lazyload>
    ));
 
+   const RenderListView = useMemo(() => {
+      return (
+         <DataGrid
+            className={classes.datagrid}
+            rows={rows}
+            columns={customColumns}
+            pageSize={100}
+            rowsPerPageOptions={[100]}
+            checkboxSelection
+            disableSelectionOnClick
+            onSelectionModelChange={handleCheckBoxes}
+            editMode="cell"
+            onEditCellPropsChange={() => {
+               setCellWasChanged(true);
+            }}
+            onCellEditCommit={(cell: any) => {
+               if (cellWasChanged) {
+                  handleCellChanges(cell);
+                  setCellWasChanged(false);
+               }
+            }}
+            onCellClick={(cell: any) => {
+               if (cell.field === 'image') {
+                  return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
+               } else if (cell.field === 'info') {
+                  setInfo(cell.row);
+                  return history.push(`/catalogs/${catalogId}/${cell.id}/`);
+               }
+            }}
+         />
+      );
+   }, [
+      catalogId,
+      cellWasChanged,
+      classes.datagrid,
+      customColumns,
+      handleCheckBoxes,
+      history,
+      rows,
+   ]);
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
    };
@@ -410,7 +451,7 @@ const ProductsList = (props: any) => {
                   </CustomDialog>
                )}
             </div>
-            {isLoading || isFetching ? (
+            {(isLoading || isFetching) && !rows.length ? (
                <div className={classes.loading}>
                   <CircularProgress />
                </div>
@@ -418,36 +459,9 @@ const ProductsList = (props: any) => {
             {isError ? (
                <NotFound error={error} info="An error occurred while loading the catalogs" />
             ) : null}
-            {isSuccess && !isFetching ? (
+            {rows.length ? (
                isViewList ? (
-                  <DataGrid
-                     className={classes.datagrid}
-                     rows={rows}
-                     columns={customColumns}
-                     pageSize={100}
-                     rowsPerPageOptions={[100]}
-                     checkboxSelection
-                     disableSelectionOnClick
-                     onSelectionModelChange={handleCheckBoxes}
-                     editMode="cell"
-                     onEditCellPropsChange={() => {
-                        setCellWasChanged(true);
-                     }}
-                     onCellEditCommit={(cell: any) => {
-                        if (cellWasChanged) {
-                           handleCellChanges(cell);
-                           setCellWasChanged(false);
-                        }
-                     }}
-                     onCellClick={(cell: any) => {
-                        if (cell.field === 'image') {
-                           return history.push(`/catalogs/${catalogId}/${cell.id}/details`);
-                        } else if (cell.field === 'info') {
-                           setInfo(cell.row);
-                           return history.push(`/catalogs/${catalogId}/${cell.id}/`);
-                        }
-                     }}
-                  />
+                  RenderListView
                ) : (
                   <div
                      className={classNames(classes.catalogViewContainer, {
