@@ -89,7 +89,7 @@ export default function CatalogOptions({ name, id }: OptionProps) {
                isOpen={true}
                apiFunction={updateCatalog}
                initialValues={{ id, name }}
-               keysToInvalidate={['catalogs']}
+               keysToInvalidate={[`catalogs/:${id}`, id]}
                acceptBtnName="Update"
                extraFn={(data: any) => {
                   setNotifications({
