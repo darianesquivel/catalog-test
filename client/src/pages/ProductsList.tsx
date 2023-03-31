@@ -502,7 +502,7 @@ const ProductsList = (props: any) => {
                )
             ) : null}
          </div>
-         {info && <SummaryDetails {...info} closeModal={handleCloseInfo} />})
+         {info && <SummaryDetails {...info} closeModal={handleCloseInfo} />}
       </div>
    );
 };
