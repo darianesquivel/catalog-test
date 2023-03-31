@@ -38,6 +38,7 @@ import updateProducts from '../api/updateProducts';
 import { useMutateHook } from '../hooks';
 import removeProducts from '../api/removeProducts';
 import { columnsCreator, downloadCSV } from '../components/helpers';
+import ProductRowOptions from '../components/ProductRowOptions';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -121,7 +122,7 @@ const columns: GridColDef[] = [
       field: 'info',
       headerName: 'Info',
       width: 30,
-
+      disableColumnMenu: true,
       renderCell: (params) => {
          return (
             <FontAwesomeIcon
@@ -131,6 +132,15 @@ const columns: GridColDef[] = [
                color="gray"
             />
          );
+      },
+   },
+   {
+      field: 'options',
+      headerName: 'Options',
+      disableColumnMenu: true,
+      width: 30,
+      renderCell: (params) => {
+         return <ProductRowOptions />;
       },
    },
    {
