@@ -39,6 +39,7 @@ import { useMutateHook } from '../hooks';
 import removeProducts from '../api/removeProducts';
 import { columnsCreator, downloadCSV } from '../components/helpers';
 import ProductRowOptions from '../components/ProductRowOptions';
+import NotProductsImage from '../components/NotProductsImage';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -207,6 +208,7 @@ const ProductsList = (props: any) => {
       isLoading,
       isError,
       error,
+      isSuccess,
       isFetching,
    } = useSingleCatalogQuery([`catalogs/:${catalogId}`, catalogId], catalogId);
 
@@ -500,7 +502,11 @@ const ProductsList = (props: any) => {
                      {catalogRenderView}
                   </div>
                )
-            ) : null}
+            ) : (
+               isSuccess && (
+                  <NotProductsImage onClick={() => history.push(`/catalogs/${catalogId}/upload`)} />
+               )
+            )}
          </div>
          {info && <SummaryDetails {...info} closeModal={handleCloseInfo} />}
       </div>
