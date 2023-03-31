@@ -1,3 +1,6 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useHistory, useParams } from 'react-router';
+
 import { DataGrid, GridRowsProp, GridColDef, GridCellParams } from '@mui/x-data-grid';
 import { Button, CircularProgress, Tooltip, Typography } from '@material-ui/core';
 import {
@@ -10,30 +13,32 @@ import {
    faLayerGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SummaryDetails from './Details/SummaryDetails';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
-
-import removeProducts from '../api/removeProducts';
-import CustomDialog from '../components/CustomDialog';
-import CustomAlert from '../components/CustomAlert';
-import { columnsCreator, downloadCSV } from '../components/helpers';
-import Lazyload from 'react-lazyload';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
+
+// COMPONENTS
+import CopyToClipBoard from '../components/CopyToClipBoard';
 import CustomNavBar from '../components/CustomNavBar';
-import { useSingleCatalogQuery } from '../config/queries';
+import CustomSnackBar from '../components/CustomSnackbar';
+import PopOverList from '../components/PopOverList';
 import NotFound from './NotFound';
 import ProductCard from '../components/Cards/ProductCard';
+import CustomDialog from '../components/CustomDialog';
+import CustomAlert from '../components/CustomAlert';
+import Lazyload from 'react-lazyload';
+import SummaryDetails from './Details/SummaryDetails';
+
+// FUNCTIONS
 import { useStore } from '../pages/DrawerAppbar';
-import PopOverList from '../components/PopOverList';
+import queryClientConfig from '../config/queryClientConfig';
+import { useSingleCatalogQuery } from '../config/queries';
 import updateProducts from '../api/updateProducts';
 import { useMutateHook } from '../hooks';
-import CustomSnackBar from '../components/CustomSnackbar';
-import queryClientConfig from '../config/queryClientConfig';
-import CopyToClipBoard from '../components/CopyToClipBoard';
+import removeProducts from '../api/removeProducts';
+import { columnsCreator, downloadCSV } from '../components/helpers';
+import ProductRowOptions from '../components/ProductRowOptions';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -117,7 +122,7 @@ const columns: GridColDef[] = [
       field: 'info',
       headerName: 'Info',
       width: 30,
-
+      disableColumnMenu: true,
       renderCell: (params) => {
          return (
             <FontAwesomeIcon
@@ -127,6 +132,15 @@ const columns: GridColDef[] = [
                color="gray"
             />
          );
+      },
+   },
+   {
+      field: 'options',
+      headerName: 'Options',
+      disableColumnMenu: true,
+      width: 30,
+      renderCell: (params) => {
+         return <ProductRowOptions />;
       },
    },
    {
