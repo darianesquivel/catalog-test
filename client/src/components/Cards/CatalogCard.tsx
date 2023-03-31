@@ -25,6 +25,8 @@ import classNames from 'classnames';
 import React from 'react';
 import { useStore } from '../../pages/DrawerAppbar';
 import PopOverList from '../PopOverList';
+import { useCopyToClipboard } from '../../hooks';
+import CustomSnackBar from '../CustomSnackbar';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -114,6 +116,9 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
    const classes = useStyles();
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
    const [option, setOption] = useState<any>(null);
+   const [snackMessage, setSnackMessage] = useState('');
+   const [isCopied, copyToClipboardFn] = useCopyToClipboard();
+
    const history = useHistory();
    const { setNotifications } = useStore();
 
@@ -131,6 +136,15 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
    };
    const date = createdAt ? new Date(createdAt).toLocaleString() : 'no date';
    const defaultImage = products?.[0]?.image;
+
+   let RenderSnackBar = (
+      <CustomSnackBar
+         message={snackMessage}
+         open={isCopied}
+         alertType="success"
+         onClose={handleClose}
+      />
+   );
    let renderDialog: any;
 
    switch (option) {
@@ -195,10 +209,17 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
          );
          break;
       case 'copy link':
-         alert(option);
+         const uploadUrl = `${window.location.href}/${id}/upload`;
+         copyToClipboardFn(uploadUrl).then(() => {
+            setSnackMessage('Catalog upload products link copied successfully');
+            handleClose();
+         });
          break;
       case 'copy key':
-         alert(option);
+         copyToClipboardFn(id).then(() => {
+            setSnackMessage('Catalog key copied successfully');
+            handleClose();
+         });
          break;
 
       default:
@@ -264,6 +285,7 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
             </CardContent>
          </Card>
          {renderDialog}
+         {RenderSnackBar}
       </>
    );
 }
