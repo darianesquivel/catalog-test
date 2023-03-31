@@ -107,7 +107,7 @@ export default function CatalogOptions({ name, id }: OptionProps) {
                isOpen={Boolean(option)}
                onModalChange={handleClose}
                onAccept={() => removeCatalog({ id })}
-               queryKey={['catalogs']}
+               queryKey={[`catalogs/:${id}`, id]}
                action="Remove"
             >
                <Typography variant="h6">
