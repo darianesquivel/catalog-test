@@ -13,6 +13,7 @@ import PopOverList from '../PopOverList';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CustomSnackBar from '../CustomSnackbar';
 import clonedCatalog from '../../api/cloneCatalog';
+import { useHistory } from 'react-router';
 
 const catalogOptions: { id: string; content: string; optionDesc?: string }[] = [
    { id: 'edit', content: 'Edit catalog', optionDesc: 'Edit the catalog name' },
@@ -54,6 +55,7 @@ type OptionProps = {
 };
 export default function CatalogOptions({ name, id }: OptionProps) {
    const classes = useStyles();
+   const history = useHistory();
    const { setNotifications } = useStore();
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
    const [option, setOption] = useState<any>(null);
@@ -109,6 +111,7 @@ export default function CatalogOptions({ name, id }: OptionProps) {
                onAccept={() => removeCatalog({ id })}
                queryKey={[`catalogs/:${id}`, id]}
                action="Remove"
+               extraFn={() => history.push('/catalogs')}
             >
                <Typography variant="h6">
                   You are about to delete the catalog "<b>{name}</b>". Are you sure?
