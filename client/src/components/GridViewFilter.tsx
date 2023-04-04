@@ -22,35 +22,21 @@ const useStyles = makeStyles((theme: Theme) =>
    createStyles({
       container: {
          '& .MuiDrawer-paper': {
-            backgroundColor: theme.palette.background.default,
+            backgroundColor: theme.palette.background.paper,
             border: 'none',
          },
-      },
-      appBar: {
-         zIndex: theme.zIndex.drawer + 1,
-         transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-         }),
-      },
-      appBarShift: {
-         marginLeft: drawerWidth,
-         width: `calc(100% - ${drawerWidth}px)`,
-         transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-         }),
       },
       drawer: {
          width: drawerWidth,
          flexShrink: 0,
          whiteSpace: 'nowrap',
          marginRight: '10px',
-         height: 'calc(100vh - 115px)',
+         height: 'calc(100vh - 135px)',
       },
       drawerOpen: {
          width: drawerWidth,
          position: 'relative',
+         marginRight: '12px',
          transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.enteringScreen,
@@ -70,14 +56,14 @@ const useStyles = makeStyles((theme: Theme) =>
       toolbar: {
          display: 'flex',
          alignItems: 'center',
-         justifyContent: 'flex-end',
-         padding: theme.spacing(0, 1),
+         justifyContent: 'space-between',
+         padding: theme.spacing(0, 1.6),
          // necessary for content to be below app bar
          ...theme.mixins.toolbar,
       },
       color: {
-         width: 50,
-         height: 30,
+         width: 35,
+         height: 25,
          display: 'flex',
          flexDirection: 'column',
          justifyContent: 'center',
@@ -86,6 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
          cursor: 'pointer',
          borderRadius: theme.shape.borderRadius,
          fontSize: '10px',
+      },
+      colorName: {
+         width: 70,
+         display: 'flex',
+         padding: theme.spacing(0.2),
+         fontWeight: 500,
       },
       colorSelected: {
          boxShadow: `inset 0 0 0 2px ${theme.palette.primary.main} `,
@@ -111,6 +103,20 @@ const useStyles = makeStyles((theme: Theme) =>
          textTransform: 'capitalize',
       },
       icon: { width: '100%', display: 'flex' },
+      optionsContainer: {
+         display: 'flex',
+         flexDirection: 'column',
+         height: '70vh',
+         padding: theme.spacing(0, 0, 0, 1),
+      },
+      optionContainer: {
+         margin: theme.spacing(1, 0),
+         padding: theme.spacing(1),
+      },
+      applyButton: {
+         textTransform: 'capitalize',
+         margin: theme.spacing(1, 3),
+      },
    })
 );
 
@@ -154,15 +160,21 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
 
    const handleChangeColor = (event: any) => {
       const color = event.target.id;
-      if (colorName.includes(color)) {
-         setColorName(colorName.filter((name) => name !== color));
-      } else {
-         setColorName([...colorName, color]);
-      }
 
       if (color === 'othersColors') {
+         let include = othersColors.some((el: any) => colorName.includes(el));
          setOthers(!others);
-         setColorName((prev) => [...prev, ...othersColors]);
+         if (include) {
+            setColorName(colorName.filter((name) => !othersColors.includes(name)));
+         } else {
+            setColorName((prev) => [...prev, ...othersColors]);
+         }
+      } else {
+         if (colorName.includes(color)) {
+            setColorName(colorName.filter((name) => name !== color));
+         } else {
+            setColorName([...colorName, color]);
+         }
       }
    };
 
@@ -178,7 +190,7 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
       if (!othersColors.includes(prod.color) && !!prod.color && !toHex(prod.color)) {
          othersColors.push(prod.color);
       }
-      if (!sizes.includes(prod.size)) {
+      if (prod.size && !sizes.includes(prod.size)) {
          sizes.push(prod.size);
       }
       if (!brands.includes(prod.brand)) {
@@ -202,105 +214,131 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
             }}
          >
             <div className={classes.toolbar}>
+               {open ? <Typography variant="h6">Filters</Typography> : null}
+
                <IconButton onClick={handleDrawer}>
                   {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                </IconButton>
             </div>
             {open ? (
-               <div
-                  style={{
-                     display: 'flex',
-                     flexDirection: 'column',
-                  }}
-               >
-                  <Typography>Brands</Typography>
-                  <FormControl className={classes.formControl}>
-                     <InputLabel id="demo-mutiple-checkbox-label">Select...</InputLabel>
-                     <Select
-                        labelId="demo-mutiple-checkbox-label"
-                        id="demo-mutiple-checkbox"
-                        multiple
-                        value={brandName}
-                        onChange={handleChangeBrand}
-                        input={<Input />}
-                        renderValue={(selected) => (
-                           <div className={classes.chips}>
-                              {(selected as string[]).map((value) => (
-                                 <Chip key={value} label={value} className={classes.chip} />
-                              ))}
-                           </div>
-                        )}
-                        MenuProps={MenuProps}
-                     >
-                        {brands.map((brand: any) => (
-                           <MenuItem key={brand} value={brand}>
-                              <Checkbox color="primary" checked={brandName.indexOf(brand) > -1} />
-                              <ListItemText primary={brand} />
-                           </MenuItem>
-                        ))}
-                     </Select>
-                  </FormControl>
-                  <Typography>Colors</Typography>
-                  <div className={classes.colors}>
-                     {colors.map((color: any) => {
-                        return (
-                           <div
-                              className={classNames(classes.color, {
-                                 [classes.colorSelected]: colorName.includes(color),
-                              })}
-                              key={color}
-                              id={color}
-                              onClick={handleChangeColor}
-                              style={{
-                                 background: `${toHex(color)}`,
-                              }}
-                           ></div>
-                        );
-                     })}
-                     {
-                        <div
-                           className={classNames(classes.color, {
-                              [classes.colorSelected]: others,
-                           })}
-                           key={'othersColors'}
-                           id={'othersColors'}
-                           onClick={handleChangeColor}
+               <div className={classes.optionsContainer}>
+                  <div className={classes.optionContainer}>
+                     <Typography variant="body2">Brands</Typography>
+                     <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-mutiple-checkbox-label">Select...</InputLabel>
+                        <Select
+                           labelId="demo-mutiple-checkbox-label"
+                           id="demo-mutiple-checkbox"
+                           multiple
+                           value={brandName}
+                           onChange={handleChangeBrand}
+                           input={<Input />}
+                           renderValue={(selected) => (
+                              <div className={classes.chips}>
+                                 {(selected as string[]).map((value) => (
+                                    <Chip
+                                       size="small"
+                                       color="primary"
+                                       key={value}
+                                       label={value}
+                                       className={classes.chip}
+                                    />
+                                 ))}
+                              </div>
+                           )}
+                           MenuProps={MenuProps}
                         >
-                           OTHER
-                        </div>
-                     }
+                           {brands.map((brand: any) => (
+                              <MenuItem key={brand} value={brand}>
+                                 <Checkbox
+                                    color="primary"
+                                    checked={brandName.indexOf(brand) > -1}
+                                 />
+                                 <ListItemText primary={brand} />
+                              </MenuItem>
+                           ))}
+                        </Select>
+                     </FormControl>
                   </div>
-                  <Typography>Sizes</Typography>
-                  <FormControl className={classes.formControl}>
-                     <InputLabel id="demo-mutiple-checkbox-label">Select...</InputLabel>
-                     <Select
-                        labelId="demo-mutiple-checkbox-label"
-                        id="demo-mutiple-checkbox"
-                        multiple
-                        value={sizeName}
-                        onChange={handleChangeSize}
-                        input={<Input />}
-                        renderValue={(selected) => (
-                           <div className={classes.chips}>
-                              {(selected as string[]).map((value) => (
-                                 <Chip key={value} label={value} className={classes.chip} />
-                              ))}
+
+                  <div className={classes.optionContainer}>
+                     <Typography variant="body2">Colors</Typography>
+                     <div className={classes.colors}>
+                        {colors.map((color: any) => {
+                           return (
+                              <div
+                                 className={classNames(classes.color, {
+                                    [classes.colorSelected]: colorName.includes(color),
+                                 })}
+                                 key={color}
+                                 id={color}
+                                 onClick={handleChangeColor}
+                                 style={{
+                                    background: `${toHex(color)}`,
+                                 }}
+                              ></div>
+                           );
+                        })}
+                        {othersColors?.length ? (
+                           <div
+                              className={classNames(classes.color, classes.colorName, {
+                                 [classes.colorSelected]: colorName.some((el: any) =>
+                                    othersColors.includes(el)
+                                 ),
+                              })}
+                              key={'othersColors'}
+                              id={'othersColors'}
+                              onClick={handleChangeColor}
+                           >
+                              Others Colors
                            </div>
-                        )}
-                        MenuProps={MenuProps}
-                     >
-                        {sizes.map((size: any) => (
-                           <MenuItem key={size} value={size}>
-                              <Checkbox color="primary" checked={sizeName.indexOf(size) > -1} />
-                              <ListItemText primary={size} />
-                           </MenuItem>
-                        ))}
-                     </Select>
-                  </FormControl>
+                        ) : null}
+                     </div>
+                  </div>
+
+                  <div className={classes.optionContainer}>
+                     <Typography variant="body2">Sizes</Typography>
+                     <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-mutiple-checkbox-label">Select...</InputLabel>
+                        <Select
+                           labelId="demo-mutiple-checkbox-label"
+                           id="demo-mutiple-checkbox"
+                           multiple
+                           value={sizeName}
+                           onChange={handleChangeSize}
+                           input={<Input />}
+                           renderValue={(selected) => (
+                              <div className={classes.chips}>
+                                 {(selected as string[]).map((value) => (
+                                    <Chip
+                                       size="small"
+                                       color="primary"
+                                       key={value}
+                                       label={value}
+                                       className={classes.chip}
+                                    />
+                                 ))}
+                              </div>
+                           )}
+                           MenuProps={MenuProps}
+                        >
+                           {sizes.map((size: any) => (
+                              <MenuItem key={size} value={size}>
+                                 <Checkbox color="primary" checked={sizeName.indexOf(size) > -1} />
+                                 <ListItemText key={size} primary={size} />
+                              </MenuItem>
+                           ))}
+                        </Select>
+                     </FormControl>
+                  </div>
+
                   <Button
                      onClick={() =>
                         onFilter({ brand: brandName, size: sizeName, color: colorName })
                      }
+                     variant="outlined"
+                     color="primary"
+                     className={classes.applyButton}
                   >
                      Apply Filters
                   </Button>

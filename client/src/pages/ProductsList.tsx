@@ -118,6 +118,15 @@ const useStyles = makeStyles((theme) => ({
          color: theme.palette.primary.main,
       },
    },
+   gridViewFilterContainer: {
+      display: 'flex',
+   },
+   notProductsImageContainer: {
+      width: '100%',
+      display: 'flex',
+      alignContent: 'center',
+      justifyContent: 'center',
+   },
 }));
 
 const columns: GridColDef[] = [
@@ -246,7 +255,6 @@ const ProductsList = (props: any) => {
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
          setGridViewProducts(products);
-
          setSelected([]);
       }
       return () => {
@@ -516,9 +524,9 @@ const ProductsList = (props: any) => {
                isViewList ? (
                   RenderListView
                ) : (
-                  <div style={{ display: 'flex' }}>
+                  <div className={classes.gridViewFilterContainer}>
                      <GridViewFilter data={rows} onFilter={handleFilter} />
-                     {gridViewProducts.length > 0 ? (
+                     {gridViewProducts?.length > 0 ? (
                         <div
                            className={classNames(classes.catalogViewContainer, {
                               [classes.catalogViewContainerNoDate]: gridViewProducts?.length < 5,
@@ -527,7 +535,11 @@ const ProductsList = (props: any) => {
                            {catalogRenderView}
                         </div>
                      ) : (
-                        <>no products</>
+                        <div className={classes.notProductsImageContainer}>
+                           <NotProductsImage
+                              onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+                           />
+                        </div>
                      )}
                   </div>
                )
