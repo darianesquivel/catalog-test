@@ -12,7 +12,6 @@ import FormCreator from '../FormCreator';
 import PopOverList from '../PopOverList';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import CustomSnackBar from '../CustomSnackbar';
-import clonedCatalog from '../../api/cloneCatalog';
 import { useHistory } from 'react-router';
 
 const catalogOptions: { id: string; content: string; optionDesc?: string }[] = [
@@ -56,7 +55,7 @@ type OptionProps = {
 export default function CatalogOptions({ name, id }: OptionProps) {
    const classes = useStyles();
    const history = useHistory();
-   const { setNotifications } = useStore();
+   const { setNotifications, addCatalogsToClone } = useStore();
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
    const [option, setOption] = useState<any>(null);
    const [snackMessage, setSnackMessage] = useState('');
@@ -129,7 +128,10 @@ export default function CatalogOptions({ name, id }: OptionProps) {
             <CustomDialog
                isOpen={Boolean(option)}
                onModalChange={handleClose}
-               onAccept={() => clonedCatalog(id)}
+               extraFn={() => {
+                  addCatalogsToClone(id, name);
+                  history.push('/catalogs');
+               }}
                queryKey={['catalogs']}
                action="Duplicate"
             >

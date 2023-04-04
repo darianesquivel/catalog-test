@@ -16,6 +16,7 @@ import { useCatalogsQuery } from '../config/queries';
 
 import CustomNavBar from '../components/CustomNavBar';
 import NotFound from './NotFound';
+import CloningCard from '../components/Cards/CloningCard';
 
 const useStyles = makeStyles((theme) => ({
    gridContainer: {
@@ -54,12 +55,20 @@ const CatalogExplorer = (props: any) => {
    const classes = useStyles();
    const history = useHistory();
 
+   const catalogsToClone = useStore((state) => state.catalogsToClone);
+
    const { searchingData } = useStore((state) => ({ searchingData: state.searchingData }), shallow);
 
    const term = getUrlTerm(history.location.search);
    const [open, setOpen] = useState(true);
 
    const { data: catalogs, isError, isLoading, isSuccess, error } = useCatalogsQuery(term);
+   // We dont have other way to get a 'key' for each element because the same catalog may be clonated more than once
+   const RenderCloning = catalogsToClone.length
+      ? catalogsToClone.map(({ id, title }: any, index) => (
+           <CloningCard catalogId={id} key={id + title + index} title={title} />
+        ))
+      : null;
    const handleSnackBar = () => setOpen(false);
 
    return (
@@ -98,6 +107,7 @@ const CatalogExplorer = (props: any) => {
                }
             >
                <CatalogCreator />
+               {RenderCloning}
                {catalogs.map((catalog: TcatalogCard) => {
                   return (
                      <CatalogCard

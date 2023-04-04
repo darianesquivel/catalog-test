@@ -78,43 +78,47 @@ const useStyles = makeStyles((theme: Theme) => ({
    dialogActions: {},
 }));
 
-type Tprops = {
+interface DialogProps {
    onModalChange: () => void;
    isOpen: boolean;
-   onAccept: () => void;
+   onAccept?: () => void;
    children?: any;
    queryKey?: string[];
    customMessage?: (data: any) => string;
    action: 'Update' | 'Remove' | 'Duplicate' | 'Delete';
    extraFn?: () => void;
-};
+}
 const CustomDialog = ({
    onModalChange,
    isOpen,
-   onAccept,
+   onAccept = () => {},
    children,
    queryKey,
    customMessage,
    action,
    extraFn,
-}: Tprops) => {
+}: DialogProps) => {
    const classes = useStyles();
-
-   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
    const { setNotifications } = useStore();
+   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
+
    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      mutate(undefined, {
-         onSuccess: (response: any) => {
-            setNotifications({
-               type: action,
-               content: response,
-               pending: true,
-               timestamp: new Date().toISOString(),
-            });
-            // queryClientConfig.invalidateQueries(queryKey);
-         },
-      });
+      if (action !== 'Duplicate') {
+         mutate(undefined, {
+            onSuccess: (response: any) => {
+               setNotifications({
+                  type: action,
+                  content: response,
+                  pending: true,
+                  timestamp: new Date().toISOString(),
+               });
+            },
+         });
+      } else {
+         extraFn?.();
+         onModalChange();
+      }
    };
    const handleClose = async () => {
       if (isSuccess) {
