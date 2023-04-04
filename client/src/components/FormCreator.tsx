@@ -115,6 +115,7 @@ const FormCreator = ({
             onSuccess: (data) => {
                formik.resetForm();
                queryClientConfig.invalidateQueries(keysToInvalidate);
+               queryClientConfig.invalidateQueries(['catalogs']);
                extraFn?.(data);
             },
          });

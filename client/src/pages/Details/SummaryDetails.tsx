@@ -14,9 +14,20 @@ const useStyles = makeStyles((theme: Theme) => ({
       height: 'calc(100vh - 103px)',
       display: 'flex',
       flexDirection: 'column',
-      padding: theme.spacing(1),
+      padding: theme.spacing(0, 1),
       boxSizing: 'content-box',
    },
+   toolbar: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      maxHeight: '50px',
+      minHeight: '50px',
+      justifyContent: 'flex-start',
+      '& > button': {
+         padding: theme.spacing(0.69, 1.2),
+      },
+   },
+
    header: {
       display: 'grid',
       gridTemplateColumns: '1fr 3fr',
@@ -44,11 +55,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       gridTemplateColumns: 'repeat(3, 1fr)',
    },
    currentButton: {},
-   toolbar: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-   },
+
    customTabs: {
       overflowY: 'auto',
    },
@@ -59,7 +66,14 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
 }));
 
-export default function SummaryDetails({ name, image, description, closeModal, ...extra }: any) {
+export default function SummaryDetails({
+   name,
+   image,
+   description,
+   closeModal,
+   brand,
+   ...extra
+}: any) {
    const classes = useStyles();
 
    const extraBullets = useMemo(() => {
@@ -125,7 +139,7 @@ export default function SummaryDetails({ name, image, description, closeModal, .
                <div>
                   <Typography variant="body2">Brand</Typography>
                   <Typography className={classes.brand} variant="caption">
-                     Default
+                     {brand}
                   </Typography>
                </div>
             </div>

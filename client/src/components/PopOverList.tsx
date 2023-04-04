@@ -1,4 +1,12 @@
-import { makeStyles, MenuItem, MenuList, Popover, Theme, Typography } from '@material-ui/core';
+import {
+   makeStyles,
+   MenuItem,
+   MenuList,
+   Popover,
+   Theme,
+   Tooltip,
+   Typography,
+} from '@material-ui/core';
 import React from 'react';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -15,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
 }));
 type PopOverProps = {
-   options: { id: string; content: string; disabled?: boolean; icon?: any }[];
+   options: { id: string; content: string; disabled?: boolean; icon?: any; optionDesc?: string }[];
    buttonTarget: HTMLButtonElement | null;
    setButtonTarget: (value: any) => any;
    setCurrentOption: (currentOption: string | null) => any;
@@ -50,16 +58,17 @@ export default function PopOverList({
             }}
          >
             <MenuList>
-               {options.map(({ id, content, disabled, icon }) => (
-                  <MenuItem
-                     key={id}
-                     alignItems="center"
-                     onClick={() => handleOption(id)}
-                     disabled={disabled}
-                  >
-                     {icon && <span className={classes.icons}>{icon}</span>}
-                     <Typography className={classes.typographyButtons}>{content}</Typography>
-                  </MenuItem>
+               {options.map(({ id, content, disabled, icon, optionDesc = '' }) => (
+                  <Tooltip key={id} title={optionDesc} placement="top-start" enterDelay={1000}>
+                     <MenuItem
+                        alignItems="center"
+                        onClick={() => handleOption(id)}
+                        disabled={disabled}
+                     >
+                        {icon && <span className={classes.icons}>{icon}</span>}
+                        <Typography className={classes.typographyButtons}>{content}</Typography>
+                     </MenuItem>
+                  </Tooltip>
                ))}
             </MenuList>
          </Popover>

@@ -1,30 +1,14 @@
-import { useState } from 'react';
-import {
-   CardContent,
-   Typography,
-   Card,
-   CardHeader,
-   CardMedia,
-   IconButton,
-} from '@material-ui/core';
+import React from 'react';
 
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { CardContent, Typography, Card, CardHeader, CardMedia } from '@material-ui/core';
 import { faCartPlus, faCalendarDay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
-import CustomAlert from '../CustomAlert';
-import CustomDialog from '../CustomDialog';
-import FormCreator from '../FormCreator';
-import updateCatalog from '../../api/updateCatalog';
-import removeCatalog from '../../api/removeCatalog';
-import clonedCatalog from '../../api/cloneCatalog';
 
 // STYLES
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import React from 'react';
-import { useStore } from '../../pages/DrawerAppbar';
-import PopOverList from '../PopOverList';
+import CatalogOptions from './CatalogOptions';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -90,106 +74,21 @@ type TcatalogCard = {
    image?: string;
    productCount: number;
 };
-const menuOptions: { id: string; content: string }[] = [
-   { id: 'edit', content: 'Edit catalog' },
-   { id: 'duplicate', content: 'Duplicate catalog' },
-   { id: 'remove', content: 'Remove catalog' },
-];
 
 export default function CatalogCard({ id, name, products, createdAt, productCount }: TcatalogCard) {
    const classes = useStyles();
-   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-   const [option, setOption] = useState<any>(null);
+
    const history = useHistory();
-   const { setNotifications } = useStore();
 
-   const openOptions = (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-   };
-
-   const handleClose = () => {
-      setAnchorEl(null);
-      setOption('');
-   };
-
-   const handleOption = (id: string | null) => {
-      setOption(id);
-   };
    const date = createdAt ? new Date(createdAt).toLocaleString() : 'no date';
    const defaultImage = products?.[0]?.image;
-
-   const renderDialog =
-      option === 'edit' ? (
-         <FormCreator
-            onModalChange={handleClose}
-            isOpen={true}
-            apiFunction={updateCatalog}
-            initialValues={{ id, name }}
-            keysToInvalidate={['catalogs']}
-            acceptBtnName="Update"
-            extraFn={(data) => {
-               setNotifications({
-                  type: 'Update',
-                  content: data,
-                  timestamp: new Date().toISOString(),
-               });
-            }}
-         />
-      ) : option === 'remove' ? (
-         <CustomDialog
-            isOpen={Boolean(option)}
-            onModalChange={handleClose}
-            onAccept={() => removeCatalog({ id })}
-            queryKey={['catalogs']}
-            action="Remove"
-         >
-            <Typography variant="h6">
-               You are about to delete the catalog "<b>{name}</b>". Are you sure?
-            </Typography>
-            <CustomAlert
-               message="This action can't be undone."
-               alertType="error"
-               variant="filled"
-            />
-         </CustomDialog>
-      ) : option === 'duplicate' ? (
-         <CustomDialog
-            isOpen={Boolean(option)}
-            onModalChange={handleClose}
-            onAccept={() => clonedCatalog(id)}
-            queryKey={['catalogs']}
-            action="Duplicate"
-         >
-            <Typography variant="h6">
-               You are about to duplicate the catalog "<b>{name}</b>". Are you sure?
-            </Typography>
-            <CustomAlert
-               message="The catalog and all its products will be duplicated"
-               alertType="info"
-               variant="standard"
-               propClassName={classes.alertStyle}
-            />
-         </CustomDialog>
-      ) : null;
 
    return (
       <>
          <Card className={classNames(classes.catalogCard, classes.root)}>
             <CardContent className={classes.cardContainer}>
                <CardHeader
-                  action={
-                     <>
-                        <IconButton onClick={openOptions} aria-label="settings">
-                           <MoreVertIcon />
-                        </IconButton>
-                        <PopOverList
-                           buttonTarget={anchorEl}
-                           options={menuOptions}
-                           setButtonTarget={setAnchorEl}
-                           setCurrentOption={handleOption}
-                        />
-                     </>
-                  }
+                  action={<CatalogOptions id={id} name={name} />}
                   title={name ? name : 'Default'}
                   titleTypographyProps={{ variant: 'body2' }}
                />
@@ -229,7 +128,6 @@ export default function CatalogCard({ id, name, products, createdAt, productCoun
                </CardContent>
             </CardContent>
          </Card>
-         {renderDialog}
       </>
    );
 }

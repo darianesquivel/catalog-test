@@ -1,23 +1,28 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
+//MUI and others
 import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
-import SearchBar from './SearchBar';
-import { faAngleLeft, faPen, faRedo } from '@fortawesome/free-solid-svg-icons';
+import { faAngleLeft, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThLarge, faThList } from '@fortawesome/free-solid-svg-icons';
+
+// Components
+import SearchBar from './SearchBar';
 import FormCreator from './FormCreator';
+import PopOverList from './PopOverList';
+// Functions
 import updateCatalog from '../api/updateCatalog';
 import queryClientConfig from '../config/queryClientConfig';
 import { useMutateHook } from '../hooks';
 import getFilteredCatalogs from '../api/getFilteredCatalogs';
 import { useIsFetching } from '@tanstack/react-query';
-import { faThLarge, faThList } from '@fortawesome/free-solid-svg-icons';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core';
 import classNames from 'classnames';
 import clsx from 'clsx';
-import PopOverList from './PopOverList';
+import CatalogOptions from './Cards/CatalogOptions';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -102,7 +107,7 @@ type NavBarProps = {
    count?: any;
    onClean?: any;
    onSelectAll?: any;
-   saveActions?: any[];
+   saveActions?: [changedValues: any[], saveChangesFn: () => void];
    isUpdateLoading?: boolean;
 };
 
@@ -115,7 +120,7 @@ export default function CustomNavBar({
    count,
    onClean,
    onSelectAll,
-   saveActions = [],
+   saveActions,
    isUpdateLoading,
 }: NavBarProps) {
    const classes = useStyles();
@@ -123,7 +128,7 @@ export default function CustomNavBar({
    const [open, setOpen] = useState(false);
    const [term, setTerm] = useState(getUrlTerm(history.location.search));
    const [anchorEl, setAnchorEl] = useState(null);
-   const [changedValues, saveChangesFn] = saveActions;
+   const [changedValues, saveChangesFn] = saveActions || [];
    const isViewList = useStore((state: any) => state.isViewList);
    const { toggleView } = useStore();
 
@@ -241,11 +246,9 @@ export default function CustomNavBar({
       </IconButton>
    ) : null;
 
-   const EditIcon =
-      isProductListSection && title ? (
-         <IconButton className={classes.icons} onClick={() => setOpen(true)}>
-            <FontAwesomeIcon icon={faPen} size="xs" />
-         </IconButton>
+   const OptionsIcon =
+      isProductListSection && title && catalogId ? (
+         <CatalogOptions name={title} id={catalogId} />
       ) : null;
 
    const FinalIcons =
@@ -293,7 +296,7 @@ export default function CustomNavBar({
             </Button>
             {changedValues?.length ? (
                <Button
-                  variant="outlined"
+                  variant="contained"
                   color="primary"
                   className={classes.addProductBtn}
                   onClick={saveChangesFn}
@@ -326,7 +329,7 @@ export default function CustomNavBar({
                   {ArrowIcon}
                   {RenderTitle}
                   {RefreshIcon}
-                  {EditIcon}
+                  {OptionsIcon}
                </div>
                <div className={classes.endSection}>{FinalIcons}</div>
             </Toolbar>

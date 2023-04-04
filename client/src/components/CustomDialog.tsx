@@ -86,6 +86,7 @@ type Tprops = {
    queryKey?: string[];
    customMessage?: (data: any) => string;
    action: 'Update' | 'Remove' | 'Duplicate' | 'Delete';
+   extraFn?: () => void;
 };
 const CustomDialog = ({
    onModalChange,
@@ -95,6 +96,7 @@ const CustomDialog = ({
    queryKey,
    customMessage,
    action,
+   extraFn,
 }: Tprops) => {
    const classes = useStyles();
 
@@ -117,6 +119,8 @@ const CustomDialog = ({
    const handleClose = async () => {
       if (isSuccess) {
          queryClientConfig.invalidateQueries(queryKey);
+         queryClientConfig.invalidateQueries(['catalogs']);
+         extraFn?.();
       }
       onModalChange();
    };
