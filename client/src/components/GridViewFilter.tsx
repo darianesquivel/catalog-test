@@ -81,10 +81,7 @@ const useStyles = makeStyles((theme: Theme) =>
          display: 'flex',
          flexDirection: 'column',
          justifyContent: 'center',
-         //  justifyItems: 'center',
-         //  alingItems: 'center',
-         alingContent: 'center',
-         textAling: 'cwenter',
+         alingItems: 'center',
          boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
          cursor: 'pointer',
          borderRadius: theme.shape.borderRadius,
@@ -113,6 +110,7 @@ const useStyles = makeStyles((theme: Theme) =>
       buttonColor: {
          textTransform: 'capitalize',
       },
+      icon: { width: '100%', display: 'flex' },
    })
 );
 
@@ -140,6 +138,7 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
    const [brandName, setBrandName] = useState<string[]>([]);
    const [sizeName, setSizeName] = useState<string[]>([]);
    const [colorName, setColorName] = useState<string[]>([]);
+   const [others, setOthers] = useState(false);
 
    const handleDrawer = () => {
       setOpen(!open);
@@ -160,15 +159,24 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
       } else {
          setColorName([...colorName, color]);
       }
+
+      if (color === 'othersColors') {
+         setOthers(!others);
+         setColorName((prev) => [...prev, ...othersColors]);
+      }
    };
 
    const colors: any = [];
+   const othersColors: any = [];
    const sizes: any = [];
    const brands: any = [];
 
    data?.forEach((prod: any) => {
-      if (!colors.includes(prod.color) && !!prod.color) {
+      if (!colors.includes(prod.color) && !!prod.color && !!toHex(prod.color)) {
          colors.push(prod.color);
+      }
+      if (!othersColors.includes(prod.color) && !!prod.color && !toHex(prod.color)) {
+         othersColors.push(prod.color);
       }
       if (!sizes.includes(prod.size)) {
          sizes.push(prod.size);
@@ -235,7 +243,7 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
                   <Typography>Colors</Typography>
                   <div className={classes.colors}>
                      {colors.map((color: any) => {
-                        return toHex(color) ? (
+                        return (
                            <div
                               className={classNames(classes.color, {
                                  [classes.colorSelected]: colorName.includes(color),
@@ -247,19 +255,20 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
                                  background: `${toHex(color)}`,
                               }}
                            ></div>
-                        ) : (
-                           <div
-                              className={classNames(classes.color, {
-                                 [classes.colorSelected]: colorName.includes(color),
-                              })}
-                              key={color}
-                              id={color}
-                              onClick={handleChangeColor}
-                           >
-                              {color}
-                           </div>
                         );
                      })}
+                     {
+                        <div
+                           className={classNames(classes.color, {
+                              [classes.colorSelected]: others,
+                           })}
+                           key={'othersColors'}
+                           id={'othersColors'}
+                           onClick={handleChangeColor}
+                        >
+                           OTHER
+                        </div>
+                     }
                   </div>
                   <Typography>Sizes</Typography>
                   <FormControl className={classes.formControl}>

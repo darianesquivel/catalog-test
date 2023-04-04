@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
    },
    catalogViewContainerNoDate: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(5, 1fr)',
+      gridTemplateColumns: 'repeat(4, 1fr)',
       [theme.breakpoints.down(1000)]: {
          gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
       },
@@ -206,7 +206,7 @@ const ProductsList = (props: any) => {
       [catalog.products]
    );
    const productColumns = useMemo(() => {
-      return products.length
+      return products?.length
          ? columnsCreator(products.map((product: any) => product.dinamicFields))
          : columns;
    }, [products]);
@@ -242,10 +242,9 @@ const ProductsList = (props: any) => {
 
    const handleFilter = (filters: any) => {
       let productFiltered = products;
-      console.log({ productFiltered });
       const filteredProducts = productFiltered.filter((product: any) => {
          return Object.entries(filters).every(([key, values]: any) => {
-            if (values.length > 0) {
+            if (values?.length > 0) {
                return values.includes(product[key]);
             }
             return true;
@@ -254,8 +253,6 @@ const ProductsList = (props: any) => {
 
       setGridViewProducts(filteredProducts);
    };
-
-   console.log({ gridViewProducts });
 
    const saveValuesFn = useCallback(() => {
       mutate(undefined, {
@@ -297,7 +294,7 @@ const ProductsList = (props: any) => {
          title={catalog.name}
          catalogId={catalog.id}
          isProductListSection
-         count={selected.length}
+         count={selected?.length}
          onClean={handleCleanSelect}
          onSelectAll={handleSelectAll}
          saveActions={[cellChanges, saveValuesFn]}
@@ -420,7 +417,7 @@ const ProductsList = (props: any) => {
                      variant="contained"
                      color="primary"
                      onClick={openBulkOptinos}
-                     disabled={!selected.length}
+                     disabled={!selected?.length}
                   >
                      <FontAwesomeIcon size="lg" icon={faLayerGroup} />
                      <Typography className={classes.typographyButtons}>Bulk actions</Typography>
@@ -439,7 +436,7 @@ const ProductsList = (props: any) => {
                            className={classes.endButtons}
                            variant="outlined"
                            color="primary"
-                           disabled={!products.length}
+                           disabled={!products?.length}
                            onClick={() => downloadCSV(products, catalog.name)}
                         >
                            <FontAwesomeIcon
@@ -482,19 +479,23 @@ const ProductsList = (props: any) => {
             {isError ? (
                <NotFound error={error} info="An error occurred while loading the catalogs" />
             ) : null}
-            {rows.length ? (
+            {rows?.length ? (
                isViewList ? (
                   RenderListView
                ) : (
                   <div style={{ display: 'flex' }}>
                      <GridViewFilter data={rows} onFilter={handleFilter} />
-                     <div
-                        className={classNames(classes.catalogViewContainer, {
-                           [classes.catalogViewContainerNoDate]: rows.length < 5,
-                        })}
-                     >
-                        {catalogRenderView}
-                     </div>
+                     {gridViewProducts.length > 0 ? (
+                        <div
+                           className={classNames(classes.catalogViewContainer, {
+                              [classes.catalogViewContainerNoDate]: gridViewProducts?.length < 5,
+                           })}
+                        >
+                           {catalogRenderView}
+                        </div>
+                     ) : (
+                        <>no products</>
+                     )}
                   </div>
                )
             ) : null}
