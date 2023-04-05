@@ -181,7 +181,14 @@ const drawerButtons = [
    },
 ];
 
-const partialValues = ['currentUrl', 'sectionInfo', 'searchingData', 'notifications', 'isViewList'];
+const partialValues = [
+   'currentUrl',
+   'sectionInfo',
+   'searchingData',
+   'notifications',
+   'isViewList',
+   'catalogsToClone',
+];
 // zustand global state
 export const useStore = create(
    persist(
@@ -199,6 +206,17 @@ export const useStore = create(
             })),
          isViewList: true,
          toggleView: () => set((state: any) => ({ ...state, isViewList: !state.isViewList })),
+         catalogsToClone: [],
+         addCatalogsToClone: (newId: string, newTitle: string) =>
+            set((state: any) => ({
+               ...state,
+               catalogsToClone: [...state.catalogsToClone, { id: newId, title: newTitle }],
+            })),
+         removeCatalogToClone: (catalogId: string) =>
+            set((state: any) => ({
+               ...state,
+               catalogsToClone: state.catalogsToClone.filter(({ id }: any) => id !== catalogId),
+            })),
 
          notifications: [] as NotificationType[],
          setNotifications: ({
