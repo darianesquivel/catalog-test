@@ -178,9 +178,9 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
       const color = event.target.id;
 
       if (color === 'othersColors') {
-         let include = othersColors.some((el: any) => colorName.includes(el));
+         const isSelected = othersColors.some((el: any) => colorName.includes(el));
          setOthers(!others);
-         if (include) {
+         if (isSelected) {
             setColorName(colorName.filter((name) => !othersColors.includes(name)));
          } else {
             setColorName((prev) => [...prev, ...othersColors]);
