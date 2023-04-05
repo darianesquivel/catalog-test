@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
    },
 }));
 
-export default memo(function CopyToClipBoard({ value, children }: Tprops) {
+function CopyToClipBoard({ value, children }: Tprops) {
    const classes = useStyles();
    const [open, setOpen] = useState(false);
    const [showCopyBtn, setShowCopyBtn] = useState(false);
@@ -80,4 +80,5 @@ export default memo(function CopyToClipBoard({ value, children }: Tprops) {
          </Snackbar>
       </>
    );
-});
+}
+export default memo(CopyToClipBoard);
