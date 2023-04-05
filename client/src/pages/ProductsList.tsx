@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
    catalogViewContainer: {
       display: 'grid',
       width: '100%',
-      gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fit, minmax( 300px, 1fr))',
       gap: theme.spacing(1),
       maxHeight: 'calc(100vh - 135px)',
       paddingBottom: theme.spacing(1),
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
       [theme.breakpoints.down(1000)]: {
-         gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
+         gridTemplateColumns: 'repeat(auto-fit, minmax( 300px, 1fr))',
       },
       gap: theme.spacing(1),
    },
@@ -357,7 +357,7 @@ const ProductsList = (props: any) => {
 
    const catalogRenderView = useMemo(() => {
       return gridViewProducts?.map((prod: any) => (
-         <Lazyload key={prod.id} overflow throttle={100} height={10}>
+         <Lazyload key={prod.id} overflow height={100}>
             <ProductCard
                brand={prod.brand}
                title={prod.name}
@@ -366,6 +366,7 @@ const ProductsList = (props: any) => {
                id={prod.id}
                onSelectionChange={handleCheckBoxes}
                isSelected={selected.includes(prod.id)}
+               key={prod.id}
             />
          </Lazyload>
       ));
