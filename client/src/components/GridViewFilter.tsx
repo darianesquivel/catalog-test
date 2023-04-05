@@ -155,9 +155,6 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
    const [colorName, setColorName] = useState<string[]>([]);
    const [others, setOthers] = useState(false);
 
-   console.log({ data });
-   console.log({ onFilter });
-
    const handleDrawer = () => {
       setOpen(!open);
    };
@@ -298,7 +295,7 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
                               ></div>
                            );
                         })}
-                        {othersColors?.length ? (
+                        {othersColors.length ? (
                            <div
                               className={classNames(classes.color, classes.colorName, {
                                  [classes.colorSelected]: colorName.some((el: any) =>
