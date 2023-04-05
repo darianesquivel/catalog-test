@@ -143,7 +143,7 @@ const MenuProps = {
 
 type Tprops = {
    data: any;
-   onFilter: any;
+   onFilter: (filters: any) => void;
 };
 
 export default function GridViewFilter({ data, onFilter }: Tprops) {
@@ -154,6 +154,9 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
    const [sizeName, setSizeName] = useState<string[]>([]);
    const [colorName, setColorName] = useState<string[]>([]);
    const [others, setOthers] = useState(false);
+
+   console.log({ data });
+   console.log({ onFilter });
 
    const handleDrawer = () => {
       setOpen(!open);
