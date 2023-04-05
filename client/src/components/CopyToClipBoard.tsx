@@ -65,11 +65,11 @@ function CopyToClipBoard({ value, children }: Tprops) {
    return (
       <>
          {RenderChildren}
-         {isLink && (
+         {isLink ? (
             <IconButton onClick={handleRef}>
                <FontAwesomeIcon icon={faArrowUpRightFromSquare} color="black" size="2xs" />
             </IconButton>
-         )}
+         ) : null}
          <Snackbar
             open={open}
             autoHideDuration={3000}
