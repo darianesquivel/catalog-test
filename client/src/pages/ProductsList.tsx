@@ -357,7 +357,7 @@ const ProductsList = (props: any) => {
 
    const catalogRenderView = useMemo(() => {
       return gridViewProducts?.map((prod: any) => (
-         <Lazyload key={prod.id} overflow throttle={100} height={200}>
+         <Lazyload key={prod.id} overflow throttle={100} height={10}>
             <ProductCard
                brand={prod.brand}
                title={prod.name}
