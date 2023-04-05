@@ -194,10 +194,10 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
       }
    };
 
-   const colors: any = [];
-   const othersColors: any = [];
-   const sizes: any = [];
-   const brands: any = [];
+   const colors: string[] = [];
+   const othersColors: string[] = [];
+   const sizes: string[] = [];
+   const brands: string[] = [];
 
    data?.forEach((prod: any) => {
       if (!colors.includes(prod.color) && !!prod.color && !!toHex(prod.color)) {
