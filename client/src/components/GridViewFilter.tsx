@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
          ...theme.mixins.toolbar,
       },
       color: {
-         width: 35,
+         width: 25,
          height: 25,
          display: 'flex',
          flexDirection: 'column',
@@ -70,14 +70,18 @@ const useStyles = makeStyles((theme: Theme) =>
          alingItems: 'center',
          boxShadow: `inset 0 0 0 2px ${theme.palette.action.focus} `,
          cursor: 'pointer',
-         borderRadius: theme.shape.borderRadius,
-         fontSize: '10px',
+         borderRadius: theme.shape.borderRadius / 2,
+         fontSize: '12px',
+         textAlign: 'center',
+         fontWeight: 500,
+         color: theme.palette.primary.main,
       },
       colorName: {
-         width: 70,
+         width: 50,
          display: 'flex',
          padding: theme.spacing(0.2),
-         fontWeight: 500,
+         fontWeight: 600,
+         textAling: 'center',
       },
       colorSelected: {
          boxShadow: `inset 0 0 0 2px ${theme.palette.primary.main} `,
@@ -113,9 +117,14 @@ const useStyles = makeStyles((theme: Theme) =>
          margin: theme.spacing(1, 0),
          padding: theme.spacing(1),
       },
-      applyButton: {
+      buttons: {
+         display: 'flex',
+         justifyContent: 'center',
+         gap: theme.spacing(1),
+      },
+      button: {
          textTransform: 'capitalize',
-         margin: theme.spacing(1, 3),
+         padding: theme.spacing(0.3, 2),
       },
    })
 );
@@ -156,6 +165,13 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
 
    const handleChangeSize = (event: React.ChangeEvent<{ value: unknown }>) => {
       setSizeName(event.target.value as string[]);
+   };
+
+   const handleReset = () => {
+      setBrandName([]);
+      setSizeName([]);
+      setColorName([]);
+      onFilter({ brand: '', size: '', color: '' });
    };
 
    const handleChangeColor = (event: any) => {
@@ -290,7 +306,7 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
                               id={'othersColors'}
                               onClick={handleChangeColor}
                            >
-                              Others Colors
+                              Others
                            </div>
                         ) : null}
                      </div>
@@ -332,16 +348,26 @@ export default function GridViewFilter({ data, onFilter }: Tprops) {
                      </FormControl>
                   </div>
 
-                  <Button
-                     onClick={() =>
-                        onFilter({ brand: brandName, size: sizeName, color: colorName })
-                     }
-                     variant="outlined"
-                     color="primary"
-                     className={classes.applyButton}
-                  >
-                     Apply Filters
-                  </Button>
+                  <div className={classes.buttons}>
+                     <Button
+                        onClick={() =>
+                           onFilter({ brand: brandName, size: sizeName, color: colorName })
+                        }
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                     >
+                        Apply Filters
+                     </Button>
+                     <Button
+                        onClick={handleReset}
+                        variant="outlined"
+                        color="primary"
+                        className={classes.button}
+                     >
+                        Reset
+                     </Button>
+                  </div>
                </div>
             ) : null}
          </Drawer>
