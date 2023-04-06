@@ -36,6 +36,7 @@ import queryClientConfig from '../config/queryClientConfig';
 import { useSingleCatalogQuery } from '../config/queries';
 import updateProducts from '../api/updateProducts';
 import { useMutateHook } from '../hooks';
+import GridViewFilter from '../components/GridViewFilter';
 import removeProducts from '../api/removeProducts';
 import { columnsCreator, downloadCSV } from '../components/helpers';
 import ProductRowOptions from '../components/ProductRowOptions';
@@ -97,7 +98,8 @@ const useStyles = makeStyles((theme) => ({
    },
    catalogViewContainer: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
+      width: '100%',
+      gridTemplateColumns: 'repeat(auto-fit, minmax( 300px, 1fr))',
       gap: theme.spacing(1),
       maxHeight: 'calc(100vh - 135px)',
       paddingBottom: theme.spacing(1),
@@ -105,9 +107,9 @@ const useStyles = makeStyles((theme) => ({
    },
    catalogViewContainerNoDate: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(5, 1fr)',
+      gridTemplateColumns: 'repeat(4, 1fr)',
       [theme.breakpoints.down(1000)]: {
-         gridTemplateColumns: 'repeat(auto-fit, minmax( 350px, 1fr))',
+         gridTemplateColumns: 'repeat(auto-fit, minmax( 300px, 1fr))',
       },
       gap: theme.spacing(1),
    },
@@ -115,6 +117,15 @@ const useStyles = makeStyles((theme) => ({
       '& svg': {
          color: theme.palette.primary.main,
       },
+   },
+   gridViewFilterContainer: {
+      display: 'flex',
+   },
+   notProductsImageContainer: {
+      width: '100%',
+      display: 'flex',
+      alignContent: 'center',
+      justifyContent: 'center',
    },
 }));
 
@@ -199,9 +210,9 @@ const ProductsList = (props: any) => {
    const [cellChanges, setCellChanges] = useState<any[]>([]);
    const [cellWasChanged, setCellWasChanged] = useState(false);
    const [openSnackBar, setOpenSnackBar] = useState(false);
-
    const isViewList = useStore((state: any) => state.isViewList);
    const { setNotifications } = useStore();
+   const [gridViewProducts, setGridViewProducts] = useState<any>();
 
    const {
       data: catalog = {},
@@ -224,9 +235,8 @@ const ProductsList = (props: any) => {
       () => (catalog?.products ? catalog.products : []),
       [catalog.products]
    );
-
    const productColumns = useMemo(() => {
-      return products.length
+      return products?.length
          ? columnsCreator(products.map((product: any) => product.dinamicFields))
          : columns;
    }, [products]);
@@ -235,7 +245,7 @@ const ProductsList = (props: any) => {
       return [...columns, ...productColumns];
    }, [productColumns]);
 
-   const rows: GridRowsProp = products;
+   let rows: GridRowsProp = products;
    const params: any = useParams();
    const history = useHistory();
 
@@ -244,6 +254,7 @@ const ProductsList = (props: any) => {
       if (catalog.name && isMounted) {
          const initialValues = products.find((data: any) => data.id === params.productId);
          setInfo(initialValues);
+         setGridViewProducts(products);
          setSelected([]);
       }
       return () => {
@@ -259,6 +270,20 @@ const ProductsList = (props: any) => {
       const allProducts = products.map((product) => product.id);
       setSelected(allProducts);
    }, [products]);
+
+   const handleFilter = (filters: any) => {
+      let productFiltered = products;
+      const filteredProducts = productFiltered.filter((product: any) => {
+         return Object.entries(filters).every(([key, values]: any) => {
+            if (values?.length > 0) {
+               return values.includes(product[key]);
+            }
+            return true;
+         });
+      });
+
+      setGridViewProducts(filteredProducts);
+   };
 
    const saveValuesFn = useCallback(() => {
       mutate(undefined, {
@@ -300,7 +325,7 @@ const ProductsList = (props: any) => {
          title={catalog.name}
          catalogId={catalog.id}
          isProductListSection
-         count={selected.length}
+         count={selected?.length}
          onClean={handleCleanSelect}
          onSelectAll={handleSelectAll}
          saveActions={[cellChanges, saveValuesFn]}
@@ -330,19 +355,22 @@ const ProductsList = (props: any) => {
       [isViewList]
    );
 
-   const catalogRenderView = rows.map((prod) => (
-      <Lazyload key={prod.id} overflow throttle={100} height={200}>
-         <ProductCard
-            brand={prod.brand}
-            title={prod.name}
-            image={prod.image}
-            catalogId={prod.catalogId}
-            id={prod.id}
-            onSelectionChange={handleCheckBoxes}
-            isSelected={selected.includes(prod.id)}
-         />
-      </Lazyload>
-   ));
+   const catalogRenderView = useMemo(() => {
+      return gridViewProducts?.map((prod: any) => (
+         <Lazyload key={prod.id} overflow height={100}>
+            <ProductCard
+               brand={prod.brand}
+               title={prod.name}
+               image={prod.image}
+               catalogId={prod.catalogId}
+               id={prod.id}
+               onSelectionChange={handleCheckBoxes}
+               isSelected={selected.includes(prod.id)}
+               key={prod.id}
+            />
+         </Lazyload>
+      ));
+   }, [gridViewProducts, selected, handleCheckBoxes]);
 
    const RenderListView = useMemo(() => {
       return (
@@ -394,13 +422,16 @@ const ProductsList = (props: any) => {
       history,
       rows,
    ]);
+
    const openBulkOptinos = (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
    };
+
    const handleClose = () => {
       setBulkOption(null);
       setAnchorEl(null);
    };
+
    const handleCellChanges = (cellChanged: any) => {
       const { id, field } = cellChanged;
       setCellChanges((prev: any[]) => {
@@ -428,7 +459,7 @@ const ProductsList = (props: any) => {
                      variant="contained"
                      color="primary"
                      onClick={openBulkOptinos}
-                     disabled={!selected.length}
+                     disabled={!selected?.length}
                   >
                      <FontAwesomeIcon size="lg" icon={faLayerGroup} />
                      <Typography className={classes.typographyButtons}>Bulk actions</Typography>
@@ -447,7 +478,7 @@ const ProductsList = (props: any) => {
                            className={classes.endButtons}
                            variant="outlined"
                            color="primary"
-                           disabled={!products.length}
+                           disabled={!products?.length}
                            onClick={() => downloadCSV(products, catalog.name)}
                         >
                            <FontAwesomeIcon
@@ -490,16 +521,27 @@ const ProductsList = (props: any) => {
             {isError ? (
                <NotFound error={error} info="An error occurred while loading the catalogs" />
             ) : null}
-            {rows.length ? (
+            {rows?.length ? (
                isViewList ? (
                   RenderListView
                ) : (
-                  <div
-                     className={classNames(classes.catalogViewContainer, {
-                        [classes.catalogViewContainerNoDate]: rows.length < 5,
-                     })}
-                  >
-                     {catalogRenderView}
+                  <div className={classes.gridViewFilterContainer}>
+                     <GridViewFilter data={rows} onFilter={handleFilter} />
+                     {gridViewProducts?.length > 0 ? (
+                        <div
+                           className={classNames(classes.catalogViewContainer, {
+                              [classes.catalogViewContainerNoDate]: gridViewProducts?.length < 5,
+                           })}
+                        >
+                           {catalogRenderView}
+                        </div>
+                     ) : (
+                        <div className={classes.notProductsImageContainer}>
+                           <NotProductsImage
+                              onClick={() => history.push(`/catalogs/${catalogId}/upload`)}
+                           />
+                        </div>
+                     )}
                   </div>
                )
             ) : (
