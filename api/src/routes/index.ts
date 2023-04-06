@@ -1,4 +1,4 @@
-import Papa from "papaparse";
+import { mapKeys } from "lodash";
 import { query, Request, Response, Router } from "express";
 import database from "../db";
 import axios from "axios";
@@ -15,7 +15,32 @@ router.post("/catalogs/catalog", async (req: Request, res: Response) => {
         name,
       },
     });
-    res.status(200).json(newCatalog);
+    const [value, isNewRecord] = newCatalog;
+
+    if (!isNewRecord) {
+      let { count, rows } = await catalogs.findAndCountAll({
+        where: {
+          name: {
+            [Op.iLike]: `${name} (%`,
+          },
+        },
+      });
+      const newRecord: any = await catalogs.create({
+        name: `${name} (${count + 1})`,
+      });
+
+      res.status(200).json({
+        message: `Catalog "${name} ()" created successfully`,
+        data: newRecord,
+        action: "Create Catalog",
+      });
+    } else {
+      res.status(200).json({
+        message: `Catalog ${name} created successfully`,
+        data: newCatalog[0],
+        action: "Create Catalog",
+      });
+    }
   } catch (err) {
     res.status(500).send(err);
   }
@@ -31,15 +56,37 @@ router.post(
       const processedData = jsonData
         .map((obj: any) => {
           return Object.fromEntries(
-            Object.entries(obj).filter(([key, value]: any) => !!key && !!value)
+            Object.entries(obj).filter(([key, value]: any) => {
+              const isAnObject = value?.trim()?.startsWith("[");
+              return !!key && !!value && !isAnObject;
+            })
           );
         })
-        .map((obj: any, index: number) => ({
-          catalog_id: catalogId,
-          allImages: obj.Images,
-          ...obj,
-        }))
-        .filter((obj: any) => obj.description && obj.title && obj.image);
+        .map((obj: any) => {
+          const mainImage: any = Object.entries(obj)
+            .find(([k]) => /mainImageUrl|image link|image$/gi.test(k))
+            ?.flat()?.[1];
+
+          return {
+            mainImage: mainImage || "",
+            catalog_id: catalogId,
+            allImages: obj.images || obj.Images,
+            ...mapKeys(obj, (value, key) => key.toLowerCase()),
+          };
+        })
+        .filter((obj: any) => {
+          const columnNames = Object.keys(obj);
+
+          const hasMinimumValues = [
+            /title/gi,
+            /description/gi,
+            /image/gi,
+          ].every((regex) => {
+            const bool = columnNames.some((key) => regex.test(key));
+            return bool;
+          });
+          return hasMinimumValues;
+        });
 
       res.status(200).json(processedData);
     } catch (err: any) {
@@ -53,9 +100,9 @@ router.post(
 router.post(
   "/catalogs/:catalog_id/products",
   async (req: Request, res: Response) => {
-    // catalog_id may be redundant but we could take it from params
-    // id, title, Title, description, catalog_id, image --> obligatory fields
+    const catalogId = req.params.catalog_id;
     const products = req.body;
+    let productsAmount = 0;
     try {
       for (const prod of products) {
         const {
@@ -65,6 +112,7 @@ router.post(
           description,
           catalog_id,
           image,
+          mainImage,
           allImages,
           ...extraAttributes
         } = prod;
@@ -75,7 +123,7 @@ router.post(
           where: {
             name: title,
             description,
-            image,
+            image: mainImage,
             catalogId: catalog_id,
             dinamicFields: { ...extraAttributes },
           },
@@ -89,16 +137,84 @@ router.post(
         // product hasMany images, the following set the productId to all the images
         await newProduct[0].setImages(createdImages);
         await newProduct[0].setCatalog(catalog_id);
+        productsAmount += 1;
       }
+      const catalog = await catalogs.findByPk(catalogId);
 
-      res.status(200).send("Products added successfuly");
+      res.status(200).json({
+        action: "Upload products",
+        message: `${productsAmount} ${
+          productsAmount > 1 ? "products were" : "product was"
+        } added successfuly in catalog "${catalog?.dataValues.name}"`,
+        data: catalog,
+      });
     } catch (err: any) {
       console.log(err);
       res.status(503).send(err.message);
     }
   }
 );
+//UPDATE PRODUCTS
+router.put(
+  "/catalogs/:catalog_id/products/bulk",
+  async (req: Request, res: Response) => {
+    const { catalog_id } = req.params;
+    const { changedProducts } = req.body;
+    const currentCatalog = await catalogs.findByPk(catalog_id);
+    const productIds: string[] = Array.from(
+      new Set(changedProducts.map(({ id }: any) => id))
+    );
+    let arrangedById: any[] = [];
 
+    // order the data by id and parsing as key values into an object
+    // output  {id: string, values: {...newKeyValues}}
+    productIds.forEach((id: string) => {
+      const currentProductChanges = changedProducts
+        .filter((prod: any) => prod.id === id)
+        .map(({ field, value }: any) => ({
+          [field]: value,
+        }))
+        .reduce((acc: object, current: any) => ({ ...acc, ...current }), {});
+      arrangedById.push({ id, values: currentProductChanges });
+    });
+
+    const updatedProducts = [];
+
+    for (const fields of arrangedById) {
+      const currentProduct = await product.findByPk(fields.id);
+
+      const { name, description, ...restOfFields } = fields.values;
+      try {
+        const updatedValues = await currentProduct?.update({
+          name,
+          description,
+          dinamicFields: {
+            ...currentProduct.dataValues.dinamicFields,
+            ...restOfFields,
+          },
+          ...fields.values,
+        });
+        updatedProducts.push({
+          ...updatedValues?.dataValues,
+          ...updatedValues?.dataValues.dinamicFields,
+        });
+      } catch (error) {
+        console.log(error);
+        res.status(503).send(error);
+      }
+    }
+    const prodAmount = arrangedById.length;
+    const conjugation = prodAmount > 1 ? "have" : "has";
+    const singOrPlural = prodAmount > 1 ? "products" : "product";
+    res.status(200).json({
+      action: "Update Products",
+      message: `${prodAmount} ${singOrPlural} ${conjugation} been updated form the catalog ${
+        Object(currentCatalog)?.name
+      }`,
+      data: updatedProducts,
+    });
+  }
+);
 //GET CATALOGS
 router.get("/catalogs", async (req: Request, res: Response) => {
   // await insertData(product, catalogs);
@@ -187,9 +303,8 @@ router.get(
 // DELETE PRODUCTS
 router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
   const { id } = req.params;
-
   const productsId = req.body;
-
+  const currentCatalog = await catalogs.findByPk(id);
   try {
     const removedProducts: any = await product.destroy({
       where: {
@@ -199,7 +314,15 @@ router.delete("/catalogs/:id/products", async (req: Request, res: Response) => {
         catalogId: id,
       },
     });
-    res.status(200).send({ removedProducts });
+    res.status(200).json({
+      action: "Delete products",
+      message: `${removedProducts} ${
+        removedProducts > 1 ? "products have" : "product has"
+      } been deleted from the catalog called "${
+        currentCatalog?.dataValues.name
+      }"`,
+      data: currentCatalog,
+    });
   } catch (err) {
     res.sendStatus(503);
   }
@@ -209,13 +332,18 @@ router.put("/catalogs/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name } = req.body;
 
+  const currentCatalog: any = await catalogs.findByPk(id);
+  const catalogName = currentCatalog?.name;
   try {
-    const currentCatalog: any = await catalogs.findByPk(id);
     const updatedCatalog = await currentCatalog.update({
       ...currentCatalog,
       name,
     });
-    res.status(200).send(updatedCatalog);
+    res.status(200).json({
+      action: "Update Catalog",
+      message: `Catalog "${catalogName}" has been updated to "${updatedCatalog.name}" `,
+      data: updatedCatalog,
+    });
   } catch (err) {
     res.status(503).send(err);
   }
@@ -228,7 +356,11 @@ router.delete("/catalogs/:id", async (req: Request, res: Response) => {
     const currentCatalog: any = await catalogs.findByPk(id);
     const catalogName = currentCatalog.name;
     await currentCatalog.destroy();
-    res.status(200).send(`${catalogName} deleted successfully `);
+    res.status(200).json({
+      action: "Remove Catalog",
+      message: `Catalog "${catalogName}" was removed successfully`,
+      data: currentCatalog,
+    });
   } catch (err) {
     res.status(503).send(err);
   }
@@ -292,10 +424,10 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
         }
       }
     }
-
     res.status(200).json({
-      message: `${catalogName} duplicated successfully`,
-      ...clonedCatalog.dataValues,
+      action: "Duplicate catalog",
+      message: `The catalog "${catalogName}" was duplicated successfully`,
+      data: clonedCatalog.dataValues,
     });
   } catch (err) {
     res.status(503).send(err);
