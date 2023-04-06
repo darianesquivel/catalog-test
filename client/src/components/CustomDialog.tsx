@@ -10,7 +10,7 @@ import { Dialog, DialogActions, DialogContent } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { useStore } from '../pages/DrawerAppbar';
-import { useDeleteProducts, useDuplicateCatalog, useRemoveCatalog } from '../config/queries';
+import { useDeleteProducts, useRemoveCatalog } from '../config/queries';
 import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) => ({
