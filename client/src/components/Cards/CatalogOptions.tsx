@@ -55,7 +55,7 @@ type OptionProps = {
 export default function CatalogOptions({ name, id }: OptionProps) {
    const classes = useStyles();
    const history = useHistory();
-   const { setNotifications, addCatalogsToClone } = useStore();
+   const { setNotifications } = useStore();
    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
    const [option, setOption] = useState<any>(null);
    const [snackMessage, setSnackMessage] = useState('');
@@ -91,7 +91,7 @@ export default function CatalogOptions({ name, id }: OptionProps) {
                apiFunction={updateCatalog}
                initialValues={{ id, name }}
                keysToInvalidate={[`catalogs/:${id}`, id]}
-               acceptBtnName="Update"
+               action="Update"
                extraFn={(data: any) => {
                   setNotifications({
                      type: 'Update',
@@ -107,7 +107,8 @@ export default function CatalogOptions({ name, id }: OptionProps) {
             <CustomDialog
                isOpen={Boolean(option)}
                onModalChange={handleClose}
-               onAccept={() => removeCatalog({ id })}
+               onAccept={() => removeCatalog(id)}
+               itemsInformation={{ catalogId: id }}
                queryKey={[`catalogs/:${id}`, id]}
                action="Remove"
                extraFn={() => history.push('/catalogs')}
@@ -128,10 +129,7 @@ export default function CatalogOptions({ name, id }: OptionProps) {
             <CustomDialog
                isOpen={Boolean(option)}
                onModalChange={handleClose}
-               extraFn={() => {
-                  addCatalogsToClone(id, name);
-                  history.push('/catalogs');
-               }}
+               itemsInformation={{ catalogId: id }}
                queryKey={['catalogs']}
                action="Duplicate"
             >

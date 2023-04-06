@@ -14,11 +14,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // STYLES
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import { useMutateHook } from '../../hooks';
-import clonedCatalog from '../../api/cloneCatalog';
 import { useStore } from '../../pages/DrawerAppbar';
 import queryClientConfig from '../../config/queryClientConfig';
 import CustomAlert from '../CustomAlert';
+import { useDuplicateCatalog } from '../../config/queries';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -86,7 +85,7 @@ export default function CloningCard({ catalogId, title }: CardProps) {
    const classes = useStyles();
    const [openAlert, setOpenAlert] = useState(false);
    const { removeCatalogToClone, setNotifications } = useStore();
-   const { mutate, error, isError } = useMutateHook(() => clonedCatalog(catalogId));
+   const { mutate, error, isError } = useDuplicateCatalog();
 
    const handleCloseAlert = () => {
       setOpenAlert(false);
@@ -97,11 +96,11 @@ export default function CloningCard({ catalogId, title }: CardProps) {
       let isMounted = true;
       let timeoutId: any;
       if (isMounted) {
-         mutate(undefined, {
+         mutate(catalogId, {
             onSuccess: (newCatalog: any) => {
                removeCatalogToClone(catalogId);
                setNotifications({
-                  type: 'Upload',
+                  type: 'Duplicate',
                   content: newCatalog,
                   timestamp: new Date().toISOString(),
                   pending: true,

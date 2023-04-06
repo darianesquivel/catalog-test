@@ -208,7 +208,7 @@ export default function CustomNavBar({
          apiFunction={updateCatalog}
          initialValues={{ name: title, id: catalogId }}
          keysToInvalidate={[`catalogs/:${catalogId}`, catalogId]}
-         acceptBtnName="Update"
+         action="Update"
          extraFn={(data) => {
             setNotifications({
                type: 'Update',

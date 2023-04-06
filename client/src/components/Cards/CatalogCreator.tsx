@@ -52,7 +52,7 @@ export default function CatalogCreator() {
                isOpen={open}
                apiFunction={createCatalog}
                keysToInvalidate={['catalogs']}
-               acceptBtnName="Create"
+               action="Create"
                extraFn={(resData) => {
                   if (resData?.data.id) {
                      history.push(`/catalogs/${resData.data.id}/upload`);

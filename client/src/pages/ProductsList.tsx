@@ -467,6 +467,7 @@ const ProductsList = (props: any) => {
                         setSelected([]);
                         return removeProducts({ id: catalogId, productsId: selected });
                      }}
+                     itemsInformation={{ catalogId, productsId: selected }}
                      queryKey={[`catalogs/:${catalogId}`, catalogId]}
                      customMessage={(data: any) => data.message}
                      action="Delete"

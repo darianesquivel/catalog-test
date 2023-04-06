@@ -8,12 +8,12 @@ import { TextField, Dialog, DialogActions, DialogContent } from '@material-ui/co
 // FORMIK
 import { useFormik } from 'formik';
 // HOOK
-import { useMutateHook } from '../hooks';
 import queryClientConfig from '../config/queryClientConfig';
 
 // STYLES
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
+import { useCreateCatalog, useUpdateCatalog } from '../config/queries';
 
 const useStyles = makeStyles((theme) => ({
    container: {
@@ -66,32 +66,35 @@ type Tprops = {
    isOpen: boolean;
    apiFunction: (...params: any) => void;
    extraFn?: (data?: any) => void;
+
    initialValues?: {
       name: string;
       id: string;
    };
    keysToInvalidate: string[];
-   acceptBtnName: string;
+   action: 'Create' | 'Update';
 };
 
 const FormCreator = ({
    onModalChange,
    isOpen,
-   apiFunction,
-   initialValues,
+   initialValues = { name: '', id: '' },
    keysToInvalidate,
-   acceptBtnName,
+   action,
    extraFn,
 }: Tprops) => {
    const classes = useStyles();
-   const stateValue = Object.keys(initialValues || {}).length
-      ? initialValues
-      : {
-           name: '',
-           id: '',
-        };
-   const initialName = stateValue?.name || '';
-   const { mutate, error, isLoading, isSuccess } = useMutateHook(apiFunction);
+
+   const initialName = initialValues.name;
+
+   const createCatalog = useCreateCatalog();
+   const updateCatalog = useUpdateCatalog();
+
+   const isSuccess = createCatalog.isSuccess || updateCatalog.isSuccess;
+
+   const error = createCatalog.error || updateCatalog.error;
+
+   const isLoading = createCatalog.isLoading || updateCatalog.isLoading;
 
    const onValidate = yup.object({
       name: yup
@@ -105,20 +108,37 @@ const FormCreator = ({
          ),
    });
    const formik = useFormik<any>({
-      initialValues: stateValue,
+      initialValues,
       validationSchema: onValidate,
       onSubmit: (values) => handleSubmit(values),
    });
-   const handleSubmit = async (values: any) => {
+   const handleSubmit = async (values: { name: string }) => {
       if (!formik.errors.name) {
-         mutate(values, {
-            onSuccess: (data) => {
-               formik.resetForm();
-               queryClientConfig.invalidateQueries(keysToInvalidate);
-               queryClientConfig.invalidateQueries(['catalogs']);
-               extraFn?.(data);
-            },
-         });
+         const { name } = values;
+         switch (action) {
+            case 'Create':
+               createCatalog.mutate(name, {
+                  onSuccess: (data) => {
+                     formik.resetForm();
+                     extraFn?.(data);
+                  },
+               });
+               break;
+            case 'Update':
+               updateCatalog.mutate(
+                  { catalogId: initialValues.id, catalogName: name },
+                  {
+                     onSuccess: (data) => {
+                        queryClientConfig.invalidateQueries(keysToInvalidate);
+                        queryClientConfig.invalidateQueries(['catalogs']);
+                        extraFn?.(data);
+                     },
+                  }
+               );
+               break;
+            default:
+               break;
+         }
       }
    };
 
@@ -135,7 +155,7 @@ const FormCreator = ({
       >
          {isSuccess ? (
             <CustomSnackBar
-               message={`The catalog was ${acceptBtnName.toLowerCase()}d successfully`}
+               message={`The catalog was ${action.toLowerCase()}d successfully`}
                onClose={handleClose}
                open={isOpen}
             />
@@ -183,7 +203,7 @@ const FormCreator = ({
                                  disabled={!formik.values.name || !!formik.errors.name}
                                  className={classes.createButton}
                               >
-                                 {acceptBtnName}
+                                 {action}
                               </Button>
                            )}
                         </div>

@@ -5,12 +5,13 @@ import CustomAlert from './CustomAlert';
 // MUI
 import { Button, CircularProgress } from '@material-ui/core';
 import { Dialog, DialogActions, DialogContent } from '@material-ui/core';
-import { useMutateHook } from '../hooks';
 
 // STYLES
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { useStore } from '../pages/DrawerAppbar';
+import { useDeleteProducts, useDuplicateCatalog, useRemoveCatalog } from '../config/queries';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme: Theme) => ({
    dialog: {},
@@ -83,9 +84,14 @@ interface DialogProps {
    isOpen: boolean;
    onAccept?: () => void;
    children?: any;
+   itemsInformation: {
+      catalogId: string;
+      catalogName?: string;
+      productsId?: string[];
+   };
    queryKey?: string[];
    customMessage?: (data: any) => string;
-   action: 'Update' | 'Remove' | 'Duplicate' | 'Delete';
+   action: 'Remove' | 'Duplicate' | 'Delete';
    extraFn?: () => void;
 }
 const CustomDialog = ({
@@ -96,29 +102,58 @@ const CustomDialog = ({
    queryKey,
    customMessage,
    action,
+   itemsInformation,
    extraFn,
 }: DialogProps) => {
    const classes = useStyles();
-   const { setNotifications } = useStore();
-   const { mutate, error, isLoading, isSuccess, data } = useMutateHook(onAccept);
+   const history = useHistory();
+   const { addCatalogsToClone, setNotifications } = useStore();
+
+   const { catalogId, catalogName = '', productsId = [''] } = itemsInformation;
+   const removeCatalog = useRemoveCatalog(catalogId);
+   const deleteProducts = useDeleteProducts();
 
    const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
       event.preventDefault();
-      if (action !== 'Duplicate') {
-         mutate(undefined, {
-            onSuccess: (response: any) => {
-               setNotifications({
-                  type: action,
-                  content: response,
-                  pending: true,
-                  timestamp: new Date().toISOString(),
-               });
-            },
-         });
-      } else {
-         extraFn?.();
-         onModalChange();
+      switch (action) {
+         case 'Delete':
+            deleteProducts.mutate(
+               { catalogId, productsId },
+               {
+                  onSuccess: (response: any) => {
+                     setNotifications({
+                        type: action,
+                        content: response,
+                        pending: true,
+                        timestamp: new Date().toISOString(),
+                     });
+                  },
+               }
+            );
+            break;
+         case 'Duplicate':
+            //todo: add a function that executes the action regardless the section we are
+            addCatalogsToClone(catalogId, catalogName);
+            history.push('/catalogs');
+            onModalChange();
+            break;
+         case 'Remove':
+            removeCatalog.mutate(undefined, {
+               onSuccess: (response: any) => {
+                  setNotifications({
+                     type: action,
+                     content: response,
+                     pending: true,
+                     timestamp: new Date().toISOString(),
+                  });
+               },
+            });
+            break;
+
+         default:
+            break;
       }
+      extraFn?.();
    };
    const handleClose = async () => {
       if (isSuccess) {
@@ -128,6 +163,13 @@ const CustomDialog = ({
       }
       onModalChange();
    };
+   const isSuccess = removeCatalog.isSuccess || deleteProducts.isSuccess;
+
+   const error = removeCatalog.error || deleteProducts.error;
+
+   const isLoading = removeCatalog.isLoading || deleteProducts.isLoading;
+
+   const data = removeCatalog.data || deleteProducts.data;
 
    return (
       <Dialog
