@@ -140,7 +140,7 @@ export default function CustomNavBar({
    const isCatalogLoading = useIsFetching({
       queryKey: ['catalogs'],
    });
-   const isMainSection = ![isProductDetails, isUploadSection, isProductListSection].includes(true);
+   const isMainSection = !(isProductDetails || isUploadSection || isProductListSection);
    const sectionTitle = isMainSection ? 'Catalog Explorer' : title;
 
    const menuOptions: { id: string; content: string; disabled?: boolean }[] = [
