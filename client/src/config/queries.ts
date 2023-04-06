@@ -15,7 +15,9 @@ export const useCatalogsQuery = (term?: string) => {
 };
 
 export const useSingleCatalogQuery = (queryKeys: string[], catalogId: string) => {
-   return useQuery(queryKeys, () => getCatalogById(catalogId));
+   return useQuery(queryKeys, () => getCatalogById(catalogId), {
+      staleTime: 60 * 2000, // 1 minute
+   });
 };
 
 export const useProductInfoQuery = (catalogId: string, productId: string, queryKeys: string[]) => {
