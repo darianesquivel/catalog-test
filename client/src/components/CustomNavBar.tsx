@@ -254,7 +254,8 @@ export default function CustomNavBar({
          <CatalogOptions name={title} id={catalogId} />
       ) : null;
 
-   const totalItems = !isViewList && !isMainSection ? <Chip label={`${items} items`} /> : null;
+   const totalItems =
+      !isViewList && !isMainSection && !isProductDetails ? <Chip label={`${items} items`} /> : null;
 
    const FinalIcons =
       isProductListSection && title ? (
