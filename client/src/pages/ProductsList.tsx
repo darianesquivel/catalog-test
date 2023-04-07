@@ -326,6 +326,7 @@ const ProductsList = (props: any) => {
          catalogId={catalog.id}
          isProductListSection
          count={selected?.length}
+         items={gridViewProducts?.length}
          onClean={handleCleanSelect}
          onSelectAll={handleSelectAll}
          saveActions={[cellChanges, saveValuesFn]}
