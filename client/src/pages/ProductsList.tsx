@@ -256,6 +256,9 @@ const ProductsList = (props: any) => {
          setInfo(initialValues);
          setGridViewProducts(products);
          setSelected([]);
+         if (!isViewList) {
+            setInfo(undefined);
+         }
       }
       return () => {
          isMounted = false;
