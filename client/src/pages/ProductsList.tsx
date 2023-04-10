@@ -256,6 +256,9 @@ const ProductsList = (props: any) => {
          setInfo(initialValues);
          setGridViewProducts(products);
          setSelected([]);
+         if (!isViewList) {
+            setInfo(undefined);
+         }
       }
       return () => {
          isMounted = false;
@@ -267,9 +270,9 @@ const ProductsList = (props: any) => {
    };
 
    const handleSelectAll = useCallback(() => {
-      const allProducts = products.map((product) => product.id);
+      const allProducts = gridViewProducts.map((product: any) => product.id);
       setSelected(allProducts);
-   }, [products]);
+   }, [products, gridViewProducts]);
 
    const handleFilter = (filters: any) => {
       let productFiltered = products;
@@ -281,7 +284,7 @@ const ProductsList = (props: any) => {
             return true;
          });
       });
-
+      setSelected([]);
       setGridViewProducts(filteredProducts);
    };
 
@@ -326,6 +329,7 @@ const ProductsList = (props: any) => {
          catalogId={catalog.id}
          isProductListSection
          count={selected?.length}
+         items={gridViewProducts?.length}
          onClean={handleCleanSelect}
          onSelectAll={handleSelectAll}
          saveActions={[cellChanges, saveValuesFn]}
@@ -357,7 +361,7 @@ const ProductsList = (props: any) => {
 
    const catalogRenderView = useMemo(() => {
       return gridViewProducts?.map((prod: any) => (
-         <Lazyload key={prod.id} overflow height={100}>
+         <Lazyload key={prod.id} overflow>
             <ProductCard
                brand={prod.brand}
                title={prod.name}

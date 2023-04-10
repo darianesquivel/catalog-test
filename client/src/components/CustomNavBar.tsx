@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useStore } from '../pages/DrawerAppbar';
 //MUI and others
-import { Toolbar, AppBar, Typography, IconButton, Button } from '@material-ui/core';
+import { Toolbar, AppBar, Typography, IconButton, Button, Chip } from '@material-ui/core';
 import { faAngleLeft, faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThLarge, faThList } from '@fortawesome/free-solid-svg-icons';
@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
    mainContent: {
       display: 'flex',
       justifyContent: 'start',
+      alignItems: 'center',
       padding: theme.spacing(1),
       gap: theme.spacing(1),
       marginLeft: theme.spacing(2),
@@ -104,11 +105,12 @@ type NavBarProps = {
    isProductDetails?: boolean;
    onToggle?: any;
    view?: boolean;
-   count?: any;
+   count?: number;
    onClean?: any;
    onSelectAll?: any;
    saveActions?: [changedValues: any[], saveChangesFn: () => void];
    isUpdateLoading?: boolean;
+   items?: number;
 };
 
 export default function CustomNavBar({
@@ -122,6 +124,7 @@ export default function CustomNavBar({
    onSelectAll,
    saveActions,
    isUpdateLoading,
+   items,
 }: NavBarProps) {
    const classes = useStyles();
    const history = useHistory();
@@ -251,6 +254,9 @@ export default function CustomNavBar({
          <CatalogOptions name={title} id={catalogId} />
       ) : null;
 
+   const totalItems =
+      !isViewList && !isMainSection && !isProductDetails ? <Chip label={`${items} items`} /> : null;
+
    const FinalIcons =
       isProductListSection && title ? (
          <>
@@ -330,6 +336,7 @@ export default function CustomNavBar({
                   {RenderTitle}
                   {RefreshIcon}
                   {OptionsIcon}
+                  {totalItems}
                </div>
                <div className={classes.endSection}>{FinalIcons}</div>
             </Toolbar>
