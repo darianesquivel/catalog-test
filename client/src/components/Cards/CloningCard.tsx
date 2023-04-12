@@ -1,23 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import {
-   CardContent,
-   Typography,
-   Card,
-   CardHeader,
-   Dialog,
-   DialogContent,
-} from '@material-ui/core';
+import { CardContent, Typography, Card, CardHeader } from '@material-ui/core';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // STYLES
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import { useStore } from '../../pages/DrawerAppbar';
-import queryClientConfig from '../../config/queryClientConfig';
-import CustomAlert from '../CustomAlert';
-import { useDuplicateCatalog } from '../../config/queries';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -79,10 +68,9 @@ const useStyles = makeStyles((theme) =>
 interface CardProps {
    catalogId: string;
    title: string;
-   timeId: number;
 }
 
-export default function CloningCard({ catalogId, title, timeId }: CardProps) {
+export default function CloningCard({ title }: CardProps) {
    const classes = useStyles();
 
    return (

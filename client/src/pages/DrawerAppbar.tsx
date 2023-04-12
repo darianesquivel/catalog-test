@@ -19,10 +19,12 @@ import { persist } from 'zustand/middleware';
 import queryClientConfig from '../config/queryClientConfig';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { shallow } from 'zustand/shallow';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import NotificationBar from './Notifications/NotificationBar';
 import CircularIcon from '../components/CircularIcon';
 import Classnames from 'classnames';
+import { useDuplicateCatalog } from '../config/queries';
+import CustomSnackBar from '../components/CustomSnackbar';
 
 const drawerWidth = 240;
 const drawerWidthMin = 70;
@@ -207,15 +209,35 @@ export const useStore = create(
          isViewList: true,
          toggleView: () => set((state: any) => ({ ...state, isViewList: !state.isViewList })),
          catalogsToClone: [],
-         addCatalogsToClone: (newId: string, newTitle: string) =>
+         addCatalogsToClone: (newId: string, newTitle: string, executed: boolean = false) =>
             set((state: any) => ({
                ...state,
-               catalogsToClone: [...state.catalogsToClone, { id: newId, title: newTitle }],
+               catalogsToClone: [
+                  ...state.catalogsToClone,
+                  { id: newId, title: newTitle, createdAt: Date.now() },
+               ],
+               executed,
             })),
-         removeCatalogToClone: (catalogId: string) =>
+         setClonigAsExecuted: (catalogId: string) =>
             set((state: any) => ({
                ...state,
-               catalogsToClone: state.catalogsToClone.filter(({ id }: any) => id !== catalogId),
+               catalogsToClone: state.catalogsToClone.map((catalog: any) => {
+                  if (catalog.id === catalogId) {
+                     return {
+                        ...catalog,
+                        executed: true,
+                     };
+                  } else {
+                     return catalog;
+                  }
+               }),
+            })),
+         removeCatalogToClone: (timeId: number) =>
+            set((state: any) => ({
+               ...state,
+               catalogsToClone: state.catalogsToClone.filter(
+                  ({ createdAt, executed }: any) => createdAt !== timeId && executed
+               ),
             })),
 
          notifications: [] as NotificationType[],
@@ -227,7 +249,6 @@ export const useStore = create(
             catalogId,
          }: NotificationType) => {
             let modelName: string;
-
             if (['Upload', 'Delete'].includes(type)) {
                modelName = 'products';
             } else if (type.includes('Update products')) {
@@ -293,16 +314,27 @@ export const useStore = create(
 export default function MiniDrawer() {
    const classes = useStyles();
    const [openNotifications, setOpenNotifications] = useState(false);
-   const { open, selectedIndex, mode, notifications } = useStore(
+   const [openAlert, setOpenAlert] = useState(false);
+   const { open, selectedIndex, mode, notifications, catalogsToClone } = useStore(
       (state: any) => ({
          open: state.open,
          mode: state.mode,
          selectedIndex: state.selectedIndex,
          notifications: state.notifications,
+         catalogsToClone: state.catalogsToClone,
       }),
       shallow
    );
-   const { setOpen, toggleMode, setSelectedIndex } = useStore();
+   const {
+      setOpen,
+      toggleMode,
+      setSelectedIndex,
+      removeCatalogToClone,
+      setNotifications,
+      setClonigAsExecuted,
+   } = useStore();
+
+   const duplicateCatalog = useDuplicateCatalog();
 
    const pendingNotAmount = useMemo(
       () => notifications.filter(({ pending }: any) => pending).length,
@@ -320,6 +352,56 @@ export default function MiniDrawer() {
    const toggleNotifications = (op: boolean) => {
       setOpenNotifications(op);
    };
+   type CatalogToClone = {
+      id: string;
+      executed: boolean;
+      title: string;
+      createdAt: number;
+   };
+
+   useEffect(() => {
+      // Async mutation
+
+      const handleMutations = async () => {
+         if (catalogsToClone.length) {
+            const catalog: CatalogToClone = catalogsToClone[catalogsToClone.length - 1];
+            // UTILIZE THE RESPONSE DATA TO SET THE SETQUERYDATA IN ORDER TO AVOID REFETCHING ALL AGAIN
+            // We only want to duplicate the catalog if this was not executed yet
+
+            if (!catalog.executed) {
+               setClonigAsExecuted(catalog.id);
+
+               try {
+                  const newCatalog = await duplicateCatalog.mutateAsync(catalog.id);
+                  console.log('newCatalog', newCatalog);
+                  removeCatalogToClone(catalog.createdAt);
+                  setNotifications({
+                     type: 'Duplicate',
+                     content: newCatalog,
+                     catalogId: newCatalog.data.id,
+                     timestamp: new Date().toISOString(),
+                  });
+               } catch (err) {
+                  setOpenAlert(true);
+                  setTimeout(() => {
+                     removeCatalogToClone(catalog.createdAt);
+                  }, 2000);
+               }
+            }
+
+            // queryClientConfig.invalidateQueries(['catalogs']);
+            console.log('Aqui se ejecutaría el ');
+         }
+      };
+
+      handleMutations();
+   }, [
+      catalogsToClone,
+      duplicateCatalog,
+      removeCatalogToClone,
+      setClonigAsExecuted,
+      setNotifications,
+   ]);
 
    return (
       <div>
@@ -431,6 +513,17 @@ export default function MiniDrawer() {
          </Drawer>
 
          <NotificationBar isOpen={openNotifications} onToggle={toggleNotifications} />
+         {openAlert && (
+            // usar snackbar
+            <CustomSnackBar
+               message={`The duplication could not be completed because of ${
+                  Object(duplicateCatalog.error).message
+               }`}
+               open={true}
+               alertType="error"
+               onClose={() => setOpenAlert(false)}
+            />
+         )}
       </div>
    );
 }
