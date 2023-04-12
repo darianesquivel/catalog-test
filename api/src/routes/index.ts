@@ -383,7 +383,6 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
 
     const clonedCatalog: any = await catalogs.create({
       name: `${catalogName} (copy)`,
-      created_at: new Date(),
     });
 
     // we cannot use bulkCreate because of the images relationship setting
@@ -424,10 +423,25 @@ router.post("/catalogs/:id/clone", async (req: Request, res: Response) => {
         }
       }
     }
+
+    const newClonedCatalog = await catalogs.findAll({
+      where: {
+        id: clonedCatalog.id,
+      },
+      include: {
+        model: product,
+      },
+    });
+
+    const data = {
+      ...newClonedCatalog[0].dataValues,
+      productCount: newClonedCatalog[0].dataValues?.products?.length || 0,
+    };
+
     res.status(200).json({
       action: "Duplicate catalog",
       message: `The catalog "${catalogName}" was duplicated successfully`,
-      data: clonedCatalog.dataValues,
+      data,
     });
   } catch (err) {
     res.status(503).send(err);

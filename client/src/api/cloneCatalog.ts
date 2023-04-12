@@ -1,6 +1,6 @@
 //catalogs/:id/clone
 import axios from 'axios';
-export default async function clonedCatalog(catalogId: string) {
+export default async function cloneCatalog(catalogId: string) {
    return await axios
       .post(`/catalogs/${catalogId}/clone`, {
          catalogId,

@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 // utils
-import addProducts from '../api/addProducts';
 import Papa from 'papaparse';
 import { useStore } from '../pages/DrawerAppbar';
-import { useMutateHook } from '../hooks';
 
 import CustomAlert from './CustomAlert';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
@@ -38,6 +36,8 @@ import ClassNames from 'classnames';
 import cleanJson from '../api/cleanJson';
 import CustomNavBar from './CustomNavBar';
 import React from 'react';
+import { useUploadProducts } from '../config/queries';
+import queryClientConfig from '../config/queryClientConfig';
 
 const useStyles = makeStyles((theme) => ({
    tableContainer: {
@@ -164,12 +164,9 @@ export default function AddProducts() {
    const history = useHistory();
    const classes = useStyles();
    const { id: catalogId } = useParams<{ id: string }>();
-   const { mutate, isLoading, isSuccess, isError, error } = useMutateHook(() => {
-      const finalData = data.filter((row: any) =>
-         initialSelectedRows.includes(generateRowId(row.title, row.id))
-      );
-      return addProducts(catalogId, finalData);
-   });
+
+   const { mutate, isLoading, isSuccess, isError, error } = useUploadProducts();
+
    const { setNotifications } = useStore();
 
    const handleFile = async (e: any) => {
@@ -203,16 +200,23 @@ export default function AddProducts() {
 
    const handleSubmit = async () => {
       setPreview(false);
-      mutate(undefined, {
-         onSuccess: (data: any) => {
-            setNotifications({
-               type: 'Upload',
-               content: data,
-               timestamp: new Date().toISOString(),
-               pending: true,
-            });
-         },
-      });
+      const finalData = data.filter((row: any) =>
+         initialSelectedRows.includes(generateRowId(row.title, row.id))
+      );
+      mutate(
+         { catalogId, data: finalData },
+         {
+            onSuccess: (data: any) => {
+               setNotifications({
+                  type: 'Upload',
+                  content: data,
+                  timestamp: new Date().toISOString(),
+                  pending: true,
+               });
+               queryClientConfig.invalidateQueries([`catalogs/:${catalogId}`]);
+            },
+         }
+      );
    };
 
    const handleIsSuccess = () => {
@@ -276,9 +280,15 @@ export default function AddProducts() {
                         </div>
                      ) : null}
 
-                     {isLoading || isloadingFile ? (
+                     {isloadingFile ? (
                         <div className={classes.loading}>
                            <Typography> Loading </Typography>
+                           <CircularProgress />
+                        </div>
+                     ) : null}
+                     {isLoading ? (
+                        <div className={classes.loading}>
+                           <Typography> Uploading products </Typography>
                            <CircularProgress />
                         </div>
                      ) : null}

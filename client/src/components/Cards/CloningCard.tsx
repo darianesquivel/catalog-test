@@ -1,24 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import {
-   CardContent,
-   Typography,
-   Card,
-   CardHeader,
-   Dialog,
-   DialogContent,
-} from '@material-ui/core';
+import { CardContent, Typography, Card, CardHeader } from '@material-ui/core';
 import { faRedo } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // STYLES
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import { useMutateHook } from '../../hooks';
-import clonedCatalog from '../../api/cloneCatalog';
-import { useStore } from '../../pages/DrawerAppbar';
-import queryClientConfig from '../../config/queryClientConfig';
-import CustomAlert from '../CustomAlert';
 
 const useStyles = makeStyles((theme) =>
    createStyles({
@@ -82,47 +70,8 @@ interface CardProps {
    title: string;
 }
 
-export default function CloningCard({ catalogId, title }: CardProps) {
+export default function CloningCard({ title }: CardProps) {
    const classes = useStyles();
-   const [openAlert, setOpenAlert] = useState(false);
-   const { removeCatalogToClone, setNotifications } = useStore();
-   const { mutate, error, isError } = useMutateHook(() => clonedCatalog(catalogId));
-
-   const handleCloseAlert = () => {
-      setOpenAlert(false);
-      removeCatalogToClone(catalogId);
-   };
-
-   useEffect(() => {
-      let isMounted = true;
-      let timeoutId: any;
-      if (isMounted) {
-         mutate(undefined, {
-            onSuccess: (newCatalog: any) => {
-               removeCatalogToClone(catalogId);
-               setNotifications({
-                  type: 'Upload',
-                  content: newCatalog,
-                  timestamp: new Date().toISOString(),
-                  pending: true,
-               });
-               queryClientConfig.invalidateQueries(['catalogs']);
-            },
-            onError: (err) => {
-               setOpenAlert(true);
-               timeoutId = setTimeout(() => {
-                  removeCatalogToClone(catalogId);
-               }, 6000);
-            },
-         });
-      }
-
-      return () => {
-         isMounted = false;
-         clearTimeout(timeoutId);
-      };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
 
    return (
       <>
@@ -133,7 +82,7 @@ export default function CloningCard({ catalogId, title }: CardProps) {
                   <FontAwesomeIcon
                      icon={faRedo}
                      size="lg"
-                     className={classNames(classes.icons, { [classes.rotate]: !openAlert })}
+                     className={classNames(classes.icons, classes.rotate)}
                      color="primary"
                   />
                   <Typography variant="body2" color="primary">
@@ -142,20 +91,6 @@ export default function CloningCard({ catalogId, title }: CardProps) {
                </CardContent>
             </CardContent>
          </Card>
-         {isError && openAlert && (
-            <Dialog open={true} className={classes.mainDialogBox}>
-               <DialogContent>
-                  <CustomAlert
-                     alertType="error"
-                     message={`The process could not be completed because of ${
-                        Object(error).message
-                     }`}
-                     closeIcon={true}
-                     onClose={handleCloseAlert}
-                  />
-               </DialogContent>
-            </Dialog>
-         )}
       </>
    );
 }
