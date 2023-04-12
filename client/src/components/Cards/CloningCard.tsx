@@ -79,49 +79,11 @@ const useStyles = makeStyles((theme) =>
 interface CardProps {
    catalogId: string;
    title: string;
+   timeId: number;
 }
 
-export default function CloningCard({ catalogId, title }: CardProps) {
+export default function CloningCard({ catalogId, title, timeId }: CardProps) {
    const classes = useStyles();
-   const [openAlert, setOpenAlert] = useState(false);
-   const { removeCatalogToClone, setNotifications } = useStore();
-   const { mutate, error, isError } = useDuplicateCatalog();
-
-   const handleCloseAlert = () => {
-      setOpenAlert(false);
-      removeCatalogToClone(catalogId);
-   };
-
-   useEffect(() => {
-      let isMounted = true;
-      let timeoutId: any;
-      if (isMounted) {
-         mutate(catalogId, {
-            onSuccess: (newCatalog: any) => {
-               removeCatalogToClone(catalogId);
-               setNotifications({
-                  type: 'Duplicate',
-                  content: newCatalog,
-                  timestamp: new Date().toISOString(),
-                  pending: true,
-               });
-               queryClientConfig.invalidateQueries(['catalogs']);
-            },
-            onError: (err) => {
-               setOpenAlert(true);
-               timeoutId = setTimeout(() => {
-                  removeCatalogToClone(catalogId);
-               }, 6000);
-            },
-         });
-      }
-
-      return () => {
-         isMounted = false;
-         clearTimeout(timeoutId);
-      };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
 
    return (
       <>
@@ -132,7 +94,7 @@ export default function CloningCard({ catalogId, title }: CardProps) {
                   <FontAwesomeIcon
                      icon={faRedo}
                      size="lg"
-                     className={classNames(classes.icons, { [classes.rotate]: !openAlert })}
+                     className={classNames(classes.icons, classes.rotate)}
                      color="primary"
                   />
                   <Typography variant="body2" color="primary">
@@ -141,20 +103,6 @@ export default function CloningCard({ catalogId, title }: CardProps) {
                </CardContent>
             </CardContent>
          </Card>
-         {isError && openAlert && (
-            <Dialog open={true} className={classes.mainDialogBox}>
-               <DialogContent>
-                  <CustomAlert
-                     alertType="error"
-                     message={`The process could not be completed because of ${
-                        Object(error).message
-                     }`}
-                     closeIcon={true}
-                     onClose={handleCloseAlert}
-                  />
-               </DialogContent>
-            </Dialog>
-         )}
       </>
    );
 }

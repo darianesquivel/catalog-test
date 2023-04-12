@@ -129,7 +129,7 @@ export default function CatalogOptions({ name, id }: OptionProps) {
             <CustomDialog
                isOpen={Boolean(option)}
                onModalChange={handleClose}
-               itemsInformation={{ catalogId: id }}
+               itemsInformation={{ catalogId: id, catalogName: name }}
                queryKey={['catalogs']}
                action="Duplicate"
             >
