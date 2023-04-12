@@ -373,13 +373,18 @@ export default function MiniDrawer() {
 
                try {
                   const newCatalog = await duplicateCatalog.mutateAsync(catalog.id);
-                  console.log('newCatalog', newCatalog);
+                  const data = newCatalog.data;
                   removeCatalogToClone(catalog.createdAt);
                   setNotifications({
                      type: 'Duplicate',
                      content: newCatalog,
-                     catalogId: newCatalog.data.id,
+                     catalogId: data.id,
                      timestamp: new Date().toISOString(),
+                  });
+                  queryClientConfig.setQueriesData(['catalogs'], (oldData: any) => {
+                     if (oldData) {
+                        return [data, ...oldData];
+                     }
                   });
                } catch (err) {
                   setOpenAlert(true);
@@ -388,9 +393,6 @@ export default function MiniDrawer() {
                   }, 2000);
                }
             }
-
-            // queryClientConfig.invalidateQueries(['catalogs']);
-            console.log('Aqui se ejecutaría el ');
          }
       };
 
